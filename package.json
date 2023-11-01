@@ -1,0 +1,28 @@
+{
+  "name": "master-project",
+  "version": "0.0.1",
+  "description": "Master Project at Berliner Hochschule für Technik",
+  "author": "Steffen Ansorge <kelzenberg@users.noreply.github.com> (https://github.com/kelzenberg)",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelzenberg/master-project.git"
+  },
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "echo \"Error: no development server specified\" && exit 1",
+    "start": "echo \"Error: no server specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --ignore-path ./.gitignore --write \"**/*.+(js|ts|json)\""
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.1.0",
+    "eslint-plugin-unicorn": "^42.0.0",
+    "prettier": "^2.7.1"
+  }
+}
