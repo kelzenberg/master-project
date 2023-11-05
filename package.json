@@ -19,14 +19,14 @@
     "start": "echo \"Error: no server specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.gitignore --write \"**/*.+(js|ts|json)\""
+    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
   },
   "devDependencies": {
-    "eslint": "^8.18.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.1.0",
-    "eslint-plugin-unicorn": "^42.0.0",
-    "prettier": "^2.7.1"
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-unicorn": "^49.0.0",
+    "prettier": "^3.0.3"
   }
 }
