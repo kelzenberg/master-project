@@ -15,8 +15,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "echo \"Error: no development server specified\" && exit 1",
-    "start": "echo \"Error: no server specified\" && exit 1",
+    "dev": "vite serve",
+    "build": "vite build",
+    "start": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
@@ -27,6 +28,8 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-unicorn": "^49.0.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "vite": "^4.5.0",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }

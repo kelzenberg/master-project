@@ -12,7 +12,7 @@ Master Project at Berliner Hochschule für Technik.
 - [NodeJS](https://nodejs.org/en), version according to `.nvmrc`
   - Optional: [nvm](https://github.com/nvm-sh/nvm) to manage Node versions
 
-### IDE Recommendation
+### Editor Recommendation
 
 - [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
   - [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/)
@@ -39,13 +39,19 @@ Master Project at Berliner Hochschule für Technik.
 
 Run `npm install` once to install dependencies.
 
-- Start development-only server _(non-functional yet)_
+- Start development-only server
 
   ```sh
   npm run dev
   ```
 
-- Start server _(non-functional yet)_
+- Build app (for production)
+
+  ```sh
+  npm run build
+  ```
+
+- Start production server locally
 
   ```sh
   npm run start
