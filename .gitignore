@@ -1,7 +1,14 @@
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+
 **/node_modules
-**/coverage
 **/dist
+**/dist-ssr
+**/coverage
+
 **/tmp
-**/*.env
 **/*.local
 **/*.local.*
+**/*.env
