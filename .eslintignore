@@ -1,7 +1,17 @@
+# From .gitignore
+**/logs
+**/*.log
+**/npm-debug.log*
+
 **/node_modules
-**/coverage
 **/dist
+**/dist-ssr
+**/coverage
+
 **/tmp
+**/*.local
+**/*.local.*
 **/*.env
 
+# Additions for ESLint
 **/package-lock.json
