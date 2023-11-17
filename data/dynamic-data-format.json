@@ -1,0 +1,16 @@
+{
+  "config": [
+    { "speciesIdx": 7, "siteIdx": 74 }
+    // ...more config rows
+  ],
+  "plotData": {
+    "timestamp": 7.218519047190871e-5,
+    "values": [
+      {
+        "label": "Title 1st curve",
+        "value": 0.41203,
+        "coverage": [] // TBD?
+      }
+    ]
+  }
+}
