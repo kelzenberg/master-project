@@ -15,9 +15,10 @@ Master Project at Berliner Hochschule für Technik.
 ### Editor Recommendation
 
 - [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
+
   - [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/)
   - [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode)
-  - Optional: [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig)
+  - [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig)
   - Optional VSCodium/VSCode settings:
 
     ```json
@@ -39,7 +40,8 @@ Master Project at Berliner Hochschule für Technik.
 
 Run `npm install` once to install dependencies.
 
-- Start development-only server
+- Start development-only server  
+  _(on [http://localhost:5173](http://localhost:5173) if not in use)_
 
   ```sh
   npm run dev
