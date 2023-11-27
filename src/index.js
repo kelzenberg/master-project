@@ -13,6 +13,7 @@ import {
   Mesh,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import WebGL from 'three/examples/jsm/capabilities/WebGL';
 import Molecule from './models/Molecule';
 import Species from './models/Species';
 
@@ -20,12 +21,12 @@ const sites = [];
 const speciesList = [];
 
 // Renderer and Scene setup
+const canvas = document.querySelector('#canvas');
 const scene = new Scene();
-const renderer = new WebGLRenderer();
+const renderer = new WebGLRenderer({ canvas });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xff_ff_ff);
-document.body.append(renderer.domElement);
 
 // Camera setup
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -35,7 +36,7 @@ camera.position.copy(defaultCameraPosition);
 camera.rotation.copy(defaultCameraRotation);
 
 // OrbitControls setup
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 controls.saveState();
@@ -151,9 +152,14 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// Function Calls
-readSites('data/examples/sites.json');
-readSpecies('data/examples/species.json');
-renderFixedSpecies('data/examples/fixed_species.json');
-renderSpeciesFromConfig('data/examples/config_1e6.json'); // Dieser Aufruf muss dann mehrmals die Sekunde (steps/s) erfolgen und die config vom Backend abfragen
-animate();
+if (WebGL.isWebGLAvailable()) {
+  // Function Calls
+  readSites('data/examples/sites.json');
+  readSpecies('data/examples/species.json');
+  renderFixedSpecies('data/examples/fixed_species.json');
+  renderSpeciesFromConfig('data/examples/config_1e6.json'); // Dieser Aufruf muss dann mehrmals die Sekunde (steps/s) erfolgen und die config vom Backend abfragen
+  animate();
+} else {
+  const warning = WebGL.getWebGLErrorMessage();
+  document.querySelector('body').append(warning);
+}
