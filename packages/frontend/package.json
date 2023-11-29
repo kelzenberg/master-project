@@ -1,5 +1,5 @@
 {
-  "name": "master-project",
+  "name": "frontend",
   "version": "0.0.1",
   "description": "Master Project at Berliner Hochschule für Technik",
   "author": "Steffen Ansorge <kelzenberg@users.noreply.github.com> (https://github.com/kelzenberg)",
@@ -14,21 +14,20 @@
   },
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "./packages/*"
-  ],
   "scripts": {
-    "F": "npm run --workspace frontend",
-    "B": "npm run --workspace backend",
-    "L": "npm run --workspace libs"
+    "dev": "vite serve",
+    "build": "vite build",
+    "start": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
   },
   "devDependencies": {
-    "eslint": "^8.53.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-unicorn": "^49.0.0",
-    "prettier": "^3.0.3"
+    "@types/three": "^0.158.3",
+    "vite": "^4.5.0",
+    "vite-plugin-eslint": "^1.8.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "three": "^0.158.0"
+  }
 }

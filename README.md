@@ -9,8 +9,10 @@ Master Project at Berliner Hochschule für Technik.
 ### Prerequisites
 
 - [Git](https://git-scm.com/)
-- [NodeJS](https://nodejs.org/en), version according to `.nvmrc`
-  - Optional: [nvm](https://github.com/nvm-sh/nvm) to manage Node versions
+- [NodeJS](https://nodejs.org/en)
+  - Version in `.nvmrc` (`^21.1.x`)
+  - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
+  - Optional: [nvm](https://github.com/nvm-sh/nvm) to switch Node versions
 
 ### Editor Recommendation
 
@@ -36,48 +38,56 @@ Master Project at Berliner Hochschule für Technik.
     ],
     ```
 
-### Scripts
+## Packages
 
-Run `npm install` once to install dependencies.
+This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository.  
+In doing so this repository becomes a [monorepo](https://monorepo.tools).
 
-- Start development-only server  
-  _(on [http://localhost:5173](http://localhost:5173) if not in use)_
+You will find each package inside the `./packages` folder within their own subfolder. Each package has their own individual configuration files. Generic configuration files are located on the root level of the repository and are valid for all packages.
+
+---
+
+### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
+
+**Simulation visualization layer for the web browser**
+
+Usage: `npm run F {dev|build|start|lint|lint:fix|format}`
+
+### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
+
+**Backend server to manage the communication** between simulation and frontend
+
+Usage: `npm run B {dev|build|start|lint|lint:fix|format}`
+
+### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
+
+**Shared modules and data**
+
+Usage: `npm run L {build|lint|lint:fix|format}`
+
+---
+
+**Hint:** You can run an npm command that is supported by all packages by adding a `--workspaces` to it.
+
+- Lint source files in all packages
 
   ```sh
-  npm run dev
-  ```
-
-- Build app (for production)
-
-  ```sh
-  npm run build
-  ```
-
-- Start production server locally
-
-  ```sh
-  npm run start
-  ```
-
-- Lint source files
-
-  ```sh
-  npm run lint
+  npm run --workspaces lint
   # to fix errors directly:
-  npm run lint:fix
+  npm run --workspaces lint:fix
   ```
 
-- Format source files
+- Format source files in all packages
   ```sh
-  npm run format
+  npm run --workspaces format
   ```
 
 ## Documentation
 
-With the exception of this Readme, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
+With the exception of this Readme and the package's Readmes, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
 
 **Editor tip:**  
-Clone the wiki to edit pages locally in your IDE.
+Clone the wiki to edit pages locally in your editor.
 
 ```sh
 git clone https://github.com/kelzenberg/master-project.wiki.git
