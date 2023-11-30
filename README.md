@@ -21,6 +21,7 @@ Master Project at Berliner Hochschule für Technik.
   - [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/)
   - [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode)
   - [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig)
+  - [DotENV](https://open-vsx.org/vscode/item?itemName=mikestead.dotenv)
   - Optional VSCodium/VSCode settings:
 
     ```json
