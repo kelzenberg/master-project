@@ -21,7 +21,7 @@
     "husky": "husky install",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\"",
+    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\" --log-level=warn",
     "install:F": "npm install --workspace frontend",
     "F": "npm run --workspace frontend",
     "install:B": "npm install --workspace backend",
