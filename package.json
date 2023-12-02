@@ -18,8 +18,11 @@
     "./packages/*"
   ],
   "scripts": {
+    "install:F": "npm install --workspace frontend",
     "F": "npm run --workspace frontend",
+    "install:B": "npm install --workspace backend",
     "B": "npm run --workspace backend",
+    "install:L": "npm install --workspace libs",
     "L": "npm run --workspace libs"
   },
   "devDependencies": {
