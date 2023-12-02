@@ -8,8 +8,8 @@ import winston from 'winston';
  */
 export const createLogger =
   (serviceName = 'master-project') =>
-  event =>
-    winston.createLogger({
+  event => {
+    const logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
         winston.format.timestamp({
@@ -25,11 +25,21 @@ export const createLogger =
         event: { name: 'generic name', ...event },
       },
       transports: [
-        // Write all logs error (and below) to `error.log`.
-        new winston.transports.File({ filename: `${serviceName}.error.log`, level: 'error' }),
-        // Write to all logs with level `info` and below to `combined.log`.
-        new winston.transports.File({ filename: `${serviceName}.combined.log` }),
-        // Write all logs
-        new winston.transports.Console({ silent: process.env.NO_LOGGING === 'true' }),
+        // Write all logs to console
+        new winston.transports.Console({ silent: process.env.NO_CONSOLE_LOGGING === 'true' }),
       ],
     });
+
+    if (process.env.NO_FILE_LOGGING !== 'true') {
+      logger.add(
+        // Write all logs error (and below) to `error.log`.
+        new winston.transports.File({ filename: `logs/error.log`, level: 'error' })
+      );
+      logger.add(
+        // Write to all logs with level `info` and below to `combined.log`.
+        new winston.transports.File({ filename: `logs/combined.log` })
+      );
+    }
+
+    return logger;
+  };
