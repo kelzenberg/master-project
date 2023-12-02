@@ -15,3 +15,5 @@
 
 # Additions for ESLint
 **/package-lock.json
+**/.github
+**/husky
