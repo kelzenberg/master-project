@@ -35,9 +35,39 @@ Before you start...
   ],
   ```
 
-## Usage of Project Packages
+## Monorepo Usage
 
-> This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository. In doing so this repository becomes a [monorepo](https://monorepo.tools).
+This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository. In doing so this repository becomes a [monorepo](https://monorepo.tools).
+
+### First Steps
+
+Compare your local NodeJS version via `node -v` with the required version above.  
+Then run `npm install` once to install all dependencies.
+
+### Packages
+
+### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
+
+**Simulation visualization layer for the web browser**
+
+Usage: `npm run F {dev|build|start}`  
+Install NPM dependencies: `npm run install:F {dependency-name}`
+
+### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
+
+**Backend server to manage the communication** between simulation and frontend
+
+Usage: `npm run B {dev|build|start}`  
+Install NPM dependencies: `npm run install:B {dependency-name}`
+
+### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
+
+**Shared modules and data**
+
+Usage: `npm run L {build}`  
+Install NPM dependencies: `npm run install:L {dependency-name}`
+
+#### Notes on Packages
 
 - You will find each package inside the packages folder within their own subfolder.  
   _Example_ `./packages/frontend`
@@ -47,53 +77,34 @@ Before you start...
   _Example_ `./packages/frontend/vite.config.js`
 - Generic configuration files are located on the root level of the repository and are valid for **all** packages.  
   _Example_ `./eslintrc.json`
+- Install NPM dependencies only in their respective workspace.  
+  _Example_ `ThreeJS` only belongs in `@master-project/frontend`.
 
-### First Step
+### Global Commands
 
-Compare your local NodeJS version via `node -v` with the required version above.  
-Then run `npm install` once to install all dependencies.
+These NPM commands will be executed for ALL packages.
 
-**Note:**  
-Install NPM dependencies only in their respective workspace.  
-For example, `ThreeJS` belongs only to `@master-project/frontend`.
+- Remove build artifacts and more
 
-### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
-
-**Simulation visualization layer for the web browser**
-
-Usage: `npm run F {dev|build|start|lint|lint:fix|format}`  
-Install NPM dependencies: `npm run install:F {dependency-name}`
-
-### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
-
-**Backend server to manage the communication** between simulation and frontend
-
-Usage: `npm run B {dev|build|start|lint|lint:fix|format}`  
-Install NPM dependencies: `npm run install:B {dependency-name}`
-
-### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
-
-**Shared modules and data**
-
-Usage: `npm run L {build|lint|lint:fix|format}`  
-Install NPM dependencies: `npm run install:L {dependency-name}`
-
-### Global Scripts
-
-You can run any common NPM command _for all packages_ by adding a `--workspaces` to it.
+  ```sh
+  npm run clean
+  ```
 
 - Lint source files in all packages
 
   ```sh
-  npm run --workspaces lint
+  npm run lint
   # to fix errors directly:
-  npm run --workspaces lint:fix
+  npm run lint:fix
   ```
 
 - Format source files in all packages
   ```sh
-  npm run --workspaces format
+  npm run format
   ```
+
+**Note:**  
+You can run NPM commands consecutively for all packages by adding a `--workspaces` to it. **All packages** need to be able to run this NPM command though (check package's respective `package.json` if the command is present).
 
 ## Documentation
 
