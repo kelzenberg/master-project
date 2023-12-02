@@ -18,7 +18,7 @@
     "./packages/*"
   ],
   "scripts": {
-    "husky": "husky install",
+    "prepare": "husky install",
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
