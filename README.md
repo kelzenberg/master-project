@@ -1,74 +1,80 @@
 # Master Project
 
-Master Project at Berliner Hochschule für Technik.
+> [Berliner Hochschule für Technik](https://bht-berlin.de/en) in cooperation with [Fritz-Haber-Institut](https://www.fhi.mpg.de).
 
-## Develop the project
+---
 
-> Everything you need to contribute code and run this project locally.
+Everything you need to run and develop this project (locally) is described in this README and the READMEs inside the `./packages/**` folders.
 
-### Prerequisites
+---
+
+## Prerequisites
+
+Before you start...
+
+### Required
 
 - [Git](https://git-scm.com/)
 - [NodeJS](https://nodejs.org/en)
   - Version in `.nvmrc` (`^21.1.x`)
   - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
-  - Optional: [nvm](https://github.com/nvm-sh/nvm) to switch Node versions
+  - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions
 
-### Editor Recommendation
+### Recommendations
 
-- [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
+- [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/).  
+  Plus [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/), [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode), [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig), [DotENV](https://open-vsx.org/vscode/item?itemName=mikestead.dotenv).  
+  Preferred VSCodium/VSCode settings:
 
-  - [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/)
-  - [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode)
-  - [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig)
-  - [DotENV](https://open-vsx.org/vscode/item?itemName=mikestead.dotenv)
-  - Optional VSCodium/VSCode settings:
-
-    ```json
-    // Add this to user settings to auto-lint on Save
-
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    },
-    "eslint.validate": [
-      "vue",
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
-    ```
+  ```json
+  // Add this to user settings to auto-lint on Save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+  ],
+  ```
 
 ## Packages
 
-This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository.  
-In doing so this repository becomes a [monorepo](https://monorepo.tools).
+> This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository. In doing so this repository becomes a [monorepo](https://monorepo.tools).
 
-You will find each package inside the `./packages` folder within their own subfolder. Each package has their own individual configuration files. Generic configuration files are located on the root level of the repository and are valid for all packages.
-
----
+- You will find each package inside the packages folder within their own subfolder.  
+  _Example_ `./packages/frontend`
+- Each package has their own README,  
+  _Example_ `./packages/frontend/README.md`
+- NPM packages should only be installed in their respective workspace.  
+  _Example_ `ThreeJS` only in `@master-project/frontend`
+- Each package has their own individual configuration files.  
+  _Example_ `./packages/frontend/vite.config.js`
+- Generic configuration files are located on the root level of the repository and are valid for **all** packages.  
+  _Example_ `./eslintrc.json`
 
 ### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
 
 **Simulation visualization layer for the web browser**
 
-Usage: `npm run F {dev|build|start|lint|lint:fix|format}`
+Usage: `npm run F {dev|build|start|lint|lint:fix|format}`  
+Install new NPM packages: `npm run install:F {package-name}`
 
 ### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
 **Backend server to manage the communication** between simulation and frontend
 
-Usage: `npm run B {dev|build|start|lint|lint:fix|format}`
+Usage: `npm run B {dev|build|start|lint|lint:fix|format}`  
+Install new NPM packages: `npm run install:B {package-name}`
 
 ### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
 
 **Shared modules and data**
 
-Usage: `npm run L {build|lint|lint:fix|format}`
+Usage: `npm run L {build|lint|lint:fix|format}`  
+Install new NPM packages: `npm run install:L {package-name}`
 
----
+### Global Scripts
 
-**Hint:** You can run an npm command that is supported by all packages by adding a `--workspaces` to it.
+You can run any common NPM command _for all packages_ by adding a `--workspaces` to it.
 
 - Lint source files in all packages
 
@@ -85,7 +91,7 @@ Usage: `npm run L {build|lint|lint:fix|format}`
 
 ## Documentation
 
-With the exception of this Readme and the package's Readmes, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
+With the exception of this README and the package's READMEs, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
 
 **Editor tip:**  
 Clone the wiki to edit pages locally in your editor.
