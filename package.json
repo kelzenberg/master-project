@@ -18,6 +18,7 @@
     "./packages/*"
   ],
   "scripts": {
+    "husky": "husky install",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\"",
@@ -34,7 +35,7 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-unicorn": "^49.0.0",
+    "husky": "^8.0.3",
     "prettier": "^3.0.3"
-  },
-  "dependencies": {}
+  }
 }
