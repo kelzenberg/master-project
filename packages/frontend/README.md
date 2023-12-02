@@ -1,14 +1,16 @@
 # @master-project/frontend
 
+---
+
 Simulation visualization layer for the web browser
 
-## Develop the project
+---
 
-> Everything you need to contribute code and run this project locally.
+## First step
 
-### Scripts
+Check the [global README](https://github.com/kelzenberg/master-project/blob/main/README.md) for requirements and usage.
 
-Run `npm install` once to install dependencies.
+## Usage
 
 - Start development-only server  
   _(on [http://localhost:5173](http://localhost:5173) if not in use)_

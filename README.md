@@ -4,7 +4,7 @@
 
 ---
 
-Everything you need to run and develop this project (locally) is described in this README and the READMEs inside the `./packages/**` folders.
+Everything you need to run and develop this project is described in this README and the READMEs inside the `./packages/**` folders.
 
 ---
 
@@ -12,13 +12,12 @@ Everything you need to run and develop this project (locally) is described in th
 
 Before you start...
 
-### Required
+### Requirements
 
 - [Git](https://git-scm.com/)
-- [NodeJS](https://nodejs.org/en)
-  - Version in `.nvmrc` (`^21.1.x`)
+- [NodeJS](https://nodejs.org/en) version `^21.1.x`
   - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
-  - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions
+  - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions, see `.nvmrc`
 
 ### Recommendations
 
@@ -36,7 +35,7 @@ Before you start...
   ],
   ```
 
-## Packages
+## Usage of Project Packages
 
 > This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository. In doing so this repository becomes a [monorepo](https://monorepo.tools).
 
@@ -44,33 +43,40 @@ Before you start...
   _Example_ `./packages/frontend`
 - Each package has their own README,  
   _Example_ `./packages/frontend/README.md`
-- NPM packages should only be installed in their respective workspace.  
-  _Example_ `ThreeJS` only in `@master-project/frontend`
 - Each package has their own individual configuration files.  
   _Example_ `./packages/frontend/vite.config.js`
 - Generic configuration files are located on the root level of the repository and are valid for **all** packages.  
   _Example_ `./eslintrc.json`
+
+### First Step
+
+Compare your local NodeJS version via `node -v` with the required version above.  
+Then run `npm install` once to install all dependencies.
+
+**Note:**  
+Install NPM dependencies only in their respective workspace.  
+For example, `ThreeJS` belongs only to `@master-project/frontend`.
 
 ### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
 
 **Simulation visualization layer for the web browser**
 
 Usage: `npm run F {dev|build|start|lint|lint:fix|format}`  
-Install new NPM packages: `npm run install:F {package-name}`
+Install NPM dependencies: `npm run install:F {dependency-name}`
 
 ### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
 **Backend server to manage the communication** between simulation and frontend
 
 Usage: `npm run B {dev|build|start|lint|lint:fix|format}`  
-Install new NPM packages: `npm run install:B {package-name}`
+Install NPM dependencies: `npm run install:B {dependency-name}`
 
 ### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
 
 **Shared modules and data**
 
 Usage: `npm run L {build|lint|lint:fix|format}`  
-Install new NPM packages: `npm run install:L {package-name}`
+Install NPM dependencies: `npm run install:L {dependency-name}`
 
 ### Global Scripts
 
