@@ -21,7 +21,6 @@
     "no-console": "warn",
 
     /* IMPORTS */
-    "import/extensions": ["error", { "js": "never" }],
     "no-restricted-imports": [
       "error",
       {
@@ -38,7 +37,8 @@
     ],
 
     /* OTHER */
-    "max-classes-per-file": ["error", 1]
+    "max-classes-per-file": ["error", 1],
+    "unicorn/prevent-abbreviations": ["off"]
   },
   "overrides": [
     {
