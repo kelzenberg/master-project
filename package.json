@@ -22,12 +22,12 @@
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
-    "install:F": "npm install --workspace frontend",
-    "F": "npm run --workspace frontend",
-    "install:B": "npm install --workspace backend",
-    "B": "npm run --workspace backend",
-    "install:L": "npm install --workspace libs",
-    "L": "npm run --workspace libs"
+    "install:F": "npm install --workspace @master-project/frontend",
+    "F": "npm run --workspace @master-project/frontend",
+    "install:B": "npm install --workspace @master-project/backend",
+    "B": "npm run --workspace @master-project/backend",
+    "install:L": "npm install --workspace @master-project/libs",
+    "L": "npm run --workspace @master-project/libs"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
