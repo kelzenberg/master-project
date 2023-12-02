@@ -17,10 +17,7 @@
   "scripts": {
     "dev": "vite serve",
     "build": "vite build",
-    "start": "vite preview",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
+    "start": "vite preview"
   },
   "devDependencies": {
     "@types/three": "^0.158.3",

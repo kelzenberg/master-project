@@ -30,16 +30,3 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
   ```sh
   npm run F start
   ```
-
-- Lint source files
-
-  ```sh
-  npm run F lint
-  # to fix errors directly:
-  npm run F lint:fix
-  ```
-
-- Format source files
-  ```sh
-  npm run F format
-  ```
