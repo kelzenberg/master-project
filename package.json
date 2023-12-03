@@ -24,10 +24,13 @@
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
     "install:F": "npm install --workspace @master-project/frontend",
+    "remove:F": "npm remove --workspace @master-project/frontend",
     "F": "npm run --workspace @master-project/frontend",
     "install:B": "npm install --workspace @master-project/backend",
+    "remove:B": "npm remove --workspace @master-project/backend",
     "B": "npm run --workspace @master-project/backend",
     "install:L": "npm install --workspace @master-project/libs",
+    "remove:L": "npm remove --workspace @master-project/libs",
     "L": "npm run --workspace @master-project/libs"
   },
   "devDependencies": {

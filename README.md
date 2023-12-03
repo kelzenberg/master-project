@@ -51,21 +51,24 @@ Then run `npm install` once to install all dependencies.
 **Simulation visualization layer for the web browser**
 
 Usage: `npm run F {dev|build|start}`  
-Install NPM dependencies: `npm run install:F {dependency-name}`
+Install NPM dependencies: `npm run install:F {dependency-name}`  
+Remove NPM dependencies: `npm run remove:F {dependency-name}`
 
 ### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
 **Backend server to manage the communication** between simulation and frontend
 
 Usage: `npm run B {dev|build|start}`  
-Install NPM dependencies: `npm run install:B {dependency-name}`
+Install NPM dependencies: `npm run install:B {dependency-name}`  
+Remove NPM dependencies: `npm run remove:B {dependency-name}`
 
 ### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
 
 **Shared modules and data**
 
 Usage: `npm run L {build}`  
-Install NPM dependencies: `npm run install:L {dependency-name}`
+Install NPM dependencies: `npm run install:L {dependency-name}`  
+Remove NPM dependencies: `npm run remove:L {dependency-name}`
 
 #### Notes on Packages
 
