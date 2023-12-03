@@ -6,6 +6,7 @@ import { authorizer } from './middlewares/authorizer.js';
 import { routes as publicRoutes } from './routes/public.js';
 import { routes as protectedRoutes } from './routes/protected.js';
 import { createErrorHandler } from './middlewares/error-handler.js';
+import { redirectHandler } from './middlewares/redirect-handler.js';
 
 export const createApp = logger => {
   const app = express().disable('x-powered-by');
@@ -17,6 +18,7 @@ export const createApp = logger => {
   app.use(authorizer);
   app.use(protectedRoutes);
 
+  app.use(redirectHandler);
   app.use(createErrorHandler(logger));
 
   return app;
