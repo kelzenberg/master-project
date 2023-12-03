@@ -7,7 +7,7 @@ const logger = Logger({ name: 'server' });
 const PORT = process.env.BACKEND_PORT || 3000;
 
 const server = stoppable(
-  createApp().listen(PORT, () => {
+  createApp(logger).listen(PORT, () => {
     logger.info(`Server started on port ${PORT}.`);
   }),
   1000
