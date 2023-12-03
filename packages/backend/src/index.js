@@ -4,10 +4,11 @@ import { createApp } from './app.js';
 import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
+const PORT = process.env.BACKEND_PORT || 3000;
 
 const server = stoppable(
-  createApp().listen(3000, () => {
-    logger.info('Server started.');
+  createApp().listen(PORT, () => {
+    logger.info(`Server started on port ${PORT}.`);
   }),
   1000
 );
