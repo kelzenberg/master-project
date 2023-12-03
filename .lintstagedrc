@@ -2,5 +2,5 @@
   "**/*.{js,ts,json,html,md}": [
     "prettier --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn"
   ],
-  "**/*.{js,ts}": ["eslint --fix --config ./.eslintrc.json ."]
+  "**/*.{js,ts}": ["eslint --fix --config ./.eslintrc.json"]
 }
