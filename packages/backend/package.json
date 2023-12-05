@@ -17,10 +17,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=../../.env -w ./src ./src/index.js",
-    "start": "node --env-file=../../.env ./src/index.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
+    "start": "node --env-file=../../.env ./src/index.js"
   },
   "dependencies": {
     "@vpriem/express-api-key-auth": "^1.3.0",
