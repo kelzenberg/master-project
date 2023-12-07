@@ -17,7 +17,6 @@
   "scripts": {
     "dev": "vite serve",
     "build": "vite build",
-    "copyDist": "node -e \"require('fs').cpSync('./dist', '../backend/src/static', {recursive: true});\"",
     "start": "vite preview"
   },
   "devDependencies": {
