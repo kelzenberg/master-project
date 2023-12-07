@@ -1,0 +1,32 @@
+# @master-project/frontend
+
+---
+
+Simulation visualization layer for the web browser
+
+---
+
+## First step
+
+Check the [global README](https://github.com/kelzenberg/master-project/blob/main/README.md) for requirements and usage.
+
+## Usage
+
+- Start development-only server  
+  _(on [http://localhost:5173](http://localhost:5173) if not in use)_
+
+  ```sh
+  npm run F dev
+  ```
+
+- Build app (for production)
+
+  ```sh
+  npm run F build
+  ```
+
+- Start production server locally
+
+  ```sh
+  npm run F start
+  ```

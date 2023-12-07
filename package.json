@@ -13,23 +13,36 @@
     "url": "git+https://github.com/kelzenberg/master-project.git"
   },
   "license": "MIT",
-  "private": false,
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
   "scripts": {
-    "dev": "vite serve",
-    "build": "vite build",
-    "start": "vite preview",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
+    "prepare": "husky install",
+    "clean": "rimraf {./dist,./packages/**/dist}",
+    "lint": "eslint --config ./.eslintrc.json .",
+    "lint:fix": "eslint --fix --config ./.eslintrc.json .",
+    "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "install:F": "npm install --workspace @master-project/frontend",
+    "remove:F": "npm remove --workspace @master-project/frontend",
+    "F": "npm run --workspace @master-project/frontend",
+    "install:B": "npm install --workspace @master-project/backend",
+    "remove:B": "npm remove --workspace @master-project/backend",
+    "B": "npm run --workspace @master-project/backend",
+    "install:L": "npm install --workspace @master-project/libs",
+    "remove:L": "npm remove --workspace @master-project/libs",
+    "L": "npm run --workspace @master-project/libs"
   },
   "devDependencies": {
-    "@types/three": "^0.158.3",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-unicorn": "^49.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
     "prettier": "^3.0.3",
+    "rimraf": "^5.0.5"
     "vite": "^4.5.1",
     "vite-plugin-eslint": "^1.8.1"
   },
