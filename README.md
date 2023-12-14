@@ -149,5 +149,5 @@ With the exception of this README and the package's READMEs, the entire project 
 Clone the wiki to edit pages locally in your editor.
 
 ```sh
-git clone https://github.com/kelzenberg/master-project.wiki.git
+git clone git@github.com:kelzenberg/master-project.wiki.git
 ```
