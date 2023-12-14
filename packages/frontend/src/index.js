@@ -56,93 +56,86 @@ resetButton.addEventListener('click', () => {
 });
 
 // Setup Functions
-function readSites(jsonFile) {
-  fetch(jsonFile)
-    .then(response => response.json())
-    .then(jsonData => {
-      for (const data of jsonData) {
-        let site = new Vector3(data[0], data[1], data[2]);
-        sites.push(site);
-      }
-    });
+function readSites(jsonData) {
+  for (const data of jsonData) {
+    let site = new Vector3(data.x, data.y, data.z);
+    sites.push(site);
+  }
 }
 
-function readSpecies(jsonFile) {
-  fetch(jsonFile)
-    .then(response => response.json())
-    .then(jsonData => {
-      for (const data of jsonData) {
-        let species = [];
-        for (const molecule of data) {
-          let position = new Vector3(molecule[0], molecule[1], molecule[2]);
-          let moleculeObject = new Molecule(position, molecule[3], molecule[4]);
-          species.push(moleculeObject);
-        }
-        speciesList.push(species);
-      }
-    });
+function readSpecies(jsonData) {
+  for (const data of jsonData) {
+    let species = [];
+    for (const molecule of data) {
+      let position = new Vector3(molecule.x, molecule.y, molecule.z);
+      let type = molecule.type;
+      let radius = typeDefinitions[type].radius;
+      let color = typeDefinitions[type].color;
+      let moleculeObject = new Molecule(position, radius, color);
+      species.push(moleculeObject);
+    }
+    speciesList.push(species);
+  }
 }
 
 // Render Functions
-
-// Später wird es eine Funktion geben renderInitialData(jsonData) (diese wird 1x am Anfang aufgerufen)
-// und eine Funktion renderDynamicData(jsonData) (diese wird dann pro step 1x aufgerufen)
-
-// in renderInitialData:
-// hier wird einfach nur das initialData json-object anstatt dem filepath mitgegeben:
-// darin kann dann über initialData.species, initialData.sites, initialData.fixedSpecies, initialData.config auf die Werte zugegriffen werden
-// diese arrays/objects werden dann an die jeweiligen functions readSpecies(initialData.species), readSites(initialData.sites), renderFixedSpecies(initialData.fixedSpecies), renderSpeciesFromConfig(initialData.config) übergeben.
-// hierbei ist die aufrufreihenfolge wichtig, da die render functions auf die ergebnisse von den beiden read functions angewiesen sind!
-// in diesen Methoden bleibt die Logik dann 1:1 gleich, wie sie jetzt aktuell ist, außer, dass der folgende Aufruf wegfällt:
-//
-//   fetch(jsonFile)
-//      .then(response => response.json())
-//      .then(jsonData => { ...
-//
-// Stattdessen können wir dort dann direkt mit jsonData.forEach() weiterarbeiten!
-//
-// Das selbe gilt für renderDynamicData:
-// Hier wird einfach das dynamicData json-object mitgegeben anstatt dem filepath
-// und dann bspw. dynamicData.config and renderSpeciesFromConfig übergeben
-// hier bleibt die Logik ebenfalls 1:1 gleich, außer, dass auch hier der Aufruf von fetch(jsonFile) wegfällt.
-// Stattdessen wird hier dann wieder direkt mit jsonData.forEach() gearbeitet
-
-function renderFixedSpecies(jsonFile) {
-  fetch(jsonFile)
-    .then(response => response.json())
-    .then(jsonData => {
-      for (const data of jsonData) {
-        let molecule = createMolecule(data);
-        const sphereGeometry = new SphereGeometry(molecule.sphereRadius, 32, 32);
-        const sphereMaterial = new MeshStandardMaterial({
-          color: new Color(molecule.rgb.x, molecule.rgb.y, molecule.rgb.z),
-        });
-        const sphereMesh = new Mesh(sphereGeometry, sphereMaterial);
-        sphereMesh.position.copy(molecule.position);
-
-        scene.add(sphereMesh);
-      }
+function renderFixedSpecies(jsonData) {
+  for (const data of jsonData) {
+    let molecule = createMolecule(data);
+    const sphereGeometry = new SphereGeometry(molecule.sphereRadius, 32, 32);
+    const sphereMaterial = new MeshStandardMaterial({
+      color: new Color(molecule.rgb.x, molecule.rgb.y, molecule.rgb.z),
     });
+    const sphereMesh = new Mesh(sphereGeometry, sphereMaterial);
+    sphereMesh.position.copy(molecule.position);
+
+    scene.add(sphereMesh);
+  }
 }
 
 function createMolecule(data) {
-  let position = new Vector3(data[0], data[1], data[2]);
-  let sphereRadius = data[3];
-  let rgbArray = data[4];
-  return new Molecule(position, sphereRadius, rgbArray);
+  let position = new Vector3(data.x, data.y, data.z);
+  let type = data.type;
+  let radius = typeDefinitions[type].radius;
+  let color = typeDefinitions[type].color;
+  return new Molecule(position, radius, color);
 }
 
-function renderSpeciesFromConfig(jsonFile) {
+function renderSpeciesFromConfig(jsonData) {
+  for (const [index, data] of jsonData.entries()) {
+    let molecules = speciesList[data];
+    let site = sites[index];
+    let species = new Species(site, molecules);
+    const speciesMesh = species.createMesh();
+    scene.add(speciesMesh);
+  }
+}
+
+var typeDefinitions = {};
+
+function renderInitialData(jsonFile) {
   fetch(jsonFile)
     .then(response => response.json())
     .then(jsonData => {
-      for (const [index, data] of jsonData.entries()) {
-        let molecules = speciesList[data];
-        let site = sites[index];
-        let species = new Species(site, molecules);
-        const speciesMesh = species.createMesh();
-        scene.add(speciesMesh);
-      }
+      typeDefinitions = jsonData.visualization.typeDefinitions;
+      let sites = jsonData.visualization.sites;
+      let species = jsonData.visualization.species;
+      let fixedSpecies = jsonData.visualization.fixedSpecies;
+      let config = jsonData.visualization.config;
+      readSites(sites);
+      readSpecies(species);
+      renderFixedSpecies(fixedSpecies);
+      renderSpeciesFromConfig(config);
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function renderDynamicData(jsonFile) {
+  fetch(jsonFile)
+    .then(response => response.json())
+    .then(jsonData => {
+      let config = jsonData.visualization.config;
+      renderSpeciesFromConfig(config);
     });
 }
 
@@ -154,10 +147,8 @@ function animate() {
 
 if (WebGL.isWebGLAvailable()) {
   // Function Calls
-  readSites('data/examples/sites.json');
-  readSpecies('data/examples/species.json');
-  renderFixedSpecies('data/examples/fixed_species.json');
-  renderSpeciesFromConfig('data/examples/config_1e6.json'); // Dieser Aufruf muss dann mehrmals die Sekunde (steps/s) erfolgen und die config vom Backend abfragen
+  renderInitialData('data/new-json-data-format/initial-data.json');
+  //  renderDynamicData('new-json-data-format/dynamic-data.json');
   animate();
 } else {
   const warning = WebGL.getWebGLErrorMessage();
