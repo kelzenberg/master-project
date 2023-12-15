@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./packages/backend/Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: master-project-app
+    environment:
+      API_KEY_DEV: ${API_KEY_DEV}
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 8080:3000
+    command: node ./packages/backend/src/index.js
+    depends_on:
+      - cache
+
+  cache:
+    image: redis:7.2
+    container_name: master-project-cache
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 6379:6379
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache_data:/data
+
+networks:
+  backend:
+  frontend:
+
+volumes:
+  cache_data:
