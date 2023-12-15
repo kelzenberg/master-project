@@ -18,7 +18,7 @@ services:
       - frontend
     ports:
       - 8080:3000
-    command: node ./packages/backend/src/index.js
+    command: node ./src/index.js
     depends_on:
       - cache
 
