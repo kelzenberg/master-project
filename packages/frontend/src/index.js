@@ -11,18 +11,22 @@ import {
   MeshStandardMaterial,
   Color,
   Mesh,
+  Group,
+  Object3D,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 import Molecule from './models/Molecule';
 import Species from './models/Species';
 
-const sites = [];
+const sitesGroup = new Group();
 const speciesList = [];
+const allGeometriesGroup = new Group();
 
 // Renderer and Scene setup
 const canvas = document.querySelector('#canvas');
 const scene = new Scene();
+scene.add(allGeometriesGroup);
 const renderer = new WebGLRenderer({ canvas });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -30,7 +34,7 @@ renderer.setClearColor(0xff_ff_ff);
 
 // Camera setup
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const defaultCameraPosition = new Vector3(0, -40, 50); // 0, -40, 50
+const defaultCameraPosition = new Vector3(0, -40, 50);
 const defaultCameraRotation = new Euler(0, 0, 0);
 camera.position.copy(defaultCameraPosition);
 camera.rotation.copy(defaultCameraRotation);
@@ -59,7 +63,10 @@ resetButton.addEventListener('click', () => {
 function readSites(jsonData) {
   for (const data of jsonData) {
     let site = new Vector3(data.x, data.y, data.z);
-    sites.push(site);
+    let siteObject = new Object3D();
+    siteObject.position.copy(site);
+    sitesGroup.add(siteObject);
+    allGeometriesGroup.add(sitesGroup);
   }
 }
 
@@ -89,7 +96,7 @@ function renderFixedSpecies(jsonData) {
     const sphereMesh = new Mesh(sphereGeometry, sphereMaterial);
     sphereMesh.position.copy(molecule.position);
 
-    scene.add(sphereMesh);
+    allGeometriesGroup.add(sphereMesh); // Add to the new group
   }
 }
 
@@ -104,11 +111,39 @@ function createMolecule(data) {
 function renderSpeciesFromConfig(jsonData) {
   for (const [index, data] of jsonData.entries()) {
     let molecules = speciesList[data];
-    let site = sites[index];
+    let site = sitesGroup.children[index];
     let species = new Species(site, molecules);
     const speciesMesh = species.createMesh();
-    scene.add(speciesMesh);
+    allGeometriesGroup.add(speciesMesh);
   }
+}
+
+function calculateOffset(jsonData) {
+  let maxX = Number.NEGATIVE_INFINITY;
+  let minX = Number.POSITIVE_INFINITY;
+
+  for (const data of jsonData) {
+    let molecule = createMolecule(data);
+    let x = molecule.position.x;
+
+    // Update maxX and minX based on current molecule's x value
+    maxX = Math.max(maxX, x);
+    minX = Math.min(minX, x);
+  }
+
+  // Calculate the centerPoint based on maxX and minX
+  let centerPoint = new Vector3();
+  centerPoint.x = (maxX + minX) / 2;
+  centerPoint.y = 0; // You can adjust this based on your scene requirements
+  centerPoint.z = 0; // You can adjust this based on your scene requirements
+
+  // Calculate the offset based on the distance between the center point and the most far-right x-value
+  let offset = new Vector3();
+  offset.x = -maxX + centerPoint.x; // Adjusting the offset to align with x=0
+  offset.y = -2;
+  offset.z = 0;
+
+  return offset;
 }
 
 var typeDefinitions = {};
@@ -126,6 +161,8 @@ function renderInitialData(jsonFile) {
       readSpecies(species);
       renderFixedSpecies(fixedSpecies);
       renderSpeciesFromConfig(config);
+      let offset = calculateOffset(fixedSpecies);
+      allGeometriesGroup.position.copy(offset);
     });
 }
 
