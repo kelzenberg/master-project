@@ -109,12 +109,31 @@ function createMolecule(data) {
 }
 
 function renderSpeciesFromConfig(jsonData) {
+  clearDynamicSpecies();
+
   for (const [index, data] of jsonData.entries()) {
     let molecules = speciesList[data];
     let site = sitesGroup.children[index];
     let species = new Species(site, molecules);
     const speciesMesh = species.createMesh();
+    speciesMesh.userData.dynamic = true;
+
     allGeometriesGroup.add(speciesMesh);
+  }
+}
+
+function clearDynamicSpecies() {
+  for (let i = allGeometriesGroup.children.length - 1; i >= 0; i--) {
+    const child = allGeometriesGroup.children[i];
+
+    if (child.userData && child.userData.dynamic) {
+      allGeometriesGroup.remove(child);
+
+      if (child instanceof Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    }
   }
 }
 
@@ -185,7 +204,12 @@ function animate() {
 if (WebGL.isWebGLAvailable()) {
   // Function Calls
   renderInitialData('data/new-json-data-format/initial-data.json');
-  //  renderDynamicData('new-json-data-format/dynamic-data.json');
+
+  // Rufe renderDynamicData mit einer Verzögerung von 2 Sekunden auf
+  /* setTimeout(() => {
+    renderDynamicData('data/new-json-data-format/dynamic-data.json');
+  }, 2000); */
+
   animate();
 } else {
   const warning = WebGL.getWebGLErrorMessage();
