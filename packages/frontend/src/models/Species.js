@@ -13,7 +13,7 @@ class Species {
       speciesMesh.add(moleculeMesh);
     }
 
-    speciesMesh.position.copy(this.site);
+    speciesMesh.position.copy(this.site.position);
 
     return speciesMesh;
   }
