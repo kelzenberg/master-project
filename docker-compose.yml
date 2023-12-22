@@ -34,9 +34,5 @@ services:
     volumes:
       - cache_data:/data
 
-networks:
-  backend:
-  frontend:
-
 volumes:
   cache_data:
