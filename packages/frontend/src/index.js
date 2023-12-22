@@ -4,7 +4,6 @@ import {
   WebGLRenderer,
   Vector3,
   PerspectiveCamera,
-  Euler,
   AmbientLight,
   DirectionalLight,
   SphereGeometry,
@@ -13,6 +12,10 @@ import {
   Mesh,
   Group,
   Object3D,
+  Box3,
+  BufferGeometry,
+  Line,
+  LineBasicMaterial,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
@@ -22,6 +25,7 @@ import Species from './models/Species';
 const sitesGroup = new Group();
 const speciesList = [];
 const allGeometriesGroup = new Group();
+var typeDefinitions = {};
 
 // Renderer and Scene setup
 const canvas = document.querySelector('#canvas');
@@ -34,16 +38,12 @@ renderer.setClearColor(0xff_ff_ff);
 
 // Camera setup
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const defaultCameraPosition = new Vector3(0, -40, 50);
-const defaultCameraRotation = new Euler(0, 0, 0);
-camera.position.copy(defaultCameraPosition);
-camera.rotation.copy(defaultCameraRotation);
 
 // OrbitControls setup
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
-controls.saveState();
+//controls.saveState();
 
 // Lighting setup
 const ambientLight = new AmbientLight(0xff_ff_ff, 1);
@@ -137,7 +137,7 @@ function clearDynamicSpecies() {
   }
 }
 
-function calculateOffset(jsonData) {
+function calculateXOffset(jsonData) {
   let maxX = Number.NEGATIVE_INFINITY;
   let minX = Number.POSITIVE_INFINITY;
 
@@ -156,16 +156,55 @@ function calculateOffset(jsonData) {
   centerPoint.y = 0; // You can adjust this based on your scene requirements
   centerPoint.z = 0; // You can adjust this based on your scene requirements
 
-  // Calculate the offset based on the distance between the center point and the most far-right x-value
-  let offset = new Vector3();
-  offset.x = -maxX + centerPoint.x; // Adjusting the offset to align with x=0
-  offset.y = -2;
-  offset.z = 0;
-
-  return offset;
+  return -maxX + centerPoint.x;
 }
 
-var typeDefinitions = {};
+function calculateZOffset() {
+  let boundingBox = new Box3().setFromObject(allGeometriesGroup);
+  let centerPoint = new Vector3();
+  boundingBox.getCenter(centerPoint);
+
+  return -centerPoint.z;
+}
+
+function calculateYOffset() {
+  let boundingBox = new Box3().setFromObject(allGeometriesGroup);
+  let centerPoint = new Vector3();
+  boundingBox.getCenter(centerPoint);
+
+  return -centerPoint.y;
+}
+
+function setCameraToFitBoundingBox() {
+  let distance = determinCameraDistance();
+  let newPosition = new Vector3(0, distance, distance);
+
+  camera.position.copy(newPosition);
+  camera.lookAt(new Vector3(0, 0, 0));
+  controls.saveState();
+}
+
+function determinCameraDistance() {
+  let cameraDistance;
+  let halfFOVInRadians = getRadians(camera.fov / 2);
+  let { width } = getObjectSize(allGeometriesGroup);
+  cameraDistance = width / 2 / Math.tan(halfFOVInRadians);
+  return cameraDistance;
+}
+
+function getObjectSize(target) {
+  let box = new Box3().setFromObject(target);
+  let size = {
+    depth: -1 * box.min.z + box.max.z,
+    height: -1 * box.min.y + box.max.y,
+    width: -1 * box.min.x + box.max.x,
+  };
+  return size;
+}
+
+function getRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
 
 function renderInitialData(jsonFile) {
   fetch(jsonFile)
@@ -176,11 +215,20 @@ function renderInitialData(jsonFile) {
       let species = jsonData.visualization.species;
       let fixedSpecies = jsonData.visualization.fixedSpecies;
       let config = jsonData.visualization.config;
+
       readSites(sites);
       readSpecies(species);
       renderFixedSpecies(fixedSpecies);
       renderSpeciesFromConfig(config);
-      let offset = calculateOffset(fixedSpecies);
+
+      const rotationAngleX = -Math.PI / 2; // -90 degrees in radians
+      allGeometriesGroup.rotation.set(rotationAngleX, 0, 0);
+
+      let xOffset = calculateXOffset(fixedSpecies);
+      let yOffset = calculateYOffset();
+      let zOffset = calculateZOffset();
+      let offset = new Vector3(xOffset, yOffset, zOffset);
+      setCameraToFitBoundingBox();
       allGeometriesGroup.position.copy(offset);
     });
 }
@@ -203,17 +251,38 @@ function animate() {
 
 if (WebGL.isWebGLAvailable()) {
   // Function Calls
+  gizmo();
   renderInitialData('data/new-json-data-format/initial-data.json');
-
-  // Rufe renderDynamicData mit einer Verzögerung von 2 Sekunden auf
-  /* setTimeout(() => {
-    renderDynamicData('data/new-json-data-format/dynamic-data.json');
-  }, 2000); */
-
   animate();
 } else {
   const warning = WebGL.getWebGLErrorMessage();
   document.querySelector('body').append(warning);
 }
 
+function gizmo() {
+  const lineLength = 100;
 
+  const xAxisGeometry = new BufferGeometry().setFromPoints([new Vector3(0, 0, 0), new Vector3(lineLength, 0, 0)]);
+  const yAxisGeometry = new BufferGeometry().setFromPoints([new Vector3(0, 0, 0), new Vector3(0, lineLength, 0)]);
+  const zAxisGeometry = new BufferGeometry().setFromPoints([new Vector3(0, 0, 0), new Vector3(0, 0, lineLength)]);
+
+  const xAxisMaterial = new LineBasicMaterial({ color: 0xff_00_00 }); // Red
+  const yAxisMaterial = new LineBasicMaterial({ color: 0x00_00_ff }); // Blue
+  const zAxisMaterial = new LineBasicMaterial({ color: 0x00_ff_00 }); // Green
+
+  const xAxisLine = new Line(xAxisGeometry, xAxisMaterial);
+  const yAxisLine = new Line(yAxisGeometry, yAxisMaterial);
+  const zAxisLine = new Line(zAxisGeometry, zAxisMaterial);
+
+  // Position lines at the centerpoint
+  const centerPoint = new Vector3();
+  allGeometriesGroup.getWorldPosition(centerPoint);
+  xAxisLine.position.copy(centerPoint);
+  yAxisLine.position.copy(centerPoint);
+  zAxisLine.position.copy(centerPoint);
+
+  // Add axes lines to the scene
+  scene.add(xAxisLine);
+  scene.add(yAxisLine);
+  scene.add(zAxisLine);
+}
