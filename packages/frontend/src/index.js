@@ -25,7 +25,7 @@ const canvas = document.querySelector('#canvas');
 const scene = new Scene();
 const renderer = new WebGLRenderer({ canvas });
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth * 0.4, window.innerHeight * 0.4);
 renderer.setClearColor(0xff_ff_ff);
 
 // Camera setup
@@ -154,3 +154,5 @@ if (WebGL.isWebGLAvailable()) {
   const warning = WebGL.getWebGLErrorMessage();
   document.querySelector('body').append(warning);
 }
+
+
