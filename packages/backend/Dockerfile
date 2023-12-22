@@ -13,8 +13,10 @@ WORKDIR /home/node/app
 
 COPY package.json package-lock.json ./
 COPY packages/backend/package.json ./packages/backend/
+COPY packages/libs/package.json ./packages/libs/
 RUN npm ci --omit=dev --ignore-scripts=true && npm cache clean --force
 COPY packages/backend/src ./packages/backend/src
+COPY packages/libs/src ./packages/libs/src
 
 RUN chown -R node:node /home/node
 WORKDIR /home/node/app/packages/backend/
