@@ -45,9 +45,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
     "prettier": "^3.0.3",
-    "rimraf": "^5.0.5",
-    "vite": "^4.5.1",
-    "vite-plugin-eslint": "^1.8.1"
+    "rimraf": "^5.0.5"
   },
   "dependencies": {
     "three": "^0.158.0"
