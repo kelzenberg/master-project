@@ -20,19 +20,21 @@
   "scripts": {
     "prepare": "husky install",
     "clean": "rimraf {./dist,./packages/**/dist}",
-    "clean:hard": "npm run clean && rm -rf ./node_modules ./packages/backend/node_modules ./packages/frontend/node_modules ./packages/libs/node_modules",
+    "reset": "npm run clean && rm -rf ./node_modules ./packages/backend/node_modules ./packages/frontend/node_modules ./packages/libs/node_modules && npm install",
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "up": "docker compose up",
+    "down": "docker compose down",
+    "F": "npm run --workspace @master-project/frontend",
     "install:F": "npm install --workspace @master-project/frontend",
     "remove:F": "npm remove --workspace @master-project/frontend",
-    "F": "npm run --workspace @master-project/frontend",
+    "B": "npm run --workspace @master-project/backend",
     "install:B": "npm install --workspace @master-project/backend",
     "remove:B": "npm remove --workspace @master-project/backend",
-    "B": "npm run --workspace @master-project/backend",
+    "L": "npm run --workspace @master-project/libs",
     "install:L": "npm install --workspace @master-project/libs",
-    "remove:L": "npm remove --workspace @master-project/libs",
-    "L": "npm run --workspace @master-project/libs"
+    "remove:L": "npm remove --workspace @master-project/libs"
   },
   "devDependencies": {
     "eslint": "^8.53.0",

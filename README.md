@@ -8,14 +8,17 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 ## Prerequisites
 
 > **Before you start...**  
-> Everything you need to successfully run and develop this project is described in this README _and_ the READMEs inside the `./packages/**` folders.
+> Everything you need to successfully run and develop this project is described in this README **and** the READMEs inside the `./packages/**` folders.
 
 ### Requirements
 
 - [Git](https://git-scm.com/)
+  - We enforce a line ending of `LF`.
+    More details [here](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/).
 - [NodeJS](https://nodejs.org/en) version `^21.1.x`
   - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
   - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions, see `.nvmrc`
+- [Docker Desktop](https://docs.docker.com/desktop/) or similar container virtualization software
 
 ### Recommendations
 
@@ -29,7 +32,7 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 - Compare your local NodeJS version via `node -v` with the [required version](#requirements).
 - Run `npm install` _once_ to install all dependencies.
 
-#### Editor Recommendation: [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
+#### Editor: [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
 
 - Plus [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/), [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode), [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig), [DotENV](https://open-vsx.org/vscode/item?itemName=mikestead.dotenv).
 - Settings that make your life easier:
@@ -46,10 +49,11 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
   "files.eol": "lf"
   ```
 
-## Repository Setup
+## Branches & Hooks
 
 > The repository consistently holds two branches, `main` and `dev`.  
-> Other branches are focused, purpose-driven and short-lived.
+> Other branches are focused, purpose-driven and short-lived.  
+> We do run some code via Git hooks before you can commit on any branch though.
 
 ### [`main` Branch](https://github.com/kelzenberg/master-project/tree/main)
 
@@ -66,87 +70,126 @@ This is a fast-paced branch for internal development, so expect a lot of changes
 **Any other branch should be purpose-driven and short-lived.**  
 They will be merged/rebased into `dev` and deleted when done. Ideally each additional branch mentions/resolves a specific issues or milestone in the [Project board](https://github.com/users/kelzenberg/projects/2/views/1). Feel free to request Pull Requests reviews when merging/rebasing to `dev` but it is optional.
 
-### Git Hooks
+### Hooks
 
 This repository uses pre-commit Git hooks via [husky](https://www.npmjs.com/package/husky) and [lint-staged](https://www.npmjs.com/package/lint-staged) to check your commit for faulty code formatting and linter errors. You do not need to install anything extra (but you should, see [Recommendations](#recommendations)) to make this work.  
-During `git commit` actions you will see the hooks running in your console.  
-**If the hooks fail, you should fix your changes before committing again.**
+During the `git commit` action you will see the hooks running in your console.
 
-## Monorepo Setup
+**⚠️ If the hooks fail, you should fix your changes before committing again ⚠️**
 
-> This project is **split into several packages**, each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository. In doing so this repository becomes a [monorepo](https://monorepo.tools).
+## Monorepo & Packages
+
+> This project is **split into several packages** (see `./packages` folder), each of which fulfills a part of the software's intended purpose. They stand on its own as complete software but their content can be imported/used across the whole repository.  
+> In doing so this repository becomes a [monorepo](https://monorepo.tools).
 
 ### Packages
 
-### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
+---
+
+#### [@master-project/frontend](https://github.com/kelzenberg/master-project/tree/main/packages/frontend)
 
 **Simulation visualization layer for the web browser**
 
-Usage: `npm run F {dev|build|start}`  
-Install NPM dependencies: `npm run install:F {dependency-name}`  
-Remove NPM dependencies: `npm run remove:F {dependency-name}`
+- [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/frontend/README.md)
+- Short: `npm run F ...`
+- **Usage: `npm run F [dev|build|start]`**
+- Install dependencies: `npm run install:F {NPM-package-name}`
+- Remove dependencies: `npm run remove:F {NPM-package-name}`
 
-### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
+#### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
 **Backend server to manage the communication** between simulation and frontend
 
-Usage: `npm run B {dev|build|start}`  
-Install NPM dependencies: `npm run install:B {dependency-name}`  
-Remove NPM dependencies: `npm run remove:B {dependency-name}`
+- [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/backend/README.md)
+- Short: `npm run B ...`
+- **Usage: `npm run B [dev|start]`**
+- Install dependencies: `npm run install:B {NPM-package-name}`
+- Remove dependencies: `npm run remove:B {NPM-package-name}`
 
-### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
+#### [@master-project/libs](https://github.com/kelzenberg/master-project/tree/main/packages/libs)
 
 **Shared modules and data**
 
-Usage: `npm run L {build}`  
-Install NPM dependencies: `npm run install:L {dependency-name}`  
-Remove NPM dependencies: `npm run remove:L {dependency-name}`
+- [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/libs/README.md)
+- Short: `npm run L ...`
+- **Usage: `None` (import to other packages only)**
+- Install dependencies: `npm run install:L {NPM-package-name}`
+- Remove dependencies: `npm run remove:L {NPM-package-name}`
+
+---
 
 #### Notes on Packages
 
-- You will find each package inside the packages folder within their own subfolder.  
-  _Example_ `./packages/frontend`
-- Each package has their own README,  
-  _Example_ `./packages/frontend/README.md`
-- Each package has their own individual configuration files.  
-  _Example_ `./packages/frontend/vite.config.js`
-- Generic configuration files are located on the root level of the repository and are valid for **all** packages.  
+- ⚠️ Package-related NPM dependencies are installed **only for the respective workspace** ⚠️  
+  _Example_ `ThreeJS` is installed only for workspace `@master-project/frontend`.
+- Generic configuration files are located on the root level of the repository  
+  They are valid for all packages but can be overwritten by local configuration files.  
   _Example_ `./eslintrc.json`
-- Install NPM dependencies only in their respective workspace.  
-  _Example_ `ThreeJS` only belongs in `@master-project/frontend`.
+- Each package has their own local configuration files.  
+  _Example_ `./packages/frontend/eslintrc.json`
+
+### Package Containerization
+
+This repository offers package containerization via [Docker](https://docs.docker.com).
+
+- Build and run container images locally
+
+  ```sh
+  npm run up
+  ```
+
+- Stop locally running container images
+
+  ```sh
+  npm run down
+  ```
+
+- Recreate local images forcibly (optional)
+
+  ```sh
+  docker compose up --force-recreate --build --remove-orphans
+  ```
 
 ### Global Commands
 
 These NPM commands will be executed for ALL packages.
 
-- Remove build artifacts and more
+- Reset installed dependencies and build artifacts
+
+  ```sh
+  npm run reset
+  ```
+
+- Remove build artifacts
 
   ```sh
   npm run clean
   ```
 
-- Lint source files in all packages
+- Lint source files (with ESLint)
 
   ```sh
-  npm run lint
-  # to fix errors directly:
-  npm run lint:fix
+  npm run lint # lint only and show errors
+  npm run lint:fix # lint and fix errors
   ```
 
-- Format source files in all packages
+- Format source files (with Prettier)
   ```sh
   npm run format
   ```
 
-**Note:**  
-You can run NPM commands consecutively for all packages by adding a `--workspaces` to it. **All packages** need to be able to run this NPM command though (check package's respective `package.json` if the command is present).
+#### Notes on Global Commands
+
+You can run any NPM command consecutively for all packages by adding a `--workspaces` to it.  
+For example, `npm run --workspaces @master-project/frontend threejs` will install `ThressJS` only for the frontend package.
 
 ## Project Documentation
 
 With the exception of this README and the package's READMEs, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
 
-**Editor tip:**  
-Clone the wiki to edit pages locally in your editor.
+### Hint for Editors
+
+Clone the Wiki to edit pages locally in your editor.
 
 ```sh
 git clone git@github.com:kelzenberg/master-project.wiki.git
