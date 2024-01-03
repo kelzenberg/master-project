@@ -14,6 +14,7 @@ export const createApp = logger => {
   app.use(bodyParser.json());
   app.use('/', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
   app.get('/favicon.ico', (req, res) => res.status(204).end()); // temporarily until favicon is available
+
   app.use(publicRoutes);
   app.use(authorizer);
   app.use(protectedRoutes);
