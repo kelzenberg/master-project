@@ -24,6 +24,7 @@
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "format:fix": "prettier \"**/*.+(js|ts|json|html|md)\" --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
     "up": "docker compose up",
     "down": "docker compose down",
     "F": "npm run --workspace @master-project/frontend",
