@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import { createApp } from './app.js';
-import { startSocketServer } from './sockets.js';
+import { startSocketServer } from './websockets.js';
 import stoppable from 'stoppable';
 import bluebird from 'bluebird';
 import { Logger } from './utils/logger.js';
