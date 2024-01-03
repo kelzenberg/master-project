@@ -8,7 +8,7 @@ import winston from 'winston';
  */
 export const createLogger =
   (serviceName = 'master-project') =>
-  event => {
+  meta => {
     const logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
@@ -20,9 +20,12 @@ export const createLogger =
         winston.format.json()
       ),
       defaultMeta: {
+        event: meta.name ?? 'generic-logger',
+        // eslint-disable-next-line no-unused-vars
+        meta: (({ name, data, ...rest }) => rest)(meta),
+        data: { ...meta.data },
         service: serviceName,
         environment: process.env.NODE_ENV || 'unknown',
-        event: { name: 'generic name', ...event },
       },
       transports: [
         // Write all logs to console
