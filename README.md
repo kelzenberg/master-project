@@ -175,7 +175,8 @@ These NPM commands will be executed for ALL packages.
 
 - Format source files (with Prettier)
   ```sh
-  npm run format
+  npm run format # run formatter but only show errors
+  npm run format:fix # format and fix errors
   ```
 
 #### Notes on Global Commands
