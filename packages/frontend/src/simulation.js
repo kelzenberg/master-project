@@ -46,7 +46,6 @@ const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight,
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
-//controls.saveState();
 
 // Lighting setup
 const ambientLight = new AmbientLight(0xff_ff_ff, 1);
