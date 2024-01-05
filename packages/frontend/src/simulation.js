@@ -1,10 +1,9 @@
-/** @type {import('three')} */ // Types for ThreeJS
+import Plotly from 'plotly.js-dist';
 import {
   Scene,
   WebGLRenderer,
   Vector3,
   PerspectiveCamera,
-  Euler,
   AmbientLight,
   DirectionalLight,
   SphereGeometry,
@@ -13,6 +12,8 @@ import {
   Mesh,
   Group,
   Object3D,
+  Box3,
+  AxesHelper,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
@@ -22,6 +23,8 @@ import Species from './models/Species';
 const sitesGroup = new Group();
 const speciesList = [];
 const allGeometriesGroup = new Group();
+var plotData = {};
+var typeDefinitions = {};
 
 // Renderer and Scene setup
 const canvas = document.querySelector('#canvas');
@@ -29,21 +32,20 @@ const scene = new Scene();
 scene.add(allGeometriesGroup);
 const renderer = new WebGLRenderer({ canvas });
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth * 0.4, window.innerHeight * 0.4);
 renderer.setClearColor(0xff_ff_ff);
+
+//gizmo
+var axesHelper = new AxesHelper(100);
+scene.add(axesHelper);
 
 // Camera setup
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const defaultCameraPosition = new Vector3(0, -40, 50);
-const defaultCameraRotation = new Euler(0, 0, 0);
-camera.position.copy(defaultCameraPosition);
-camera.rotation.copy(defaultCameraRotation);
 
 // OrbitControls setup
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
-controls.saveState();
 
 // Lighting setup
 const ambientLight = new AmbientLight(0xff_ff_ff, 1);
@@ -91,7 +93,7 @@ function renderFixedSpecies(jsonData) {
     let molecule = createMolecule(data);
     const sphereGeometry = new SphereGeometry(molecule.sphereRadius, 32, 32);
     const sphereMaterial = new MeshStandardMaterial({
-      color: new Color(molecule.rgb.x, molecule.rgb.y, molecule.rgb.z),
+      color: new Color(molecule.color.x, molecule.color.y, molecule.color.z),
     });
     const sphereMesh = new Mesh(sphereGeometry, sphereMaterial);
     sphereMesh.position.copy(molecule.position);
@@ -137,7 +139,7 @@ function clearDynamicSpecies() {
   }
 }
 
-function calculateOffset(jsonData) {
+function calculateXOffset(jsonData) {
   let maxX = Number.NEGATIVE_INFINITY;
   let minX = Number.POSITIVE_INFINITY;
 
@@ -156,16 +158,55 @@ function calculateOffset(jsonData) {
   centerPoint.y = 0; // You can adjust this based on your scene requirements
   centerPoint.z = 0; // You can adjust this based on your scene requirements
 
-  // Calculate the offset based on the distance between the center point and the most far-right x-value
-  let offset = new Vector3();
-  offset.x = -maxX + centerPoint.x; // Adjusting the offset to align with x=0
-  offset.y = -2;
-  offset.z = 0;
-
-  return offset;
+  return -maxX + centerPoint.x;
 }
 
-var typeDefinitions = {};
+function calculateZOffset() {
+  let boundingBox = new Box3().setFromObject(allGeometriesGroup);
+  let centerPoint = new Vector3();
+  boundingBox.getCenter(centerPoint);
+
+  return -centerPoint.z;
+}
+
+function calculateYOffset() {
+  let boundingBox = new Box3().setFromObject(allGeometriesGroup);
+  let centerPoint = new Vector3();
+  boundingBox.getCenter(centerPoint);
+
+  return -centerPoint.y;
+}
+
+function setCameraToFitBoundingBox() {
+  let distance = determinCameraDistance();
+  let newPosition = new Vector3(0, distance, distance);
+
+  camera.position.copy(newPosition);
+  camera.lookAt(new Vector3(0, 0, 0));
+  controls.saveState();
+}
+
+function determinCameraDistance() {
+  let cameraDistance;
+  let halfFOVInRadians = getRadians(camera.fov / 2);
+  let { width } = getObjectSize(allGeometriesGroup);
+  cameraDistance = width / 2 / Math.tan(halfFOVInRadians);
+  return cameraDistance;
+}
+
+function getObjectSize(target) {
+  let box = new Box3().setFromObject(target);
+  let size = {
+    depth: -1 * box.min.z + box.max.z,
+    height: -1 * box.min.y + box.max.y,
+    width: -1 * box.min.x + box.max.x,
+  };
+  return size;
+}
+
+function getRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
 
 function renderInitialData(jsonFile) {
   fetch(jsonFile)
@@ -176,11 +217,25 @@ function renderInitialData(jsonFile) {
       let species = jsonData.visualization.species;
       let fixedSpecies = jsonData.visualization.fixedSpecies;
       let config = jsonData.visualization.config;
+
+      //plots
+      plotData = jsonData.plots;
+
       readSites(sites);
       readSpecies(species);
       renderFixedSpecies(fixedSpecies);
       renderSpeciesFromConfig(config);
-      let offset = calculateOffset(fixedSpecies);
+      setupInitialPlotData(plotData);
+      setupInitialPlotLayouts();
+
+      const rotationAngleX = -Math.PI / 2; // -90 degrees in radians
+      allGeometriesGroup.rotation.set(rotationAngleX, 0, 0);
+
+      let xOffset = calculateXOffset(fixedSpecies);
+      let yOffset = calculateYOffset();
+      let zOffset = calculateZOffset();
+      let offset = new Vector3(xOffset, yOffset, zOffset);
+      setCameraToFitBoundingBox();
       allGeometriesGroup.position.copy(offset);
     });
 }
@@ -202,16 +257,171 @@ function animate() {
 }
 
 if (WebGL.isWebGLAvailable()) {
-  // Function Calls
   renderInitialData('data/new-json-data-format/initial-data.json');
-
-  // Rufe renderDynamicData mit einer Verzögerung von 2 Sekunden auf
-  /* setTimeout(() => {
-    renderDynamicData('data/new-json-data-format/dynamic-data.json');
-  }, 2000); */
-
   animate();
 } else {
   const warning = WebGL.getWebGLErrorMessage();
   document.querySelector('body').append(warning);
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+// TEST PLOT INTEGRATION
+const maxStoredDataPoints = 50;
+var initialDataTOF;
+var initialDataCoverage;
+var tofNumGraphs;
+var coverageNumGraphs;
+const layout = {
+  title: 'TOF',
+  xaxis: {
+    title: 'kmc time',
+  },
+  yaxis: {
+    title: 'Value',
+  },
+  hovermode: 'x',
+};
+
+function setupInitialPlotData(plots) {
+  // Set up initial data for each graph
+  tofNumGraphs = plots.tof.length;
+  coverageNumGraphs = plots.coverage.length;
+  const tofColors = getColors(tofNumGraphs);
+  const coverageColors = getColors(coverageNumGraphs);
+  const tofLabels = getTofLabels(plots);
+  const coverageLabels = getCoverageLabels(plots);
+
+  // hier muss als initial x-value plotData.kmcTime gesetzt werden und y = plotData[index].values[0] (default)
+  initialDataTOF = Array.from({ length: tofNumGraphs }, (_, index) => ({
+    x: [0],
+    y: [getRandomData()],
+    type: 'line',
+    mode: 'lines+markers',
+    line: {
+      color: tofColors[index],
+    },
+    marker: {
+      color: tofColors[index],
+    },
+    name: tofLabels[index],
+  }));
+
+  // hier muss als initial x-value plotData.kmcTime gesetzt werden und y = calculateAverage(plotData[index].values)
+  initialDataCoverage = Array.from({ length: coverageNumGraphs }, (_, index) => ({
+    x: [0],
+    y: [getRandomData()],
+    type: 'line',
+    mode: 'lines+markers',
+    line: {
+      color: coverageColors[index],
+    },
+    marker: {
+      color: coverageColors[index],
+    },
+    name: coverageLabels[index],
+  }));
+}
+
+function getColors(numGraphs) {
+  const colors = new Set();
+
+  while (colors.size < numGraphs) {
+    const color = '#' + Math.floor(Math.random() * 16_777_215).toString(16);
+    colors.add(color);
+  }
+
+  return [...colors];
+}
+
+function getTofLabels(plots) {
+  return plots.tof.map(tofObject => {
+    const label = tofObject.label;
+    return label;
+  });
+}
+
+function getCoverageLabels(plots) {
+  return plots.coverage.map(coverageObject => {
+    const label = coverageObject.averageLabel;
+    return label;
+  });
+}
+
+// hier muss plots.plotData mitgegeben werden, sodass x und y values dynamisch gesetzt werden können (kmcTime, values)
+function setupInitialPlotLayouts() {
+  // Set up the initial plot with TOF Graphs
+  Plotly.newPlot('plotTOF', initialDataTOF, layout).then(plotTOF => {
+    // Store the initial Graphs for later use
+    const initialGraphsTOF = [...plotTOF.data];
+
+    // Duplicate the layout for Coverage plot
+    const layoutCoverage = { ...layout, title: 'Coverage' };
+
+    // Set up the initial plot with Coverage Graphs
+    Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage).then(plotCoverage => {
+      // Store the initial Graphs for later use
+      const initialGraphsCoverage = [...plotCoverage.data];
+
+      let i = 1; // Initial x-axis value
+
+      // Update the plots in real-time
+      setInterval(() => {
+        // Update each TOF graph with new data
+        for (let tofGraphIndex = 0; tofGraphIndex < tofNumGraphs; tofGraphIndex++) {
+          const graphTOF = initialGraphsTOF[tofGraphIndex];
+          graphTOF.x.push(i);
+          graphTOF.y.push(getRandomData());
+
+          // Remove oldest data points if the limit is reached
+          if (graphTOF.x.length > maxStoredDataPoints) {
+            graphTOF.x.shift();
+            graphTOF.y.shift();
+          }
+        }
+
+        // Update each Coverage graph with new data
+        for (let coverageGraphIndex = 0; coverageGraphIndex < coverageNumGraphs; coverageGraphIndex++) {
+          const graphCoverage = initialGraphsCoverage[coverageGraphIndex];
+          graphCoverage.x.push(i);
+          graphCoverage.y.push(getRandomData());
+
+          // Remove oldest data points if the limit is reached
+          if (graphCoverage.x.length > maxStoredDataPoints) {
+            graphCoverage.x.shift();
+            graphCoverage.y.shift();
+          }
+        }
+
+        // Update the TOF plot with new data
+        Plotly.update('plotTOF', initialGraphsTOF, layout);
+
+        // Update the Coverage plot with new data
+        Plotly.update('plotCoverage', initialGraphsCoverage, layoutCoverage);
+
+        i++;
+      }, 1000); // Update every 1 second
+    });
+  });
+}
+
+// Automatic panning with data being discarded
+// Function to generate random data
+function getRandomData() {
+  return Math.random();
+}
+
+// eslint-disable-next-line no-unused-vars
+function calculateAverage(array) {
+  var sum = array.reduce(function (accumulator, currentValue) {
+    return accumulator + currentValue;
+  }, 0);
+
+  return sum / array.length;
 }
