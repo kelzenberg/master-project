@@ -307,6 +307,9 @@ function setupInitialPlotData(plots) {
     line: {
       color: tofColors[index],
     },
+    marker: {
+      color: tofColors[index],
+    },
     name: tofLabels[index],
   }));
 
@@ -317,6 +320,9 @@ function setupInitialPlotData(plots) {
     type: 'line',
     mode: 'lines+markers',
     line: {
+      color: coverageColors[index],
+    },
+    marker: {
       color: coverageColors[index],
     },
     name: coverageLabels[index],
