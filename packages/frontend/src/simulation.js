@@ -294,8 +294,8 @@ function setupInitialPlotData(plots) {
   // Set up initial data for each graph
   tofNumGraphs = plots.tof.length;
   coverageNumGraphs = plots.coverage.length;
-  const tofColors = getTofColors(plots);
-  const coverageColors = getCoverageColors(plots);
+  const tofColors = getColors(tofNumGraphs);
+  const coverageColors = getColors(coverageNumGraphs);
   const tofLabels = getTofLabels(plots);
   const coverageLabels = getCoverageLabels(plots);
 
@@ -324,11 +324,15 @@ function setupInitialPlotData(plots) {
   }));
 }
 
-function getTofColors(plots) {
-  return plots.tof.map(tofObject => {
-    const [r, g, b] = tofObject.color;
-    return rgbToHex(r, g, b);
-  });
+function getColors(numGraphs) {
+  const colors = new Set();
+
+  while (colors.size < numGraphs) {
+    const color = '#' + Math.floor(Math.random() * 16_777_215).toString(16);
+    colors.add(color);
+  }
+
+  return [...colors];
 }
 
 function getTofLabels(plots) {
@@ -338,42 +342,11 @@ function getTofLabels(plots) {
   });
 }
 
-function getCoverageColors(plots) {
-  return plots.coverage.map(coverageObject => {
-    const [r, g, b] = coverageObject.averageColor;
-    return rgbToHex(r, g, b);
-  });
-}
-
 function getCoverageLabels(plots) {
   return plots.coverage.map(coverageObject => {
     const label = coverageObject.averageLabel;
     return label;
   });
-}
-
-// Function to convert RGB values to hex color code
-function rgbToHex(r, g, b) {
-  // Ensure the values are within the valid range
-  r = Math.min(1, Math.max(0, r));
-  g = Math.min(1, Math.max(0, g));
-  b = Math.min(1, Math.max(0, b));
-
-  // Convert decimal to hex and concatenate
-  const hexR = Math.round(r * 255)
-    .toString(16)
-    .padStart(2, '0');
-  const hexG = Math.round(g * 255)
-    .toString(16)
-    .padStart(2, '0');
-  const hexB = Math.round(b * 255)
-    .toString(16)
-    .padStart(2, '0');
-
-  // Combine the values to form the hex code
-  const hexCode = `#${hexR}${hexG}${hexB}`;
-
-  return hexCode;
 }
 
 // hier muss plots.plotData mitgegeben werden, sodass x und y values dynamisch gesetzt werden können (kmcTime, values)
@@ -428,7 +401,7 @@ function setupInitialPlotLayouts() {
         Plotly.update('plotCoverage', initialGraphsCoverage, layoutCoverage);
 
         i++;
-      }, 200); // Update every 200 milliseconds
+      }, 1000); // Update every 1 second
     });
   });
 }
