@@ -250,7 +250,26 @@ function renderDynamicData(jsonFile) {
     });
 }
 
+function resizeCanvasToDisplaySize() {
+  const canvas = renderer.domElement;
+  // look up the size the canvas is being displayed
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+
+  // adjust displayBuffer size to match
+  if (canvas.width !== width || canvas.height !== height) {
+    // you must pass false here or three.js sadly fights the browser
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    // update any render target sizes here
+  }
+}
+
 function animate() {
+  resizeCanvasToDisplaySize();
+
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
@@ -280,6 +299,7 @@ var tofNumGraphs;
 var coverageNumGraphs;
 const layout = {
   title: 'TOF',
+  autosize: true,
   xaxis: {
     title: 'kmc time',
   },
@@ -357,7 +377,7 @@ function getCoverageLabels(plots) {
 // hier muss plots.plotData mitgegeben werden, sodass x und y values dynamisch gesetzt werden können (kmcTime, values)
 function setupInitialPlotLayouts() {
   // Set up the initial plot with TOF Graphs
-  Plotly.newPlot('plotTOF', initialDataTOF, layout).then(plotTOF => {
+  Plotly.newPlot('plotTOF', initialDataTOF, layout, { responsive: true }).then(plotTOF => {
     // Store the initial Graphs for later use
     const initialGraphsTOF = [...plotTOF.data];
 
@@ -365,7 +385,7 @@ function setupInitialPlotLayouts() {
     const layoutCoverage = { ...layout, title: 'Coverage' };
 
     // Set up the initial plot with Coverage Graphs
-    Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage).then(plotCoverage => {
+    Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage, { responsive: true }).then(plotCoverage => {
       // Store the initial Graphs for later use
       const initialGraphsCoverage = [...plotCoverage.data];
 

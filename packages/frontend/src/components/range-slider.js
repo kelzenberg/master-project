@@ -1,6 +1,62 @@
 const template = document.createElement('template');
 template.innerHTML = `
-    <div class="sliderContainer">
+    <style>
+      .rangeSliderContainer {
+        position: relative;
+      }
+      span {
+        position: absolute;
+        min-width: 100px;
+      }
+      input[type=range] {
+        height: 25px;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+        background: transparent;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: #006c66;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        border: 1px solid #006C66;
+        height: 18px;
+        width: 18px;
+        border-radius: 20px;
+        background: #006C66;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -8.5px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #006c66;
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: #006c66;
+      }
+      input[type=range]::-moz-range-thumb {
+        border: 1px solid #006C66;
+        height: 18px;
+        width: 18px;
+        border-radius: 20px;
+        background: #006C66;
+        cursor: pointer;
+      }
+    
+    </style>
+    <div class="rangeSliderContainer">
+        <span></span>
         <input type="range" min="1" max="100" value="50" id="slider">
     </div>
 `;
@@ -31,6 +87,17 @@ class rangeSlider extends HTMLElement {
     if (value <= this.min || value >= this.max) return;
 
     this.value = value;
+
+    this.renderValueText();
+  }
+
+  renderValueText() {
+    const xOff = this.input.offsetWidth / (Number.parseInt(this.max) - Number.parseInt(this.min));
+    const px = (this.input.valueAsNumber - Number.parseInt(this.min)) * xOff - this.text.offsetParent.offsetWidth / 2;
+
+    this.text.style.left = px + 'px';
+    this.text.style.top = this.input.offsetHeight + 'px';
+    this.text.innerHTML = this.input.value + ' ';
   }
 
   // Life-cycle methods
@@ -51,6 +118,11 @@ class rangeSlider extends HTMLElement {
 
   connectedCallback() {
     this.shadow.querySelector('#slider').addEventListener('input', this.inputHandler);
+
+    this.text = this.shadow.querySelector('span');
+    this.input = this.shadow.querySelector('input');
+
+    this.renderValueText();
   }
 
   disconnectedCallback() {
