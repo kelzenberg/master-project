@@ -47,10 +47,5 @@
     "lint-staged": "^15.1.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5"
-  },
-  "dependencies": {
-    "plotly.js": "^2.27.1",
-    "plotly.js-dist": "^2.27.1",
-    "three": "^0.158.0"
   }
 }

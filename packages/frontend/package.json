@@ -24,6 +24,8 @@
     "vite": "^4.5.1"
   },
   "dependencies": {
+    "plotly.js": "^2.27.1",
+    "plotly.js-dist": "^2.27.1",
     "three": "^0.158.0"
   }
 }
