@@ -8,276 +8,131 @@
       href="favicon.svg"
     />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
+      href="./styling/index.css"
     />
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
     />
     <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
     />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>Simulation Title</title>
-    <style>
-      body {
-        margin: 0;
-        background-color: #eeeeee;
-        /* box-sizing: border-box; */
-      }
-
-      canvas {
-        /* position: fixed; */
-        top: 0;
-        left: 0;
-      }
-
-      #resetViewButton {
-        position: absolute;
-        z-index: 99;
-        top: 2%;
-        right: 2%;
-        padding: 10px;
-        cursor: pointer;
-      }
-
-      #webglmessage {
-        position: absolute;
-        z-index: 99;
-        top: 25%;
-        left: 50%;
-        transform: translate(-50%, -25%);
-      }
-
-      .slideContainer {
-        width: 60%;
-        /* margin-top: 20%; */
-        text-align: center;
-      }
-
-      .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 15px;
-        border-radius: 5px;
-        background: #817b7b;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: 0.2s;
-        transition: opacity 0.2s;
-      }
-
-      .slider:hover {
-        opacity: 1;
-      }
-
-      .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: #000000;
-        cursor: pointer;
-      }
-
-      .slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: #ff0000;
-        cursor: pointer;
-      }
-
-      #headerImg {
-        display: inline-block;
-        margin: 0 auto;
-      }
-
-      .navbar-brand {
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid #006c66 !important;
-      }
-
-      #customRange1 {
-        background-color: white;
-      }
-
-      h1 {
-        color: #006c66;
-      }
-
-      h5 {
-        color: #006c66;
-      }
-
-      .btn-primary {
-        background-color: #006c66;
-        border-color: #006c66;
-      }
-
-      .btn-primary:hover {
-        background-color: #006c66;
-        border-color: #006c66;
-      }
-
-      #backButton {
-        position: absolute;
-        z-index: 99;
-        bottom: 10%;
-        left: 10%;
-        padding: 0.6%;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Header Nav -->
-    <nav class="navbar">
-      <div class="container">
-        <a
-          class="navbar-brand"
-          href="#"
-        >
-          <img
-            id="headerImg"
-            src="./ressources/misc/fhi_logo.png"
-            alt="FHI Logo"
-            width="400"
-            height="100"
-          />
-        </a>
-      </div>
-    </nav>
-    <!-- Main Content -->
-    <div class="container text-center">
-      <div class="row row-cols-2">
-        <!-- Title of simulation -->
-        <div class="col">
-          <h1>Hydrogen Simulation</h1>
-        </div>
-        <div class="col">
-          <h5>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-            dolore magna aliquyam erat, sed diam voluptua.
-          </h5>
-        </div>
-        <!-- Force next columns to break to new line -->
-        <div class="w-100"></div>
-      </div>
-    </div>
-    <div class="row gy-5">
-      <!-- Range Slider -->
-      <div class="col">
-        <canvas id="canvas"></canvas>
-      </div>
-      <div class="col">
-        <div class="slideContainer">
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-          <label
-            for="customRange1"
-            class="form-label"
-            >Example range</label
-          >
-          <input
-            type="range"
-            class="form-range"
-            id="customRange1"
-          />
-        </div>
-      </div>
-      <div class="col">
-        <div id="plotTOF"></div>
-        <div id="plotCoverage"></div>
-      </div>
-    </div>
-    <!-- Bootstrap 5 -->
+    <title>Wasserstoff Simulation</title>
     <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
+      defer
+      src="./components/menu-preview.js"
     ></script>
-    <button
-      type="button"
-      class="btn btn-primary"
-      id="resetViewButton"
-    >
-      Reset View
-    </button>
-    <button
-      type="button"
-      class="btn btn-primary"
-      id="backButton"
-    >
-      <img
-        src="./ressources/misc/left-arrow.png"
-        alt="Back"
-        width="30"
-        height="30"
-      />
-      <!--  <i class="bi bi-arrow-left-square-fill"></i> -->
-      <!-- Back -->
-    </button>
     <script
+      defer
+      src="./index.js"
+    ></script>
+    <script
+      defer
       type="module"
       src="simulation.js"
     ></script>
+  </head>
+  <body>
+    <div class="pageContent">
+      <div class="titleBar"></div>
+      <div class="singleTitleContainer">
+        <h1>Wasserstoff Simulation</h1>
+        <h2 id="discription">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy voluptua.</h2>
+        <h3>3 Users online</h3>
+        <img
+          src="ressources/misc/user.png"
+          width="35"
+          height="35"
+        />
+      </div>
+      <button
+        type="button"
+        id="resetViewButton"
+      >
+        Reset View
+      </button>
+      <div class="singlePreviewContainer">
+        <canvas id="canvas"></canvas>
+        <div class="sliderContainer">
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+          <label
+            for="customRange1"
+            class="form-label"
+            >Example range</label
+          >
+          <input
+            type="range"
+            class="form-range"
+            id="customRange1"
+          />
+        </div>
+        <div class="graphContainer">
+          <div id="plotTOF"></div>
+          <br />
+          <div id="plotCoverage"></div>
+        </div>
+      </div>
+      <menu-preview></menu-preview>
+    </div>
   </body>
 </html>
