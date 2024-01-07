@@ -1,6 +1,6 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
-import { eventTypes } from './utils/events.js';
+import { SocketEventTypes } from './utils/events.js';
 import { handler as messageHandler } from './handlers/events/message.js';
 
 const logger = Logger({ name: 'socket-server' });
@@ -17,7 +17,7 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
     });
 
     // Custom event listeners
-    socket.on(eventTypes.MESSAGE, messageHandler(ioServer));
+    socket.on(SocketEventTypes.MESSAGE, messageHandler(ioServer));
 
     // Client disconnect event listener
     socket.on('disconnect', () => logger.info('Client disconnected.'));
