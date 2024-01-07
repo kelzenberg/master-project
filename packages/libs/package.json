@@ -15,6 +15,10 @@
   "license": "MIT",
   "private": true,
   "type": "module",
+  "exports": {
+    "./src/logger": "./src/logger.js",
+    "./src/events": "./src/events.js"
+  },
   "scripts": {},
   "devDependencies": {},
   "dependencies": {

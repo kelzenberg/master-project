@@ -1,3 +1,3 @@
-import * as LibLogger from '../../../libs/src/logger.js';
+import { createLogger } from '@master-project/libs/src/logger';
 
-export const Logger = LibLogger.createLogger('@master-project/backend');
+export const Logger = createLogger('@master-project/backend');
