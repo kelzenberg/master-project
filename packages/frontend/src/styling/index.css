@@ -10,7 +10,7 @@ html {
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 50px;
 }
 
 #discription {
@@ -24,6 +24,11 @@ h3 {
 
 .pageContent {
   max-width: 90vw;
+  margin: auto;
+}
+
+.singlePageContent {
+  max-width: 95vw;
   margin: auto;
 }
 
@@ -78,12 +83,14 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+ /*  height: 100px; */
 }
 
 canvas {
   /* position: fixed; */
   top: 0;
   left: 0;
+  
 }
 
 #resetViewButton {
@@ -93,6 +100,12 @@ canvas {
   right: 2%;
   padding: 10px;
   cursor: pointer;
+  padding: 20px 20px;
+  cursor: pointer;
+  background-color: #006C66;
+  border:none;
+  border-radius: 10px;
+  color: white;
 }
 
 #webglmessage {
@@ -109,4 +122,26 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+/* #plotTOF{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  height: 4%;
+}
+
+#plotCoverage{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+} */
+
+
+@media only screen and (max-width: 800px) {
+  body {
+    background-color: lightblue;
+  }
 }
