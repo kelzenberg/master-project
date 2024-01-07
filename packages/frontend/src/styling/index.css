@@ -13,6 +13,10 @@ h1{
   font-size: 60px;
 }
 
+#discription{
+  padding-top: 1%;
+}
+
 .pageContent {
   max-width: 90vw;
   margin: auto;
@@ -33,7 +37,7 @@ h1{
 
 .titleContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1.5rem;
   color: #006C66;
 }
