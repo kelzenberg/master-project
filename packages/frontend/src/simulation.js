@@ -190,7 +190,7 @@ function determinCameraDistance() {
   let cameraDistance;
   let halfFOVInRadians = getRadians(camera.fov / 2);
   let { width } = getObjectSize(allGeometriesGroup);
-  cameraDistance = width / 2 / Math.tan(halfFOVInRadians);
+  cameraDistance = width / 3 / Math.tan(halfFOVInRadians);
   return cameraDistance;
 }
 
