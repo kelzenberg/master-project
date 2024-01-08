@@ -10,7 +10,7 @@ html {
 }
 
 h1 {
-  font-size: 50px;
+  font-size: 40px;
 }
 
 #discription {
@@ -75,22 +75,43 @@ h3 {
 .singlePreviewContainer {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
   /* justify-content: center; */
   gap: 1.5rem;
+ /*  align-items: center;
+  justify-content: center; */
+  /* height: 100vh; */
 }
 
 .graphContainer {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  /*  height: 100px; */
+  width: 40%;
+  /* height: 1%;
+  align-items: center;
+  margin-top: 20px; */
+}
+
+#plotTOF{
+  /* width: 80%; */
+  height: 350px; /* Set your preferred height */
+  border: 1px solid black;
+  /* margin-top: 10px; */
+}
+
+#plotCoverage{
+  /* width: 80%; */
+  height: 350px; /* Set your preferred height */
+  border: 1px solid black;
+ /*  margin-top: 10px; */
 }
 
 canvas {
   /* position: fixed; */
   top: 0;
   left: 0;
-
+  border: 1px solid black;
 }
 
 #resetViewButton {
@@ -123,21 +144,6 @@ canvas {
   flex-direction: column;
   gap: 1rem;
 }
-
-/* #plotTOF{
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-
-  height: 4%;
-}
-
-#plotCoverage{
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-
-} */
 
 @media only screen and (max-width: 800px) {
   body {
