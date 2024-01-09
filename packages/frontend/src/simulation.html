@@ -28,18 +28,27 @@
   </head>
   <body>
     <div class="pageContent">
-      <div class="titleBar"></div>
-      <button
-        type="button"
-        id="backButton"
-        class="btn"
-      >
-        <img
-          src="./ressources/misc/left-arrow.png"
-          alt="Back"
-        />
-        <span>Back</span>
-      </button>
+      <div class="titleBar">
+        <button
+          type="button"
+          id="backButton"
+          class="btn"
+        >
+          <img
+            src="./ressources/misc/left-arrow.png"
+            alt="Back"
+          />
+        </button>
+        <div id="titleImg"></div>
+        <div id="userCountContainer">
+          <img src="./ressources/misc/user.png" />
+          <span>0</span>
+        </div>
+      </div>
+      <div id="descriptionContainer">
+        <h1>Wasserstoff-Simulation</h1>
+        <h3>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy voluptua.</h3>
+      </div>
       <div id="simulationContainer">
         <div
           id="canvasContainer"
