@@ -8,9 +8,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 RUN apt-get update -y && apt-get install -y \
   git \
-  ase \
   gfortran \
   python3-dev \
+  python3-ase \
   python3-setuptools \
   python3-lxml \
   python3-numpy
