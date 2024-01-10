@@ -2,7 +2,9 @@
 
 FROM ubuntu:20.04
 
+ENV TERM "xterm"
 ARG DEBIAN_FRONTEND=noninteractive
+
 WORKDIR /app
 RUN apt-get update -y && apt-get install -y \
   git \
