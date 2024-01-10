@@ -20,6 +20,23 @@ services:
     command: node ./src/index.js
     depends_on:
       - cache
+      - sim
+
+  sim:
+    build:
+      context: .
+      dockerfile: ./packages/simulation/Dockerfile
+      args:
+        - ENV=production
+    container_name: master-project-sim
+    restart: on-failure:3
+    environment:
+      API_KEY_DEV: ${API_KEY_DEV}
+    networks:
+      - backend
+    ports:
+      - 8081:3000
+    command: python3 /app/simulations/methanation/Methanation_local_smart/start.py
 
   cache:
     image: redis:7.2
