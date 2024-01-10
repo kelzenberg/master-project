@@ -19,8 +19,8 @@ export class SimulationController {
     let typeDefinitions = jsonData.visualization.typeDefinitions;
     let fixedSpecies = jsonData.visualization.fixedSpecies;
     let config = jsonData.visualization.config;
-    let sitesGroup = this.#readSites(jsonData.visualization.species);
-    let speciesList = this.#readSpecies(jsonData.visualization.species, typeDefinitions);
+    let sitesGroup = this.#initializeSites(jsonData.visualization.species);
+    let speciesList = this.#initializeSpecies(jsonData.visualization.species, typeDefinitions);
 
     this.#visualizationController = new VisualizationController(
       fixedSpecies,
@@ -44,7 +44,7 @@ export class SimulationController {
     this.#plotController.updatePlots(plotData);
   }
 
-  #readSites(sites) {
+  #initializeSites(sites) {
     let sitesGroup = new Group();
     for (const data of sites) {
       let site = new Vector3(data.x, data.y, data.z);
@@ -55,7 +55,7 @@ export class SimulationController {
     return sitesGroup;
   }
 
-  #readSpecies(species, typeDefinitions) {
+  #initializeSpecies(species, typeDefinitions) {
     let speciesList = [];
     for (const data of species) {
       let species = [];
