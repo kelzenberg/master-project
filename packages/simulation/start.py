@@ -38,7 +38,7 @@ class WebGLInterface(KMC_Model):
 # https://stackoverflow.com/a/7205107
 def merge_dict(a: dict, b: dict, path=[]):
     """
-    Update dictionary a with the key-value pairs of dictionary b.
+    Merge two dictionaries a and b.
     """
     for key in b:
         if key in a:
@@ -193,16 +193,8 @@ def get_dynamic_data(model, state=None, to_file=False):
         "plots": {
             "plotData": {
                 "kmcTime": None,
-                "tof": [
-                    {
-                        "values": None
-                    }
-                ],
-                "coverage": [
-                    {
-                        "values": None
-                    }
-                ]
+                "tof": [],
+                "coverage": []
             }
         }
     }
@@ -217,10 +209,14 @@ def get_dynamic_data(model, state=None, to_file=False):
                             [x_coord, y_coord, z_coord, sites_per_unit_cell]))
     dynamic_data_format_json["plots"]["plotData"]["kmcTime"] = \
         state.kmc_time
-    dynamic_data_format_json["plots"]["plotData"]["tof"][0]["values"] = \
-        [model.tof_data.tolist(), model.tof_integ.tolist()]
-    dynamic_data_format_json["plots"]["plotData"]["coverage"][0]["values"] = \
-        state.occupation.tolist()
+    for tof in zip(model.tof_data.tolist(), model.tof_integ.tolist()):
+        dynamic_data_format_json["plots"]["plotData"]["tof"].append(
+            {"values": list(tof)}
+        )
+    for occ in state.occupation.tolist():
+        dynamic_data_format_json["plots"]["plotData"]["coverage"].append(
+            {"values": occ}
+        )
     if to_file:
         with open('dynamic-data-format.json', 'w') as dynamic_data_file:
             json.dump(dynamic_data_format_json, dynamic_data_file)
@@ -231,7 +227,7 @@ if __name__ == "__main__":
     print(kmc_model.initial_data)
     spf = 1e6
     steps = 0
-    while steps <= 1e10:
+    while steps <= 1e7:
         kmc_model.do_steps(spf)
         print(kmc_model.dynamic_data)
         steps += spf
