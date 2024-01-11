@@ -19,6 +19,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 import Molecule from './models/Molecule';
 import Species from './models/Species';
+/* import { update } from 'plotly.js'; */
 
 const sitesGroup = new Group();
 const speciesList = [];
@@ -307,6 +308,13 @@ const layout = {
     title: 'Value',
   },
   hovermode: 'x',
+  margin: {
+    l: 40,
+    r: 0,
+    t: 0,
+    b: 40,
+    pad: 0,
+  },
 };
 
 function setupInitialPlotData(plots) {
@@ -323,12 +331,10 @@ function setupInitialPlotData(plots) {
     x: [0],
     y: [getRandomData()],
     type: 'line',
-    mode: 'lines+markers',
+    mode: 'lines',
     line: {
       color: tofColors[index],
-    },
-    marker: {
-      color: tofColors[index],
+      width: 1,
     },
     name: tofLabels[index],
   }));
@@ -338,12 +344,10 @@ function setupInitialPlotData(plots) {
     x: [0],
     y: [getRandomData()],
     type: 'line',
-    mode: 'lines+markers',
+    mode: 'lines',
     line: {
       color: coverageColors[index],
-    },
-    marker: {
-      color: coverageColors[index],
+      width: 1,
     },
     name: coverageLabels[index],
   }));
@@ -382,7 +386,7 @@ function setupInitialPlotLayouts() {
     const initialGraphsTOF = [...plotTOF.data];
 
     // Duplicate the layout for Coverage plot
-    const layoutCoverage = { ...layout, title: 'Coverage' };
+    const layoutCoverage = { ...layout };
 
     // Set up the initial plot with Coverage Graphs
     Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage, { responsive: true }).then(plotCoverage => {
@@ -424,6 +428,14 @@ function setupInitialPlotLayouts() {
 
         // Update the Coverage plot with new data
         Plotly.update('plotCoverage', initialGraphsCoverage, layoutCoverage);
+
+        /*  var plotlySize = {
+          width: 400, // or any new width
+          height: window.innerHeight / 3, // " "
+        };
+
+        Plotly.relayout('plotTOF', plotlySize);
+        Plotly.relayout('plotCoverage', plotlySize); */
 
         i++;
       }, 1000); // Update every 1 second
