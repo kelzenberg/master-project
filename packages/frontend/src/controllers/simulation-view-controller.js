@@ -51,6 +51,10 @@ export class SimulationViewController {
     this.#plotController.updatePlots(plotData);
   }
 
+  toggleLegend() {
+    this.#legendController.toggleLegend();
+  }
+
   #initializeSites(sites) {
     let sitesGroup = new Group();
     for (const data of sites) {
@@ -79,3 +83,14 @@ export class SimulationViewController {
     return speciesList;
   }
 }
+
+/*
+example usage:
+
+const maxStoredPlotDataPoints = 50;
+const simulationController = new SimulationController(maxStoredPlotDataPoints);
+
+//Diese functions müssen dann aufgerufen werden, wenn wir von der simulation aus dem backend data bekommen (initialData oder dynamicData)
+simulationController.renderInitialData(initialData);
+simulationController.renderDynamicData(dynamicData);
+*/
