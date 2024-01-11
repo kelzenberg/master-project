@@ -1,12 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable unicorn/prefer-module */
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('node:path');
-
-console.log('foo');
+const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
   mode: 'production',
   output: {
     filename: 'main.[contenthash].js',
@@ -14,11 +11,25 @@ module.exports = {
     clean: true,
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/simulation.html',
+    new HtmlBundlerPlugin({
+      entry: { index: './src/index.html', simulation: './src/simulation.html' },
+      js: { filename: 'js/[name].[contenthash:8].js' },
+      css: { filename: 'css/[name].[contenthash:8].css' },
     }),
   ],
+  module: {
+    rules: [
+      {
+        test: /\.(css|sass|scss)$/,
+        use: ['css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(ico|png|jp?g|webp|svg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[name].[hash:8][ext][query]',
+        },
+      },
+    ],
+  },
 };
