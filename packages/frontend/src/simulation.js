@@ -24,8 +24,9 @@ import Species from './models/Species';
 const sitesGroup = new Group();
 const speciesList = [];
 const allGeometriesGroup = new Group();
-var plotData = {};
 var typeDefinitions = {};
+
+var plotData = {};
 
 // Renderer and Scene setup
 const canvas = document.querySelector('#canvas');
@@ -179,7 +180,7 @@ function calculateYOffset() {
 }
 
 function setCameraToFitBoundingBox() {
-  let distance = determinCameraDistance();
+  let distance = determineCameraDistance();
   let newPosition = new Vector3(0, distance, distance);
 
   camera.position.copy(newPosition);
@@ -187,7 +188,7 @@ function setCameraToFitBoundingBox() {
   controls.saveState();
 }
 
-function determinCameraDistance() {
+function determineCameraDistance() {
   let cameraDistance;
   let halfFOVInRadians = getRadians(camera.fov / 2);
   let { width } = getObjectSize(allGeometriesGroup);
