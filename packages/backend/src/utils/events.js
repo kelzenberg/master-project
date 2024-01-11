@@ -1,3 +1,1 @@
-import * as LibSockets from '../../../libs/src/events.js';
-
-export const eventTypes = LibSockets.SocketEventTypes;
+export { SocketEventTypes } from '@master-project/libs/src/events';

@@ -1,5 +1,5 @@
-import { eventTypes } from '../../utils/events.js';
+import { SocketEventTypes } from '../../utils/events.js';
 
 export const handler = io => message => {
-  io.emit(eventTypes.MESSAGE, message);
+  io.emit(SocketEventTypes.MESSAGE, message);
 };

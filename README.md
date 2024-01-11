@@ -116,6 +116,14 @@ During the `git commit` action you will see the hooks running in your console.
 - Install dependencies: `npm run install:L {NPM-package-name}`
 - Remove dependencies: `npm run remove:L {NPM-package-name}`
 
+#### [@master-project/simulation](https://github.com/kelzenberg/master-project/tree/main/packages/simulation)
+
+**Python simulation and HTTP server**
+
+- [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/simulation/README.md)
+- Short: `npm run S ...`
+- **Usage: `npm run S [dev|start]`**
+
 ---
 
 #### Notes on Packages

@@ -24,7 +24,7 @@
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
-    "format:fix": "prettier \"**/*.+(js|ts|json|html|md)\" --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "format:fix": "prettier \"**/*.+(js|ts|json|html|md)\" --write --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
     "up": "docker compose up",
     "down": "docker compose down",
     "F": "npm run --workspace @master-project/frontend",
@@ -35,7 +35,8 @@
     "remove:B": "npm remove --workspace @master-project/backend",
     "L": "npm run --workspace @master-project/libs",
     "install:L": "npm install --workspace @master-project/libs",
-    "remove:L": "npm remove --workspace @master-project/libs"
+    "remove:L": "npm remove --workspace @master-project/libs",
+    "S": "npm run --workspace @master-project/simulation"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
@@ -47,10 +48,5 @@
     "lint-staged": "^15.1.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5"
-  },
-  "dependencies": {
-    "plotly.js": "^2.27.1",
-    "plotly.js-dist": "^2.27.1",
-    "three": "^0.158.0"
   }
 }

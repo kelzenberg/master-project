@@ -1,0 +1,149 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('../ressources/fonts/Roboto-Medium.ttf');
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
+html,
+body {
+  margin: 0;
+  max-width: 100%;
+  background-color: #eeeeee;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.pageContent {
+  max-width: 95vw;
+  margin: auto;
+}
+
+.titleBar,
+.titleContainer {
+  margin-bottom: 3rem;
+}
+
+.titleBar {
+  height: 8rem;
+  border-bottom: 0.25rem solid #006c66;
+  display: flex;
+  align-items: center;
+}
+
+.titleBar > * {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+#titleImg {
+  height: 100%;
+  background-image: url('../ressources/misc/fhi_logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+#userCountContainer {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+}
+
+#userCountContainer > img {
+  width: 1rem;
+  height: 1rem;
+}
+
+#descriptionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+h1{
+  margin:0;
+}
+
+.btn {
+  cursor: pointer;
+  color: white;
+  background-color: #006c66;
+  border-color: #006c66;
+  padding: 0.85rem 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.btn:hover {
+  background-color: #006c66;
+  border-color: #006c66;
+}
+
+#simulationContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+#canvasContainer {
+  position: relative;
+}
+
+#resetViewButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.innerContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.innerContainer,
+.innerContainer > * {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+#sliderContainer {
+  flex-grow: 0.35;
+}
+
+#graphContainer {
+  flex-direction: column;
+}
+
+#plotTOF{
+  height: 35vh;
+}
+
+#plotCoverage{
+  height: 35vh;
+}
+
+/* .plot-container{
+  height: 20%
+} */
+
+
+#backButton {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#backButton > img {
+  width: 1rem;
+  height: 1rem;
+}
