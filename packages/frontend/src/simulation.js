@@ -19,6 +19,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 import Molecule from './models/Molecule';
 import Species from './models/Species';
+/* import { update } from 'plotly.js'; */
 
 const sitesGroup = new Group();
 const speciesList = [];
@@ -250,7 +251,26 @@ function renderDynamicData(jsonFile) {
     });
 }
 
+function resizeCanvasToDisplaySize() {
+  const canvas = renderer.domElement;
+  // look up the size the canvas is being displayed
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+
+  // adjust displayBuffer size to match
+  if (canvas.width !== width || canvas.height !== height) {
+    // you must pass false here or three.js sadly fights the browser
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    // update any render target sizes here
+  }
+}
+
 function animate() {
+  resizeCanvasToDisplaySize();
+
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
@@ -280,6 +300,7 @@ var tofNumGraphs;
 var coverageNumGraphs;
 const layout = {
   title: 'TOF',
+  autosize: true,
   xaxis: {
     title: 'kmc time',
   },
@@ -287,6 +308,13 @@ const layout = {
     title: 'Value',
   },
   hovermode: 'x',
+  margin: {
+    l: 40,
+    r: 0,
+    t: 0,
+    b: 40,
+    pad: 0,
+  },
 };
 
 function setupInitialPlotData(plots) {
@@ -303,12 +331,10 @@ function setupInitialPlotData(plots) {
     x: [0],
     y: [getRandomData()],
     type: 'line',
-    mode: 'lines+markers',
+    mode: 'lines',
     line: {
       color: tofColors[index],
-    },
-    marker: {
-      color: tofColors[index],
+      width: 1,
     },
     name: tofLabels[index],
   }));
@@ -318,12 +344,10 @@ function setupInitialPlotData(plots) {
     x: [0],
     y: [getRandomData()],
     type: 'line',
-    mode: 'lines+markers',
+    mode: 'lines',
     line: {
       color: coverageColors[index],
-    },
-    marker: {
-      color: coverageColors[index],
+      width: 1,
     },
     name: coverageLabels[index],
   }));
@@ -357,15 +381,15 @@ function getCoverageLabels(plots) {
 // hier muss plots.plotData mitgegeben werden, sodass x und y values dynamisch gesetzt werden können (kmcTime, values)
 function setupInitialPlotLayouts() {
   // Set up the initial plot with TOF Graphs
-  Plotly.newPlot('plotTOF', initialDataTOF, layout).then(plotTOF => {
+  Plotly.newPlot('plotTOF', initialDataTOF, layout, { responsive: true }).then(plotTOF => {
     // Store the initial Graphs for later use
     const initialGraphsTOF = [...plotTOF.data];
 
     // Duplicate the layout for Coverage plot
-    const layoutCoverage = { ...layout, title: 'Coverage' };
+    const layoutCoverage = { ...layout };
 
     // Set up the initial plot with Coverage Graphs
-    Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage).then(plotCoverage => {
+    Plotly.newPlot('plotCoverage', initialDataCoverage, layoutCoverage, { responsive: true }).then(plotCoverage => {
       // Store the initial Graphs for later use
       const initialGraphsCoverage = [...plotCoverage.data];
 
@@ -404,6 +428,14 @@ function setupInitialPlotLayouts() {
 
         // Update the Coverage plot with new data
         Plotly.update('plotCoverage', initialGraphsCoverage, layoutCoverage);
+
+        /*  var plotlySize = {
+          width: 400, // or any new width
+          height: window.innerHeight / 3, // " "
+        };
+
+        Plotly.relayout('plotTOF', plotlySize);
+        Plotly.relayout('plotCoverage', plotlySize); */
 
         i++;
       }, 1000); // Update every 1 second
