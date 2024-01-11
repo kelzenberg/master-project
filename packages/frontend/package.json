@@ -16,7 +16,7 @@
   "private": true,
   "scripts": {
     "dev": "vite serve",
-    "build": "webpack",
+    "build": "webpack --config ./webpack.config.js",
     "start": "vite preview"
   },
   "devDependencies": {
