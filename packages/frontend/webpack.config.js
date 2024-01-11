@@ -1,11 +1,13 @@
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'node:path';
-import url from 'node:url';
-export default {
+/* eslint-disable no-undef */
+/* eslint-disable unicorn/prefer-module */
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('node:path');
+
+module.export = {
   entry: './src/index.js',
   output: {
     filename: 'main.[contenthash].js',
-    path: path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'dist'),
+    path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
     new HtmlWebpackPlugin({
