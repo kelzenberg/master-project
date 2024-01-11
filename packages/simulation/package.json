@@ -1,5 +1,5 @@
 {
-  "name": "@master-project/libs",
+  "name": "@master-project/simulation",
   "version": "0.0.1",
   "description": "Master Project at Berliner Hochschule für Technik",
   "author": "Steffen Ansorge <kelzenberg@users.noreply.github.com> (https://github.com/kelzenberg)",
@@ -14,14 +14,10 @@
   },
   "license": "MIT",
   "private": true,
-  "type": "module",
-  "exports": {
-    "./src/logger": "./src/logger.js",
-    "./src/events": "./src/events.js"
+  "scripts": {
+    "dev": "python3 ./src/main.py",
+    "start": "python3 ./src/main.py"
   },
-  "scripts": {},
   "devDependencies": {},
-  "dependencies": {
-    "winston": "^3.11.0"
-  }
+  "dependencies": {}
 }

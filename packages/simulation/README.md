@@ -1,8 +1,8 @@
-# @master-project/backend
+# @master-project/simulation
 
 ---
 
-Backend server to manage the communication between simulation and frontend
+Python simulation and HTTP server
 
 ---
 
@@ -12,15 +12,15 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
 
 ## Usage
 
-- Start development-only server
+<!-- - Start development-only server
   _(on [http://localhost:3000](http://localhost:3000))_
 
   ```sh
-  npm run B dev
-  ```
+  npm run S dev
+  ``` -->
 
 - Start production server locally
 
   ```sh
-  npm run B start
+  npm run S start
   ```
