@@ -1,38 +1,19 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <title>FHI</title>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="favicon.svg"
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
     />
     <link
       rel="stylesheet"
       href="./styling/index.css"
     />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>FHI</title>
     <script
       defer
-      type="module"
-      src="index.js"
+      src="./index.js"
     ></script>
     <script
       defer
@@ -50,6 +31,8 @@
       src="./utils/events.js"
     ></script>
     <!-- Socket IO Test -->
+    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
+    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
   </head>
   <body>
     <div class="pageContent">
