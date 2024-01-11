@@ -17,8 +17,8 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
-import Molecule from './models/Molecule';
-import Species from './models/Species';
+import Molecule from './js/models/Molecule';
+import Species from './js/models/Species';
 /* import { update } from 'plotly.js'; */
 
 const sitesGroup = new Group();
