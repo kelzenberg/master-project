@@ -51,10 +51,6 @@ export class SimulationViewController {
     this.#plotController.updatePlots(plotData);
   }
 
-  toggleLegend() {
-    this.#legendController.toggleLegend();
-  }
-
   #initializeSites(sites) {
     let sitesGroup = new Group();
     for (const data of sites) {
