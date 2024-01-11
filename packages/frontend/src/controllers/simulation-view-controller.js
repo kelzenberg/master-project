@@ -2,15 +2,18 @@ import { Vector3, Group, Object3D } from 'three';
 import Molecule from '../models/Molecule';
 import { VisualizationController } from './visualization-controller';
 import { PlotController } from './plot-controller';
+import { LegendController } from './legend-controller';
 
-export class SimulationController {
+export class SimulationViewController {
   #visualizationController;
   #plotController;
+  #legendController;
   #maxStoredPlotDataPoints;
 
   constructor(maxStoredPlotDataPoints) {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
+    this.#legendController = new LegendController();
     this.#maxStoredPlotDataPoints = maxStoredPlotDataPoints;
   }
 
@@ -34,6 +37,10 @@ export class SimulationController {
     // Render Initial Plot Data
     this.#plotController = new PlotController(jsonData.plots, this.#maxStoredPlotDataPoints);
     this.#plotController.renderInitialData();
+
+    // Initialize legend
+    this.#legendController = new LegendController(typeDefinitions);
+    this.#legendController.initializeLegend();
   }
 
   renderDynamicData(jsonData) {
@@ -42,6 +49,10 @@ export class SimulationController {
 
     let plotData = jsonData.plots.plotData;
     this.#plotController.updatePlots(plotData);
+  }
+
+  toggleLegend() {
+    this.#legendController.toggleLegend();
   }
 
   #initializeSites(sites) {
