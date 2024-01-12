@@ -23,13 +23,13 @@ export class SimulationViewController {
     let fixedSpecies = jsonData.visualization.fixedSpecies;
     let config = jsonData.visualization.config;
     let sitesGroup = this.#initializeSites(jsonData.visualization.species);
-    let speciesList = this.#initializeSpecies(jsonData.visualization.species, typeDefinitions);
+    let speciesDictionary = this.#initializeSpeciesDictionary(jsonData.visualization.species, typeDefinitions);
 
     this.#visualizationController = new VisualizationController(
       fixedSpecies,
       config,
       sitesGroup,
-      speciesList,
+      speciesDictionary,
       typeDefinitions
     );
     this.#visualizationController.renderInitialData();
@@ -66,8 +66,8 @@ export class SimulationViewController {
     return sitesGroup;
   }
 
-  #initializeSpecies(species, typeDefinitions) {
-    let speciesList = [];
+  #initializeSpeciesDictionary(species, typeDefinitions) {
+    let speciesDictionary = [];
     for (const data of species) {
       let species = [];
       for (const molecule of data) {
@@ -78,9 +78,9 @@ export class SimulationViewController {
         let moleculeObject = new Molecule(position, radius, color);
         species.push(moleculeObject);
       }
-      speciesList.push(species);
+      speciesDictionary.push(species);
     }
-    return speciesList;
+    return speciesDictionary;
   }
 }
 

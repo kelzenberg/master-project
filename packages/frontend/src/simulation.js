@@ -19,7 +19,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import WebGL from 'three/examples/jsm/capabilities/WebGL';
 import Molecule from './js/models/Molecule';
 import Species from './js/models/Species';
-/* import { update } from 'plotly.js'; */
 
 const sitesGroup = new Group();
 const speciesList = [];
@@ -112,31 +111,48 @@ function createMolecule(data) {
   return new Molecule(position, radius, color);
 }
 
+function initializeSpecies() {
+  for (let siteIndex = 0; siteIndex < sitesGroup.children.length; siteIndex++) {
+    const site = sitesGroup.children[siteIndex];
+
+    for (const [speciesIndex, molecules] of speciesList.entries()) {
+      const species = new Species(site, molecules);
+      const speciesMesh = species.createMesh();
+
+      speciesMesh.userData.siteIndex = siteIndex;
+      speciesMesh.userData.speciesIndex = speciesIndex;
+
+      speciesMesh.userData.dynamic = false; // Initially set to inactive
+      speciesMesh.visible = false; // Initially hide the mesh
+
+      allGeometriesGroup.add(speciesMesh);
+    }
+  }
+}
+
 function renderSpeciesFromConfig(jsonData) {
   clearDynamicSpecies();
 
-  for (const [index, data] of jsonData.entries()) {
-    let molecules = speciesList[data];
-    let site = sitesGroup.children[index];
-    let species = new Species(site, molecules);
-    const speciesMesh = species.createMesh();
-    speciesMesh.userData.dynamic = true;
-
-    allGeometriesGroup.add(speciesMesh);
+  for (const [siteIndex, speciesIndex] of jsonData.entries()) {
+    const existingSpeciesMesh = allGeometriesGroup.children.find(
+      child =>
+        child.userData.dynamic === false &&
+        child.userData.siteIndex === siteIndex &&
+        child.userData.speciesIndex === speciesIndex
+    );
+    if (existingSpeciesMesh) {
+      existingSpeciesMesh.visible = true;
+      existingSpeciesMesh.userData.dynamic = true;
+    }
   }
 }
 
 function clearDynamicSpecies() {
-  for (let i = allGeometriesGroup.children.length - 1; i >= 0; i--) {
-    const child = allGeometriesGroup.children[i];
-
-    if (child.userData && child.userData.dynamic) {
-      allGeometriesGroup.remove(child);
-
-      if (child instanceof Mesh) {
-        child.geometry.dispose();
-        child.material.dispose();
-      }
+  for (let i = 0; i < allGeometriesGroup.children.length; i++) {
+    const dynamicSpeciesMesh = allGeometriesGroup.children.find(child => child.userData.dynamic === true);
+    if (dynamicSpeciesMesh) {
+      dynamicSpeciesMesh.userData.dynamic = false;
+      dynamicSpeciesMesh.visible = false;
     }
   }
 }
@@ -157,8 +173,8 @@ function calculateXOffset(jsonData) {
   // Calculate the centerPoint based on maxX and minX
   let centerPoint = new Vector3();
   centerPoint.x = (maxX + minX) / 2;
-  centerPoint.y = 0; // You can adjust this based on your scene requirements
-  centerPoint.z = 0; // You can adjust this based on your scene requirements
+  centerPoint.y = 0;
+  centerPoint.z = 0;
 
   return -maxX + centerPoint.x;
 }
@@ -225,6 +241,7 @@ function renderInitialData(jsonFile) {
 
       readSites(sites);
       readSpecies(species);
+      initializeSpecies();
       renderFixedSpecies(fixedSpecies);
       renderSpeciesFromConfig(config);
       setupInitialPlotData(plotData);
@@ -280,6 +297,10 @@ function animate() {
 if (WebGL.isWebGLAvailable()) {
   renderInitialData('data/new-json-data-format/initial-data.json');
   animate();
+
+  setTimeout(() => {
+    renderDynamicData('data/new-json-data-format/dynamic-data.json');
+  }, 2000);
 } else {
   const warning = WebGL.getWebGLErrorMessage();
   document.querySelector('body').append(warning);
@@ -429,14 +450,6 @@ function setupInitialPlotLayouts() {
 
         // Update the Coverage plot with new data
         Plotly.update('plotCoverage', initialGraphsCoverage, layoutCoverage);
-
-        /*  var plotlySize = {
-          width: 400, // or any new width
-          height: window.innerHeight / 3, // " "
-        };
-
-        Plotly.relayout('plotTOF', plotlySize);
-        Plotly.relayout('plotCoverage', plotlySize); */
 
         i++;
       }, 1000); // Update every 1 second

@@ -21,7 +21,7 @@ export class VisualizationController {
   #fixedSpecies;
   #config;
   #sitesGroup;
-  #speciesList;
+  #speciesDictionary;
   #typeDefinitions;
   #allGeometriesGroup;
   #canvas;
@@ -33,11 +33,11 @@ export class VisualizationController {
   #ambientLight;
   #directionalLight;
 
-  constructor(fixedSpecies, config, sitesGroup, speciesList, typeDefinitions) {
+  constructor(fixedSpecies, config, sitesGroup, speciesDictionary, typeDefinitions) {
     this.#fixedSpecies = fixedSpecies;
     this.#config = config;
     this.#sitesGroup = sitesGroup;
-    this.#speciesList = speciesList;
+    this.#speciesDictionary = speciesDictionary;
     this.#typeDefinitions = typeDefinitions;
     this.#allGeometriesGroup = new Group();
 
@@ -77,8 +77,9 @@ export class VisualizationController {
     });
   }
 
-  // Public Functions for Usage in simulation-controller.js
+  // Public Functions
   renderInitialData() {
+    this.#initializeSpecies();
     this.#renderFixedSpecies();
     this.#renderSpeciesFromConfig();
     this.#setViewPortAlignment();
@@ -90,6 +91,25 @@ export class VisualizationController {
   }
 
   // Private Functions
+  #initializeSpecies() {
+    for (let siteIndex = 0; siteIndex < this.#sitesGroup.children.length; siteIndex++) {
+      const site = this.#sitesGroup.children[siteIndex];
+
+      for (const [speciesIndex, molecules] of this.#speciesDictionary.entries()) {
+        const species = new Species(site, molecules);
+        const speciesMesh = species.createMesh();
+
+        speciesMesh.userData.siteIndex = siteIndex;
+        speciesMesh.userData.speciesIndex = speciesIndex;
+
+        speciesMesh.userData.dynamic = false; // Initially set to inactive
+        speciesMesh.visible = false; // Initially hide the mesh
+
+        this.#allGeometriesGroup.add(speciesMesh);
+      }
+    }
+  }
+
   #renderFixedSpecies() {
     for (const data of this.#fixedSpecies) {
       let molecule = this.#createMolecule(data);
@@ -104,31 +124,29 @@ export class VisualizationController {
     }
   }
 
-  #renderSpeciesFromConfig() {
+  #renderSpeciesFromConfig(jsonData) {
     this.#clearDynamicSpecies();
 
-    for (const [index, data] of this.#config.entries()) {
-      let molecules = this.#speciesList[data];
-      let site = this.#sitesGroup.children[index];
-      let species = new Species(site, molecules);
-      const speciesMesh = species.createMesh();
-      speciesMesh.userData.dynamic = true;
-
-      this.#allGeometriesGroup.add(speciesMesh);
+    for (const [siteIndex, speciesIndex] of jsonData.entries()) {
+      const existingSpeciesMesh = this.#allGeometriesGroup.children.find(
+        child =>
+          child.userData.dynamic === false &&
+          child.userData.siteIndex === siteIndex &&
+          child.userData.speciesIndex === speciesIndex
+      );
+      if (existingSpeciesMesh) {
+        existingSpeciesMesh.visible = true;
+        existingSpeciesMesh.userData.dynamic = true;
+      }
     }
   }
 
   #clearDynamicSpecies() {
-    for (let i = this.#allGeometriesGroup.children.length - 1; i >= 0; i--) {
-      const child = this.#allGeometriesGroup.children[i];
-
-      if (child.userData && child.userData.dynamic) {
-        this.#allGeometriesGroup.remove(child);
-
-        if (child instanceof Mesh) {
-          child.geometry.dispose();
-          child.material.dispose();
-        }
+    for (let i = 0; i < this.#allGeometriesGroup.children.length; i++) {
+      const dynamicSpeciesMesh = this.#allGeometriesGroup.children.find(child => child.userData.dynamic === true);
+      if (dynamicSpeciesMesh) {
+        dynamicSpeciesMesh.userData.dynamic = false;
+        dynamicSpeciesMesh.visible = false;
       }
     }
   }
@@ -170,8 +188,8 @@ export class VisualizationController {
     // Calculate the centerPoint based on maxX and minX
     let centerPoint = new Vector3();
     centerPoint.x = (maxX + minX) / 2;
-    centerPoint.y = 0; // You can adjust this based on your scene requirements
-    centerPoint.z = 0; // You can adjust this based on your scene requirements
+    centerPoint.y = 0;
+    centerPoint.z = 0;
 
     return -maxX + centerPoint.x;
   }
