@@ -6,8 +6,7 @@ export class PlotController {
   #initialGraphsCoverage;
   #tofNumGraphs;
   #coverageNumGraphs;
-  #tofLayout;
-  #coverageLayout;
+  #layout;
 
   constructor(plots, maxStoredDataPoints) {
     this.#plots = plots;
@@ -16,8 +15,7 @@ export class PlotController {
     this.#initialGraphsCoverage = [];
     this.#tofNumGraphs = 0;
     this.#coverageNumGraphs = 0;
-    this.#tofLayout = {
-      title: 'TOF',
+    this.#layout = {
       xaxis: {
         title: 'kmc time',
       },
@@ -25,16 +23,13 @@ export class PlotController {
         title: 'Value',
       },
       hovermode: 'x',
-    };
-    this.#coverageLayout = {
-      title: 'Coverage',
-      xaxis: {
-        title: 'kmc time',
+      margin: {
+        l: 40,
+        r: 0,
+        t: 0,
+        b: 40,
+        pad: 0,
       },
-      yaxis: {
-        title: 'Value',
-      },
-      hovermode: 'x',
     };
   }
 
@@ -42,10 +37,10 @@ export class PlotController {
     // Set up initial data for each graph
     this.#tofNumGraphs = this.#plots.tof.length;
     this.#coverageNumGraphs = this.#plots.coverage.length;
-    let tofColors = this.#getColors(this.#tofNumGraphs);
-    let coverageColors = this.#getColors(this.#coverageNumGraphs);
-    let tofLabels = this.#getTofLabels();
-    let coverageLabels = this.#getCoverageLabels();
+    let tofColors = this.#getColors('tof', 'color');
+    let coverageColors = this.#getColors('coverage', 'averageColor');
+    let tofLabels = this.#getLabels('tof', 'label');
+    let coverageLabels = this.#getLabels('coverage', 'averageLabel');
 
     let initialDataTOF = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData.kmcTime],
@@ -75,10 +70,10 @@ export class PlotController {
       name: coverageLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialDataTOF, this.#tofLayout).then(plotTOF => {
+    Plotly.newPlot('plotTOF', initialDataTOF, this.#layout).then(plotTOF => {
       this.#initialGraphsTOF = [...plotTOF.data];
     });
-    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout).then(plotCoverage => {
+    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout).then(plotCoverage => {
       this.#initialGraphsCoverage = [...plotCoverage.data];
     });
   }
@@ -113,35 +108,47 @@ export class PlotController {
     }
 
     // Update the TOF plot with new data
-    Plotly.update('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
+    Plotly.update('plotTOF', this.#initialGraphsTOF, this.#layout);
 
     // Update the Coverage plot with new data
-    Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout);
+    Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#layout);
   }
 
-  #getColors(numGraphs) {
-    const colors = new Set();
-
-    while (colors.size < numGraphs) {
-      const color = '#' + Math.floor(Math.random() * 16_777_215).toString(16);
-      colors.add(color);
-    }
-
-    return [...colors];
+  #getColors(plotName, key) {
+    return this.#plots[plotName].map(object => {
+      const rgbColor = object[key];
+      return this.#rgbToHex(rgbColor.x, rgbColor.y, rgbColor.z);
+    });
   }
 
-  #getTofLabels() {
-    return this.#plots.tof.map(tofObject => {
-      const label = tofObject.label;
+  #getLabels(plotName, key) {
+    return this.#plots[plotName].map(object => {
+      const label = object[key];
       return label;
     });
   }
 
-  #getCoverageLabels() {
-    return this.#plots.coverage.map(coverageObject => {
-      const label = coverageObject.averageLabel;
-      return label;
-    });
+  #rgbToHex(red, green, blue) {
+    // Ensure that the input values are within the valid range (0.0 to 1.0)
+    red = Math.min(1, Math.max(0, red));
+    green = Math.min(1, Math.max(0, green));
+    blue = Math.min(1, Math.max(0, blue));
+
+    // Convert the decimal values to hexadecimal
+    const redHex = Math.round(red * 255)
+      .toString(16)
+      .padStart(2, '0');
+    const greenHex = Math.round(green * 255)
+      .toString(16)
+      .padStart(2, '0');
+    const blueHex = Math.round(blue * 255)
+      .toString(16)
+      .padStart(2, '0');
+
+    // Concatenate the hexadecimal values
+    const hexCode = `#${redHex}${greenHex}${blueHex}`;
+
+    return hexCode;
   }
 
   #calculateAverage(array) {
