@@ -24,7 +24,7 @@ export class PlotController {
       },
       hovermode: 'x',
       margin: {
-        l: 40,
+        l: 50,
         r: 0,
         t: 0,
         b: 40,
@@ -44,28 +44,24 @@ export class PlotController {
 
     let initialDataTOF = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData.kmcTime],
-      y: [this.#plots.plotData[index].values[0]],
+      y: [this.#plots.plotData.tof[index].values[0]],
       type: 'line',
-      mode: 'lines+markers',
+      mode: 'lines',
       line: {
         color: tofColors[index],
-      },
-      marker: {
-        color: tofColors[index],
+        width: 1,
       },
       name: tofLabels[index],
     }));
 
     let initialDataCoverage = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData.kmcTime],
-      y: [this.#calculateAverage(this.#plots.plotData[index].values)],
+      y: [this.#calculateAverage(this.#plots.plotData.coverage[index].values)],
       type: 'line',
-      mode: 'lines+markers',
+      mode: 'lines',
       line: {
         color: coverageColors[index],
-      },
-      marker: {
-        color: coverageColors[index],
+        width: 1,
       },
       name: coverageLabels[index],
     }));

@@ -22,7 +22,7 @@ export class SimulationViewController {
     let typeDefinitions = jsonData.visualization.typeDefinitions;
     let fixedSpecies = jsonData.visualization.fixedSpecies;
     let config = jsonData.visualization.config;
-    let sitesGroup = this.#initializeSites(jsonData.visualization.species);
+    let sitesGroup = this.#initializeSites(jsonData.visualization.sites);
     let speciesDictionary = this.#initializeSpeciesDictionary(jsonData.visualization.species, typeDefinitions);
 
     this.#visualizationController = new VisualizationController(
@@ -49,6 +49,10 @@ export class SimulationViewController {
 
     let plotData = jsonData.plots.plotData;
     this.#plotController.updatePlots(plotData);
+  }
+
+  animate() {
+    this.#visualizationController.animate();
   }
 
   toggleLegend() {

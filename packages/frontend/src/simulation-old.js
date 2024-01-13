@@ -254,6 +254,7 @@ function renderInitialData(jsonFile) {
       let yOffset = calculateYOffset();
       let zOffset = calculateZOffset();
       let offset = new Vector3(xOffset, yOffset, zOffset);
+      console.log(offset);
       setCameraToFitBoundingBox();
       allGeometriesGroup.position.copy(offset);
     });
@@ -343,10 +344,10 @@ function setupInitialPlotData(plots) {
   // Set up initial data for each graph
   tofNumGraphs = plots.tof.length;
   coverageNumGraphs = plots.coverage.length;
-  const tofColors = getColors(tofNumGraphs);
-  const coverageColors = getColors(coverageNumGraphs);
-  const tofLabels = getTofLabels(plots);
-  const coverageLabels = getCoverageLabels(plots);
+  const tofColors = getColors('tof', 'color', plots);
+  const coverageColors = getColors('coverage', 'averageColor', plots);
+  const tofLabels = getLabels('tof', 'label', plots);
+  const coverageLabels = getLabels('coverage', 'averageLabel', plots);
 
   // hier muss als initial x-value plotData.kmcTime gesetzt werden und y = plotData[index].values[0] (default)
   initialDataTOF = Array.from({ length: tofNumGraphs }, (_, index) => ({
@@ -375,29 +376,41 @@ function setupInitialPlotData(plots) {
   }));
 }
 
-function getColors(numGraphs) {
-  const colors = new Set();
-
-  while (colors.size < numGraphs) {
-    const color = '#' + Math.floor(Math.random() * 16_777_215).toString(16);
-    colors.add(color);
-  }
-
-  return [...colors];
-}
-
-function getTofLabels(plots) {
-  return plots.tof.map(tofObject => {
-    const label = tofObject.label;
+function getLabels(plotName, key, plots) {
+  return plots[plotName].map(object => {
+    const label = object[key];
     return label;
   });
 }
 
-function getCoverageLabels(plots) {
-  return plots.coverage.map(coverageObject => {
-    const label = coverageObject.averageLabel;
-    return label;
+function getColors(plotName, key, plots) {
+  return plots[plotName].map(object => {
+    const rgbColor = object[key];
+    return rgbToHex(rgbColor.x, rgbColor.y, rgbColor.z);
   });
+}
+
+function rgbToHex(red, green, blue) {
+  // Ensure that the input values are within the valid range (0.0 to 1.0)
+  red = Math.min(1, Math.max(0, red));
+  green = Math.min(1, Math.max(0, green));
+  blue = Math.min(1, Math.max(0, blue));
+
+  // Convert the decimal values to hexadecimal
+  const redHex = Math.round(red * 255)
+    .toString(16)
+    .padStart(2, '0');
+  const greenHex = Math.round(green * 255)
+    .toString(16)
+    .padStart(2, '0');
+  const blueHex = Math.round(blue * 255)
+    .toString(16)
+    .padStart(2, '0');
+
+  // Concatenate the hexadecimal values
+  const hexCode = `#${redHex}${greenHex}${blueHex}`;
+
+  return hexCode;
 }
 
 // hier muss plots.plotData mitgegeben werden, sodass x und y values dynamisch gesetzt werden können (kmcTime, values)

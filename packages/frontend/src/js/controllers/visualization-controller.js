@@ -90,6 +90,14 @@ export class VisualizationController {
     this.#renderSpeciesFromConfig();
   }
 
+  animate() {
+    this.#resizeCanvasToDisplaySize();
+
+    requestAnimationFrame(() => this.animate());
+    this.#controls.update();
+    this.#renderer.render(this.#scene, this.#camera);
+  }
+
   // Private Functions
   #initializeSpecies() {
     for (let siteIndex = 0; siteIndex < this.#sitesGroup.children.length; siteIndex++) {
@@ -124,10 +132,10 @@ export class VisualizationController {
     }
   }
 
-  #renderSpeciesFromConfig(jsonData) {
+  #renderSpeciesFromConfig() {
     this.#clearDynamicSpecies();
 
-    for (const [siteIndex, speciesIndex] of jsonData.entries()) {
+    for (const [siteIndex, speciesIndex] of this.#config.entries()) {
       const existingSpeciesMesh = this.#allGeometriesGroup.children.find(
         child =>
           child.userData.dynamic === false &&
@@ -163,7 +171,7 @@ export class VisualizationController {
     const rotationAngleX = -Math.PI / 2; // -90 degrees in radians
     this.#allGeometriesGroup.rotation.set(rotationAngleX, 0, 0);
 
-    let xOffset = this.#calculateXOffset(this.fixedSpecies);
+    let xOffset = this.#calculateXOffset(this.#fixedSpecies);
     let yOffset = this.#calculateYOffset();
     let zOffset = this.#calculateZOffset();
     let offset = new Vector3(xOffset, yOffset, zOffset);
@@ -239,5 +247,22 @@ export class VisualizationController {
 
   #getRadians(degrees) {
     return degrees * (Math.PI / 180);
+  }
+
+  #resizeCanvasToDisplaySize() {
+    const canvas = this.#renderer.domElement;
+    // look up the size the canvas is being displayed
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
+    // adjust displayBuffer size to match
+    if (canvas.width !== width || canvas.height !== height) {
+      // you must pass false here or three.js sadly fights the browser
+      this.#renderer.setSize(width, height, false);
+      this.#camera.aspect = width / height;
+      this.#camera.updateProjectionMatrix();
+
+      // update any render target sizes here
+    }
   }
 }
