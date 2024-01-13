@@ -19,6 +19,8 @@
       defer
       src="./index.js"
     ></script>
+    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
+    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script
       defer
       src="./js/components/simulation-preview.js"
@@ -35,8 +37,6 @@
       src="./js/utils/events.js"
     ></script>
     <!-- Socket IO Test -->
-    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
-    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
   </head>
   <body>
     <div class="pageContent">

@@ -3,27 +3,30 @@ import Molecule from '../models/Molecule';
 import { VisualizationController } from './visualization-controller';
 import { PlotController } from './plot-controller';
 import { LegendController } from './legend-controller';
+import { SliderController } from './slider-controller';
 
 export class SimulationViewController {
   #visualizationController;
   #plotController;
+  #sliderController;
   #legendController;
   #maxStoredPlotDataPoints;
 
   constructor(maxStoredPlotDataPoints) {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
+    this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
     this.#maxStoredPlotDataPoints = maxStoredPlotDataPoints;
   }
 
   renderInitialData(jsonData) {
     // Render Initial 3D Visualization Data
-    let typeDefinitions = jsonData.visualization.typeDefinitions;
-    let fixedSpecies = jsonData.visualization.fixedSpecies;
-    let config = jsonData.visualization.config;
-    let sitesGroup = this.#initializeSites(jsonData.visualization.species);
-    let speciesDictionary = this.#initializeSpeciesDictionary(jsonData.visualization.species, typeDefinitions);
+    const typeDefinitions = jsonData.visualization.typeDefinitions;
+    const fixedSpecies = jsonData.visualization.fixedSpecies;
+    const config = jsonData.visualization.config;
+    const sitesGroup = this.#initializeSites(jsonData.visualization.sites);
+    const speciesDictionary = this.#initializeSpeciesDictionary(jsonData.visualization.species, typeDefinitions);
 
     this.#visualizationController = new VisualizationController(
       fixedSpecies,
@@ -38,6 +41,11 @@ export class SimulationViewController {
     this.#plotController = new PlotController(jsonData.plots, this.#maxStoredPlotDataPoints);
     this.#plotController.renderInitialData();
 
+    // Initialize sliders
+    const sliders = jsonData.slider;
+    this.#sliderController = new SliderController(sliders);
+    this.#sliderController.initializeSliders();
+
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
     this.#legendController.initializeLegend();
@@ -49,6 +57,10 @@ export class SimulationViewController {
 
     let plotData = jsonData.plots.plotData;
     this.#plotController.updatePlots(plotData);
+  }
+
+  animate() {
+    this.#visualizationController.animate();
   }
 
   toggleLegend() {

@@ -15,7 +15,7 @@ COPY packages/frontend/package.json ./packages/frontend/
 COPY packages/libs/package.json ./packages/libs/
 RUN npm ci --include=dev --ignore-scripts=true && npm cache clean --force
 
-COPY packages/frontend/vite.config.js ./packages/frontend/
+COPY packages/frontend/webpack.config.js ./packages/frontend/
 COPY packages/frontend/src ./packages/frontend/src
 COPY packages/libs/src ./packages/libs/src
 RUN npm run F build
