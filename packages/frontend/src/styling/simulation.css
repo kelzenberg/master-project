@@ -29,7 +29,7 @@ body {
 
 .titleBar {
   height: 8rem;
-  border-bottom: 0.25rem solid #006c66;
+  border-bottom: 0.1rem solid #006c66;
   display: flex;
   align-items: center;
 }
@@ -56,18 +56,41 @@ body {
   gap: .5rem;
 }
 
-#userCountContainer > img {
-  width: 1rem;
-  height: 1rem;
+span{
+  font-size: 20px;
 }
 
-#descriptionContainer {
+#userCountContainer > img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+#canvasContainer {
+  position: relative;
+}
+
+.innerContainer {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
-h1{
-  margin:0;
+.innerContainer,
+.innerContainer > * {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+#simulationContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+#resetViewButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 .btn {
@@ -85,56 +108,6 @@ h1{
   border-color: #006c66;
 }
 
-#simulationContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-#canvasContainer {
-  position: relative;
-}
-
-#resetViewButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
-.innerContainer {
-  display: flex;
-  gap: 1rem;
-}
-
-.innerContainer,
-.innerContainer > * {
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
-#sliderContainer {
-  flex-grow: 0.35;
-}
-
-#graphContainer {
-  flex-direction: column;
-}
-
-#plotTOF{
-  height: 35vh;
-}
-
-#plotCoverage{
-  height: 35vh;
-}
-
-/* .plot-container{
-  height: 20%
-} */
-
-
 #backButton {
   display: flex;
   flex-direction: row;
@@ -146,4 +119,29 @@ h1{
 #backButton > img {
   width: 1rem;
   height: 1rem;
+}
+
+#descriptionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+h1{
+  margin:0;
+}
+
+#sliderContainer {
+  flex-grow: 1;
+}
+
+.graphContainer {
+  flex-direction: column;
+}
+
+#plotTOF{
+  height: 35vh;
+}
+
+#plotCoverage{
+  height: 35vh;
 }

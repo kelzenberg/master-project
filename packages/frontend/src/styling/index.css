@@ -20,7 +20,7 @@ html {
 
 .titleBar {
   height: 8rem;
-  border-bottom: .25rem solid #006C66;
+  border-bottom: .1rem solid #006C66;
   background-image: url("../ressources/misc/fhi_logo.png");
   background-size: contain;
   background-repeat: no-repeat;
