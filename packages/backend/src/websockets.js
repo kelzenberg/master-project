@@ -12,14 +12,15 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
   ioServer.on('connection', socket => {
     logger.info('Client connected.');
 
-    const testJSONData = readDirectoryFiles('./src/data');
-    logger.info(logger.info(`Emitting message on ${SocketEventTypes.INIT}`, testJSONData));
-    socket.emit(SocketEventTypes.INIT, testJSONData.initial);
-
     // Event listener to log ANY incoming events ("middleware")
     socket.onAny((eventType, ...args) => {
       logger.info(`New socket event on event type: ${`${eventType}`.toUpperCase()}`, { data: args });
     });
+
+    // Custom event emitters
+    const testJSONData = readDirectoryFiles('./src/data');
+    logger.info(`Emitting message on ${SocketEventTypes.INIT}`);
+    socket.emit(SocketEventTypes.INIT, testJSONData.initial);
 
     // Custom event listeners
     socket.on(SocketEventTypes.MESSAGE, messageHandler(ioServer, logger));
