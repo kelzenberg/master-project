@@ -17,7 +17,7 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
     });
 
     // Custom event listeners
-    socket.on(SocketEventTypes.MESSAGE, messageHandler(ioServer));
+    socket.on(SocketEventTypes.MESSAGE, messageHandler(ioServer, logger));
 
     // Client disconnect event listener
     socket.on('disconnect', () => logger.info('Client disconnected.'));
