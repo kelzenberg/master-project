@@ -12,7 +12,9 @@ export const createApp = logger => {
   const app = express().disable('x-powered-by');
 
   app.use(bodyParser.json());
-  app.use('/', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'static')));
+
+  const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
+  app.use('/', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), staticPath)));
   app.get('/favicon.ico', (req, res) => res.status(204).end()); // temporarily until favicon is available
 
   app.use(publicRoutes);
