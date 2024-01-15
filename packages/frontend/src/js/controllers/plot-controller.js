@@ -7,6 +7,8 @@ export class PlotController {
   #tofNumGraphs;
   #coverageNumGraphs;
   #layout;
+  #lineWidth = 1;
+  #markerSize = 4;
 
   constructor(plots, maxStoredDataPoints) {
     this.#plots = plots;
@@ -45,11 +47,13 @@ export class PlotController {
     let initialDataTOF = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData.kmcTime],
       y: [this.#plots.plotData.tof[index].values[0]],
-      type: 'line',
-      mode: 'lines',
+      mode: 'lines+markers',
+      color: tofColors[index],
       line: {
-        color: tofColors[index],
-        width: 1,
+        width: this.#lineWidth,
+      },
+      marker: {
+        size: this.#markerSize,
       },
       name: tofLabels[index],
     }));
@@ -57,11 +61,13 @@ export class PlotController {
     let initialDataCoverage = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData.kmcTime],
       y: [this.#calculateAverage(this.#plots.plotData.coverage[index].values)],
-      type: 'line',
-      mode: 'lines',
+      mode: 'lines+markers',
+      color: coverageColors[index],
       line: {
-        color: coverageColors[index],
-        width: 1,
+        width: this.#lineWidth,
+      },
+      marker: {
+        size: this.#markerSize,
       },
       name: coverageLabels[index],
     }));
