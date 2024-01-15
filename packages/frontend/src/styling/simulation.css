@@ -18,10 +18,13 @@ body {
 
 h1{
   margin:0;
-  font-weight: 300;
+  font-size: 30px;
+  font-weight: 400;
+  color: #006c66;
 }
 
 p{
+  font-size: 18px;
   font-weight: 100;
 }
 
@@ -77,12 +80,14 @@ span{
 #canvasContainer {
   position: relative;
   display: flex;
-  /* flex: 1; */
   flex-direction: column;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #canvas{
-  width: 100%;
+  width: 100% !important;
+  height: 100% !important;
   outline:#006c66 .5px solid;
 }
 
@@ -160,4 +165,5 @@ span{
 #plotCoverage{
   height: 35vh;
   outline:#006c66 .5px solid;
+  border-bottom: #006c66 .1px solid;
 }
