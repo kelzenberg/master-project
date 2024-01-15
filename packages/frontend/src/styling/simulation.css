@@ -40,6 +40,7 @@ p{
   border-bottom: 0.1rem solid #006c66;
   display: flex;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .titleBar > * {
@@ -81,6 +82,7 @@ span{
 
 #canvas{
   width: 100%;
+  outline:black .5px solid;
 }
 
 .simulationController {
@@ -150,9 +152,11 @@ span{
 }
 
 #plotTOF{
-  height: 40vh;
+  height: 35vh;
+  outline:black .5px solid;
 }
 
 #plotCoverage{
-  height: 40vh;
+  height: 35vh;
+  outline:black .5px solid;
 }
