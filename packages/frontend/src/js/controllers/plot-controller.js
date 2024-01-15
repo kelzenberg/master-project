@@ -45,8 +45,8 @@ export class PlotController {
     let coverageLabels = this.#getLabels('coverage', 'averageLabel');
 
     let initialDataTOF = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
-      x: [this.#plots.plotData.kmcTime],
-      y: [this.#plots.plotData.tof[index].values[0]],
+      x: [this.#plots.plotData[0].kmcTime],
+      y: [this.#plots.plotData[0].tof[index].values[0]],
       mode: 'lines+markers',
       color: tofColors[index],
       line: {
@@ -59,8 +59,8 @@ export class PlotController {
     }));
 
     let initialDataCoverage = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
-      x: [this.#plots.plotData.kmcTime],
-      y: [this.#calculateAverage(this.#plots.plotData.coverage[index].values)],
+      x: [this.#plots.plotData[0].kmcTime],
+      y: [this.#calculateAverage(this.#plots.plotData[0].coverage[index].values)],
       mode: 'lines+markers',
       color: coverageColors[index],
       line: {
@@ -80,40 +80,39 @@ export class PlotController {
     });
   }
 
-  updatePlots(plotData) {
-    // Update each TOF graph with new data
-    for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
-      const graphTOF = this.#initialGraphsTOF[tofGraphIndex];
+  updatePlots(plotDataList) {
+    for (const plotData of plotDataList) {
+      // Update each TOF graph with new data
+      for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
+        const graphTOF = this.#initialGraphsTOF[tofGraphIndex];
 
-      graphTOF.x.push(plotData.kmcTime);
-      graphTOF.y.push(plotData.tof[tofGraphIndex].values[0]); //hier muss noch ein toggle für values[1] eingebaut werden!
+        graphTOF.x.push(plotData.kmcTime);
+        graphTOF.y.push(plotData.tof[tofGraphIndex].values[0]); //hier muss noch ein toggle für values[1] eingebaut werden!
 
-      // Remove oldest data points if the limit is reached
-      if (graphTOF.x.length > this.#maxStoredDataPoints) {
-        graphTOF.x.shift();
-        graphTOF.y.shift();
+        // Remove oldest data points if the limit is reached
+        if (graphTOF.x.length > this.#maxStoredDataPoints) {
+          graphTOF.x.shift();
+          graphTOF.y.shift();
+        }
       }
-    }
 
-    // Update each Coverage graph with new data
-    for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
-      const graphCoverage = this.#initialGraphsCoverage[coverageGraphIndex];
+      // Update each Coverage graph with new data
+      for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
+        const graphCoverage = this.#initialGraphsCoverage[coverageGraphIndex];
 
-      graphCoverage.x.push(plotData.kmcTime);
-      graphCoverage.y.push(this.#calculateAverage(plotData.coverage[coverageGraphIndex].values));
+        graphCoverage.x.push(plotData.kmcTime);
+        graphCoverage.y.push(this.#calculateAverage(plotData.coverage[coverageGraphIndex].values));
 
-      // Remove oldest data points if the limit is reached
-      if (graphCoverage.x.length > this.#maxStoredDataPoints) {
-        graphCoverage.x.shift();
-        graphCoverage.y.shift();
+        // Remove oldest data points if the limit is reached
+        if (graphCoverage.x.length > this.#maxStoredDataPoints) {
+          graphCoverage.x.shift();
+          graphCoverage.y.shift();
+        }
       }
+
+      Plotly.update('plotTOF', this.#initialGraphsTOF, this.#layout);
+      Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#layout);
     }
-
-    // Update the TOF plot with new data
-    Plotly.update('plotTOF', this.#initialGraphsTOF, this.#layout);
-
-    // Update the Coverage plot with new data
-    Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#layout);
   }
 
   #getColors(plotName, key) {
