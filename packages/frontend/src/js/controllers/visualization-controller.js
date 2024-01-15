@@ -86,7 +86,7 @@ export class VisualizationController {
   }
 
   animate() {
-    this.#resizeCanvasToDisplaySize();
+    //this.#resizeCanvasToDisplaySize();
 
     requestAnimationFrame(() => this.animate());
     this.#controls.update();
@@ -258,6 +258,8 @@ export class VisualizationController {
       this.#camera.updateProjectionMatrix();
 
       // update any render target sizes here
+
+      //Hier nochmal schauen wegen Canvas shrink
     }
   }
 }
