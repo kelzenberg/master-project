@@ -66,10 +66,10 @@ export class PlotController {
       name: coverageLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialDataTOF, this.#layout).then(plotTOF => {
+    Plotly.newPlot('plotTOF', initialDataTOF, this.#layout, { responsive: true }).then(plotTOF => {
       this.#initialGraphsTOF = [...plotTOF.data];
     });
-    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout).then(plotCoverage => {
+    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout, { responsive: true }).then(plotCoverage => {
       this.#initialGraphsCoverage = [...plotCoverage.data];
     });
   }
