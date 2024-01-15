@@ -167,3 +167,71 @@ span{
   outline:#006c66 .5px solid;
   border-bottom: #006c66 .1px solid;
 }
+
+/* Media Query for tablet view */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  .titleBar {
+    height: 7rem;
+  }
+
+  #sliderContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 20%;
+  }
+
+  #graphContainer {
+    display: flex;
+    flex-direction: column
+  }
+
+  #descriptionContainer {
+    margin-left: 1rem;
+  }
+
+  .simulationController {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #canvasContainer{
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  #canvas {
+    width: 100% !important;
+    height: 100% !important;
+    outline: #006c66 .5px solid;
+  }
+
+  #resetViewButton {
+    position: absolute !important;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  #plotTOF{
+    height: 35vh;
+    width: 100%;
+    outline:#006c66 .5px solid;
+  }
+
+  #plotCoverage{
+    height: 35vh;
+    width: 100%;
+    outline:#006c66 .5px solid;
+    border-bottom: #006c66 .1px solid;
+  }
+
+}
