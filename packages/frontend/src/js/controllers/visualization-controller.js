@@ -60,7 +60,7 @@ export class VisualizationController {
     // Lighting setup
     this.#ambientLight = new AmbientLight(0xff_ff_ff, 1);
     this.#directionalLight = new DirectionalLight(0xff_ff_ff, 1);
-    this.#directionalLight.position.set(0, 0, 1).normalize();
+    this.#directionalLight.position.set(0, 1, 1).normalize();
 
     this.#scene.add(this.#directionalLight);
     this.#scene.add(this.#ambientLight);
