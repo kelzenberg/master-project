@@ -30,16 +30,18 @@
   <body>
     <div class="pageContent">
       <div class="titleBar">
-        <button
-          type="button"
-          id="backButton"
-          class="btn"
-        >
-          <img
-            src="./ressources/misc/left-arrow.png"
-            alt="Back"
-          />
-        </button>
+        <a href="index.html">
+          <button
+            type="button"
+            id="backButton"
+            class="btn"
+          >
+            <img
+              src="./ressources/misc/left-arrow.png"
+              alt="Back"
+            />
+          </button>
+        </a>
         <div id="titleImg"></div>
         <div id="userCountContainer">
           <span>0</span>
@@ -58,17 +60,15 @@
           <canvas id="canvas"></canvas>
           <div id="descriptionContainer">
             <h1>Wasserstoff-Simulation</h1>
-            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy voluptua.</p>
+            <p>
+              Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles
+              a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the
+              reaction network includes different classes of surface reactions as well as different types of adsorption
+              sites.
+            </p>
           </div>
         </div>
-        <div id="sliderContainer">
-          <range-slider></range-slider>
-          <range-slider></range-slider>
-          <range-slider></range-slider>
-          <range-slider></range-slider>
-          <range-slider></range-slider>
-          <range-slider></range-slider>
-        </div>
+        <div id="sliderContainer"></div>
         <div class="graphContainer">
           <div id="plotTOF"></div>
           <br />
