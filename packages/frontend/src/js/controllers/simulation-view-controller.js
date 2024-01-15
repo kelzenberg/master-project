@@ -95,14 +95,3 @@ export class SimulationViewController {
     return speciesDictionary;
   }
 }
-
-/*
-example usage:
-
-const maxStoredPlotDataPoints = 50;
-const simulationController = new SimulationController(maxStoredPlotDataPoints);
-
-//Diese functions müssen dann aufgerufen werden, wenn wir von der simulation aus dem backend data bekommen (initialData oder dynamicData)
-simulationController.renderInitialData(initialData);
-simulationController.renderDynamicData(dynamicData);
-*/
