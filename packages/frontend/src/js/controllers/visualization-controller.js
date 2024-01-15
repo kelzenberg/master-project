@@ -11,7 +11,6 @@ import {
   Mesh,
   Group,
   Box3,
-  AxesHelper,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Molecule from '../models/Molecule';
@@ -49,10 +48,6 @@ export class VisualizationController {
     this.#renderer.setPixelRatio(window.devicePixelRatio);
     this.#renderer.setSize(window.innerWidth * 0.4, window.innerHeight * 0.4);
     this.#renderer.setClearColor(0xff_ff_ff);
-
-    // Gizmo
-    this.#axesHelper = new AxesHelper(100);
-    this.#scene.add(this.#axesHelper);
 
     // Camera setup
     this.#camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
