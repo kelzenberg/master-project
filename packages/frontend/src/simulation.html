@@ -17,21 +17,9 @@
     />
     <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
     <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <!-- /Socket IO Test -->
     <script
       defer
-      type="module"
-      src="/socket.io/socket.io.js"
-    ></script>
-    <script
-      defer
-      type="module"
-      src="./js/services/sockets.js"
-    ></script>
-    <!-- Socket IO Test/ -->
-    <script
-      defer
-      src="./js/components/range-slider.js"
+      src="js/components/range-slider.js"
     ></script>
     <script
       defer
@@ -58,11 +46,8 @@
           <img src="./ressources/misc/user.png" />
         </div>
       </div>
-      <div id="simulationContainer">
-        <div
-          id="canvasContainer"
-          class="innerContainer"
-        >
+      <div class="simulationController">
+        <div id="canvasContainer">
           <button
             type="button"
             id="resetViewButton"

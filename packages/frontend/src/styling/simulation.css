@@ -67,24 +67,26 @@ span{
 
 #canvasContainer {
   position: relative;
-}
-
-.innerContainer {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
-.innerContainer,
-.innerContainer > * {
+#canvas{
+  width: 100%;
+}
+
+.simulationController {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+}
+
+.simulationController,
+.simulationController > * {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
-}
-
-#simulationContainer {
-  display: flex;
-  gap: 1rem;
 }
 
 #resetViewButton {
@@ -124,6 +126,7 @@ span{
 #descriptionContainer {
   display: flex;
   flex-direction: column;
+  margin-top: 2rem;
 }
 
 h1{
@@ -131,17 +134,21 @@ h1{
 }
 
 #sliderContainer {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 5rem;
+  max-width: 10rem;
 }
 
 .graphContainer {
+  display: flex;
   flex-direction: column;
 }
 
 #plotTOF{
-  height: 35vh;
+  height: 40vh;
 }
 
 #plotCoverage{
-  height: 35vh;
+  height: 40vh;
 }
