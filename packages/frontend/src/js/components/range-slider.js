@@ -53,7 +53,7 @@ template.innerHTML = `
         background: #006C66;
         cursor: pointer;
       }
-    
+
     </style>
     <div class="rangeSliderContainer">
         <span></span>
@@ -87,6 +87,15 @@ class rangeSlider extends HTMLElement {
     if (value <= this.min || value >= this.max) return;
 
     this.value = value;
+
+    // Dispatch a custom event with the label and new value
+    const eventOptions = { bubbles: true, composed: true };
+    const valueChangedEvent = new CustomEvent('valueChanged', {
+      detail: { label: this.getAttribute('label'), value: this.value },
+      ...eventOptions,
+    });
+
+    this.dispatchEvent(valueChangedEvent);
 
     this.renderValueText();
   }
