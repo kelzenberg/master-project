@@ -53,12 +53,12 @@ export class LegendController {
         rowContainer.append(keySpan);
 
         // Create a span element for the type info
-        const infoSpan = document.createElement('span');
-        infoSpan.textContent = type.info;
+        const infoP = document.createElement('p');
+        infoP.textContent = type.info;
 
         // Append the rowContainer and infoSpan to the typeDiv
         typeDiv.append(rowContainer);
-        typeDiv.append(infoSpan);
+        typeDiv.append(infoP);
 
         // Append the typeDiv to the legendContainer
         legendContainer.append(typeDiv);
