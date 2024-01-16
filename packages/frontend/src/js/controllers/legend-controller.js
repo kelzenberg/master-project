@@ -12,7 +12,7 @@ export class LegendController {
 
     // Loop through each type definition and create corresponding HTML elements
     for (const key in this.#typeDefinitions) {
-      if (Object.prototype.hasOwnProperty.call(this.#typeDefinitions, key)) {
+      if (!(key === 'empty') && Object.prototype.hasOwnProperty.call(this.#typeDefinitions, key)) {
         const type = this.#typeDefinitions[key];
 
         // Create a div element for each type
