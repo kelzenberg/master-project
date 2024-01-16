@@ -23,12 +23,12 @@ export class SliderController {
 
       // Add event listener for the custom event
       rangeSlider.addEventListener('valueChanged', event => {
-        this.sendValueChangedEvent(event.detail.label, event.detail.value);
+        this.#sendValueChangedEvent(event.detail.label, event.detail.value);
       });
     }
   }
 
-  sendValueChangedEvent(label, value) {
+  #sendValueChangedEvent(label, value) {
     // Hier muss dann der geänderte value + label als identifier für den parameter der verändert wird an das backend und schließlich die simulation gesendet werden!
     console.log(label + ' new value: ' + value);
   }
