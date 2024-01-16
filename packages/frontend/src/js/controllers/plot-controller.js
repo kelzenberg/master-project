@@ -21,9 +21,6 @@ export class PlotController {
       xaxis: {
         title: 'kmc time',
       },
-      yaxis: {
-        title: 'Value',
-      },
       hovermode: 'x',
       margin: {
         l: 50,
@@ -75,9 +72,11 @@ export class PlotController {
     Plotly.newPlot('plotTOF', initialDataTOF, this.#layout, { responsive: true }).then(plotTOF => {
       this.#initialGraphsTOF = [...plotTOF.data];
     });
-    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout, { responsive: true }).then(plotCoverage => {
-      this.#initialGraphsCoverage = [...plotCoverage.data];
-    });
+    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout, { title: 'Coverage', responsive: true }).then(
+      plotCoverage => {
+        this.#initialGraphsCoverage = [...plotCoverage.data];
+      }
+    );
   }
 
   updatePlots(plotDataList) {
