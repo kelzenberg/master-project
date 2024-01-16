@@ -3,19 +3,21 @@ import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
 import { handler as messageHandler } from './handlers/events/message.js';
 import { readDirectoryFiles } from './utils/filereader.js';
+import { packetLogger } from './middlewares/events/packet-logger.js';
+import { errorHandler } from './middlewares/events/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
 export const startSocketServer = (httpServer, serverOptions) => () => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
-  ioServer.on('connection', socket => {
-    logger.info(`Client connected ${socket.id}`); // id is not persisting between session, debug only!
+  // Packet middlewares
+  ioServer.use(packetLogger(logger));
+  ioServer.use(errorHandler(logger));
 
-    // Event listener to log ANY incoming events ("middleware")
-    socket.onAny((eventType, ...args) => {
-      logger.info(`New socket event on event type: ${`${eventType}`.toUpperCase()}`, { data: args });
-    });
+  // Client connection over Sockets
+  ioServer.on('connection', socket => {
+    logger.info(`Client ${socket.id} connected`); // id is not persisting between session, debug only!
 
     // Custom event emitters
     const testJSONData = readDirectoryFiles('./src/data');
