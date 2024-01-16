@@ -10,7 +10,7 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   ioServer.on('connection', socket => {
-    logger.info('Client connected.');
+    logger.info(`Client connected ${socket.id}`); // id is not persisting between session, debug only!
 
     // Event listener to log ANY incoming events ("middleware")
     socket.onAny((eventType, ...args) => {
