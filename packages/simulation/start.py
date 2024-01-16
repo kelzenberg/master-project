@@ -344,7 +344,7 @@ if __name__ == "__main__":
         app.kmc_model.parameter_queue.put(settings.parameters)
         return jsonify(success=True)
 
-    @app.route('/pause', methods=['GET'])
+    @app.route('/pause', methods=['PUT'])
     def pause_simulation():
         if app.simulation_running:
             os.kill(app.kmc_model.pid, 19)
@@ -352,7 +352,7 @@ if __name__ == "__main__":
             return jsonify(success=True)
         return jsonify(success=False)
 
-    @app.route('/resume', methods=['GET'])
+    @app.route('/resume', methods=['PUT'])
     def resume_simulation():
         if not app.simulation_running:
             os.kill(app.kmc_model.pid, 18)
