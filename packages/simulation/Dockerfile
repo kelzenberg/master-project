@@ -13,7 +13,8 @@ RUN apt-get update -y && apt-get install -y \
   python3-ase \
   python3-setuptools \
   python3-lxml \
-  python3-numpy
+  python3-numpy \
+  python3-flask
 
 RUN git clone https://github.com/kmcos/kmcos.git
 WORKDIR /app/kmcos
