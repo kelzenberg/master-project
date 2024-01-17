@@ -1,7 +1,7 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { handler as dynamicHandler } from './handlers/events/dynamic.js';
+// import { handler as dynamicHandler } from './handlers/events/dynamic.js';
 import { readDirectoryFiles } from './utils/filereader.js';
 import { packetLogger } from './middlewares/events/packet-logger.js';
 import { errorHandler } from './middlewares/events/error-handler.js';
@@ -29,12 +29,12 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
       if (count > 11) {
         clearInterval(interval);
       }
-      socket.emit(SocketEventTypes.INITIAL, testJSONData[count]);
+      socket.emit(SocketEventTypes.DYNAMIC, testJSONData[count]);
       count++;
     }, 2000);
 
     // Custom event listeners
-    socket.on(SocketEventTypes.DYNAMIC, dynamicHandler(ioServer, logger));
+    // socket.on(SocketEventTypes.DYNAMIC, dynamicHandler(ioServer, logger));
 
     // Client disconnect event listener
     socket.on('disconnect', () => logger.info('Client disconnected.'));
