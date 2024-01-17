@@ -21,6 +21,8 @@ export class SimulationViewController {
   }
 
   renderInitialData(jsonData) {
+    // enable loading spinner !
+
     // Render Initial 3D Visualization Data
     const typeDefinitions = jsonData.visualization.typeDefinitions;
     const fixedSpecies = jsonData.visualization.fixedSpecies;
@@ -49,6 +51,8 @@ export class SimulationViewController {
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
     this.#legendController.initializeLegend();
+
+    // disable loading spinner!
   }
 
   renderDynamicData(jsonData) {

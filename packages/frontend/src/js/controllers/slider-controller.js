@@ -1,3 +1,4 @@
+//import { sendSliderEvent } from '../services/sockets';
 export class SliderController {
   #sliders;
 
@@ -29,7 +30,10 @@ export class SliderController {
   }
 
   #sendValueChangedEvent(label, value) {
-    // Hier muss dann der geänderte value + label als identifier für den parameter der verändert wird an das backend und schließlich die simulation gesendet werden!
-    console.log(label + ' new value: ' + value);
+    console.log(label + ' new value = ' + value);
+    // sendSliderEvent({
+    //   label,
+    //   value,
+    // });
   }
 }
