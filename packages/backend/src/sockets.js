@@ -26,11 +26,12 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
 
     let count = 1;
     const interval = setInterval(() => {
-      if (count > 11) {
+      if (count > Object.keys(testJSONData).length - 1) {
         clearInterval(interval);
         return;
       }
 
+      logger.info(`Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`, { data: count });
       socket.emit(SocketEventTypes.DYNAMIC, testJSONData[count]);
       count++;
     }, 2000);
