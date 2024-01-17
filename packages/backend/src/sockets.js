@@ -28,7 +28,9 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
     const interval = setInterval(() => {
       if (count > 11) {
         clearInterval(interval);
+        return;
       }
+
       socket.emit(SocketEventTypes.DYNAMIC, testJSONData[count]);
       count++;
     }, 2000);
