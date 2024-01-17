@@ -24,6 +24,15 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
     logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
     socket.emit(SocketEventTypes.INITIAL, testJSONData.initial);
 
+    let count = 1;
+    const interval = setInterval(() => {
+      if (count > 11) {
+        clearInterval(interval);
+      }
+      socket.emit(SocketEventTypes.INITIAL, testJSONData[count]);
+      count++;
+    }, 2000);
+
     // Custom event listeners
     socket.on(SocketEventTypes.DYNAMIC, dynamicHandler(ioServer, logger));
 
