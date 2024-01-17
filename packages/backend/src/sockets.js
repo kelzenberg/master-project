@@ -1,7 +1,7 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { handler as messageHandler } from './handlers/events/message.js';
+import { handler as dynamicHandler } from './handlers/events/dynamic.js';
 import { readDirectoryFiles } from './utils/filereader.js';
 import { packetLogger } from './middlewares/events/packet-logger.js';
 import { errorHandler } from './middlewares/events/error-handler.js';
@@ -21,11 +21,11 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
 
     // Custom event emitters
     const testJSONData = readDirectoryFiles('./src/data');
-    logger.info(`Emitting message on ${SocketEventTypes.INIT.toUpperCase()}`);
-    socket.emit(SocketEventTypes.INIT, testJSONData.initial);
+    logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
+    socket.emit(SocketEventTypes.INITIAL, testJSONData.initial);
 
     // Custom event listeners
-    socket.on(SocketEventTypes.MESSAGE, messageHandler(ioServer, logger));
+    socket.on(SocketEventTypes.DYNAMIC, dynamicHandler(ioServer, logger));
 
     // Client disconnect event listener
     socket.on('disconnect', () => logger.info('Client disconnected.'));
