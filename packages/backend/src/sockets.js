@@ -21,7 +21,7 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
 
     // Custom event emitters
     const testJSONData = readDirectoryFiles('./src/data');
-    logger.info(`Emitting message on ${SocketEventTypes.INIT}`);
+    logger.info(`Emitting message on ${SocketEventTypes.INIT.toUpperCase()}`);
     socket.emit(SocketEventTypes.INIT, testJSONData.initial);
 
     // Custom event listeners
