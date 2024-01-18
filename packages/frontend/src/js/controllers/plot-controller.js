@@ -6,7 +6,8 @@ export class PlotController {
   #initialGraphsCoverage;
   #tofNumGraphs;
   #coverageNumGraphs;
-  #layout;
+  #tofLayout;
+  #coverageLayout;
   #lineWidth = 1;
   #markerSize = 4;
 
@@ -17,7 +18,7 @@ export class PlotController {
     this.#initialGraphsCoverage = [];
     this.#tofNumGraphs = 0;
     this.#coverageNumGraphs = 0;
-    this.#layout = {
+    this.#tofLayout = {
       xaxis: {
         title: 'kmc time',
       },
@@ -25,14 +26,16 @@ export class PlotController {
       margin: {
         l: 40,
         r: 10,
-        t: 40,
+        t: 30,
         b: 40,
         pad: 0,
       },
       title: {
         text: 'TOF',
       },
+      responsive: true,
     };
+    this.#coverageLayout = { ...this.#tofLayout, title: { text: 'Coverage' } };
   }
 
   renderInitialData() {
@@ -72,14 +75,15 @@ export class PlotController {
       name: coverageLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialDataTOF, this.#layout, { responsive: true }).then(plotTOF => {
+    Plotly.newPlot('plotTOF', initialDataTOF, this.#tofLayout, { responsive: true }).then(plotTOF => {
       this.#initialGraphsTOF = [...plotTOF.data];
     });
-    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#layout, { title: 'Coverage', responsive: true }).then(
-      plotCoverage => {
-        this.#initialGraphsCoverage = [...plotCoverage.data];
-      }
-    );
+    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout, {
+      title: 'Coverage',
+      responsive: true,
+    }).then(plotCoverage => {
+      this.#initialGraphsCoverage = [...plotCoverage.data];
+    });
   }
 
   updatePlots(plotDataList) {
@@ -112,8 +116,8 @@ export class PlotController {
         }
       }
 
-      Plotly.update('plotTOF', this.#initialGraphsTOF, this.#layout);
-      Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#layout);
+      Plotly.update('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
+      Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
     }
   }
 
