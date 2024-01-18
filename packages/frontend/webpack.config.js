@@ -30,6 +30,11 @@ module.exports = {
           filename: 'img/[name].[hash:8][ext][query]',
         },
       },
+      {
+        test: /\.(js)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+      },
     ],
   },
 };
