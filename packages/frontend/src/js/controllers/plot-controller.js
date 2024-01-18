@@ -1,4 +1,5 @@
-import Plotly from 'plotly.js-dist';
+import { newPlot, update as plotUpdate } from 'plotly.js-dist-min';
+
 export class PlotController {
   #plots;
   #maxStoredDataPoints;
@@ -75,10 +76,10 @@ export class PlotController {
       name: coverageLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialDataTOF, this.#tofLayout, { responsive: true }).then(plotTOF => {
+    newPlot('plotTOF', initialDataTOF, this.#tofLayout, { responsive: true }).then(plotTOF => {
       this.#initialGraphsTOF = [...plotTOF.data];
     });
-    Plotly.newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout, {
+    newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout, {
       title: 'Coverage',
       responsive: true,
     }).then(plotCoverage => {
@@ -116,8 +117,8 @@ export class PlotController {
         }
       }
 
-      Plotly.update('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
-      Plotly.update('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
+      plotUpdate('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
+      plotUpdate('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
     }
   }
 
