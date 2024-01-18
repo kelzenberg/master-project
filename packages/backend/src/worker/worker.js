@@ -21,7 +21,7 @@ const main = async () => {
       parentPort.postMessage(await response.json());
       await delayFor(2000);
     } catch (error) {
-      logger.error(error);
+      logger.error('Worker failed', error);
       throw new Error(error);
     }
   }
