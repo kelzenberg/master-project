@@ -7,7 +7,7 @@ const main = () => {
       counter++;
     }
 
-    console.log(`From worker: ${workerData.simURL}`);
+    console.log(`From worker: Sim URL "${workerData.simURL}"`);
     parentPort.postMessage(counter);
   } catch (error) {
     console.error(error);

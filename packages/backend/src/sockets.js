@@ -1,5 +1,7 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Worker, isMainThread } from 'node:worker_threads';
+import path from 'node:path';
+import url from 'node:url';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
 // import { handler as dynamicHandler } from './handlers/events/dynamic.js';
@@ -18,7 +20,9 @@ export const startSocketServer = (httpServer, serverOptions) => () => {
 
   if (process.env.WORKER_ACTIVE == 1 && isMainThread) {
     const workerLogger = Logger({ name: 'worker' });
-    const fetchWorker = new Worker('./src/worker.js', { workerData: { simURL: process.env.SIMULATION_URL } });
+    const fetchWorker = new Worker(path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'worker.js'), {
+      workerData: { simURL: `${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}` },
+    });
 
     fetchWorker.on('online', () => {
       workerLogger.info(`Worker is alive`);

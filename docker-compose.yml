@@ -13,14 +13,16 @@ services:
       REDIS_HOST: cache
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SIMULATION_URL: sim
+      SIMULATION_PORT: 8081
     networks:
       - backend
     ports:
       - 8080:3000
     command: node ./src/index.js
     depends_on:
-      - cache
       - sim
+      - cache
 
   sim:
     build:
