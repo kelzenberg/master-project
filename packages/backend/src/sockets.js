@@ -1,7 +1,4 @@
 import { Server as SocketIOServer } from 'socket.io';
-import { Worker, isMainThread } from 'node:worker_threads';
-import path from 'node:path';
-import url from 'node:url';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
 // import { handler as dynamicHandler } from './handlers/events/dynamic.js';
@@ -11,36 +8,40 @@ import { errorHandler } from './middlewares/events/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
-export const startSocketServer = (httpServer, serverOptions) => () => {
+export const startSocketServer = (httpServer, worker, serverOptions) => () => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   // Packet middlewares
   ioServer.use(packetLogger(logger));
   ioServer.use(errorHandler(logger));
 
-  if (process.env.WORKER_ACTIVE == 1 && isMainThread) {
-    const workerLogger = Logger({ name: 'worker' });
-    const fetchWorker = new Worker(path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'worker.js'), {
-      workerData: { simURL: `${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}` },
-    });
-
-    fetchWorker.on('online', () => {
-      workerLogger.info(`Worker is alive`);
-    });
-    fetchWorker.on('message', data => {
-      workerLogger.info(`Got worker data: ${data}`);
-    });
-    fetchWorker.on('error', error => {
-      workerLogger.error(`Received worker error`, { error });
-    });
-    fetchWorker.on('exit', code => {
-      if (code !== 0) throw new Error(`Worker stopped with exit code ${code}`);
-    });
-  }
-
   // Client connection over Sockets
   ioServer.on('connection', socket => {
     logger.info(`Client ${socket.id} connected`); // id is not persisting between session, debug only!
+
+    worker.on('online', () => {
+      logger.info(`Worker is online`);
+    });
+
+    worker.on('message', value => {
+      logger.info('Received worker message', { data: value });
+    });
+
+    worker.on('error', error => {
+      logger.error(`Received worker error`, { error });
+    });
+
+    worker.on('messageerror', error => {
+      logger.error(`Received worker message error`, { error });
+    });
+
+    worker.on('exit', exitCode => {
+      if (exitCode !== 0) {
+        const message = `Worker stopped with exit code: ${exitCode}`;
+        logger.error(message);
+        throw new Error(message);
+      }
+    });
 
     // Custom event emitters
     const testJSONData = readDirectoryFiles('./src/data');
