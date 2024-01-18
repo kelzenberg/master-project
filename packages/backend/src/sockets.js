@@ -22,7 +22,7 @@ export const startSocketServer =
       logger.info(`Fetching initial data...`);
       const response = await fetch(targetURL);
       initialData = await response.json();
-      logger.info(`Received initial data...`, initialData);
+      logger.info(`Received initial data...`);
     } catch (error) {
       logger.error('Retrieving initial config failed', error);
       throw new Error('Retrieving initial config failed', error);
