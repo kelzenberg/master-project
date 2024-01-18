@@ -10,7 +10,9 @@ const logger = Logger({ name: 'server' });
 const PORT = process.env.BACKEND_PORT || 3000;
 
 const expressServer = createServer(createApp(logger));
-const worker = startWorker({ targetURL: `${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}` });
+const worker = startWorker({
+  targetURL: `${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}/${process.env.SIMULATION_ENDPOINT}`,
+});
 startSocketServer(expressServer, worker)();
 
 const stoppableServer = stoppable(

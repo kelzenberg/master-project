@@ -7,5 +7,8 @@ const workerFilePath = path.resolve(path.dirname(url.fileURLToPath(import.meta.u
 export const startWorker = workerData => {
   if (process.env.WORKER_ACTIVE == 1 && isMainThread) {
     return new Worker(workerFilePath, { workerData });
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn(`Worker did not start. WORKER_ACTIVE? ${process.env.WORKER_ACTIVE}, isMainThread? ${isMainThread}`);
   }
 };

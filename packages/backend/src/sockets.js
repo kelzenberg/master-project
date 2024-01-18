@@ -17,51 +17,39 @@ export const startSocketServer = (httpServer, worker, serverOptions) => () => {
 
   // Client connection over Sockets
   ioServer.on('connection', socket => {
-    logger.info(`Client ${socket.id} connected`); // id is not persisting between session, debug only!
+    logger.info(`Client connected: ${socket.id}`); // id is not persisting between session, debug only!
 
     worker.on('online', () => {
       logger.info(`Worker is online`);
+
+      const testJSONData = readDirectoryFiles('./src/data');
+      logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
+      socket.emit(SocketEventTypes.INITIAL, testJSONData.initial);
     });
 
     worker.on('message', value => {
-      logger.info('Received worker message', { data: value });
+      logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
+      socket.emit(SocketEventTypes.DYNAMIC, value);
     });
 
     worker.on('error', error => {
-      logger.error(`Received worker error`, { error });
+      logger.error('Received worker error. Closing socket client connection.', { error });
+      socket.disconnect(true);
     });
 
     worker.on('messageerror', error => {
-      logger.error(`Received worker message error`, { error });
+      logger.error('Received worker message error. Closing socket client connection.', { error });
+      socket.disconnect(true);
     });
 
     worker.on('exit', exitCode => {
       if (exitCode !== 0) {
-        const message = `Worker stopped with exit code: ${exitCode}`;
+        const message = `Worker stopped with exit code: ${exitCode}. Closing socket client connection.`;
         logger.error(message);
+        socket.disconnect(true);
         throw new Error(message);
       }
     });
-
-    // Custom event emitters
-    const testJSONData = readDirectoryFiles('./src/data');
-    logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
-    socket.emit(SocketEventTypes.INITIAL, testJSONData.initial);
-
-    let count = 1;
-    const interval = setInterval(() => {
-      if (count > Object.keys(testJSONData).length - 1) {
-        clearInterval(interval);
-        return;
-      }
-
-      logger.info(`Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`, { data: count });
-      socket.emit(SocketEventTypes.DYNAMIC, testJSONData[count]);
-      count++;
-    }, 2000);
-
-    // Custom event listeners
-    // socket.on(SocketEventTypes.DYNAMIC, dynamicHandler(ioServer, logger));
 
     // Client disconnect event listener
     socket.on('disconnect', () => logger.info('Client disconnected.'));
