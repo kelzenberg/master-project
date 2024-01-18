@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plot Data",
+  "description": "JSON Schema for the plot data in initial data",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "kmcTime": {
+        "type": "number"
+      },
+      "tof": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": ["values"]
+        }
+      },
+      "coverage": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "required": ["values"]
+        }
+      }
+    },
+    "required": ["kmcTime", "tof", "coverage"]
+  }
+}

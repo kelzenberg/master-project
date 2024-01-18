@@ -22,11 +22,11 @@ export class VisualizationController {
   #sitesGroup;
   #speciesDictionary;
   #typeDefinitions;
+  #dynamicSpeciesGroup;
   #allGeometriesGroup;
   #canvas;
   #scene;
   #renderer;
-  #axesHelper;
   #camera;
   #controls;
   #ambientLight;
@@ -38,7 +38,10 @@ export class VisualizationController {
     this.#sitesGroup = sitesGroup;
     this.#speciesDictionary = speciesDictionary;
     this.#typeDefinitions = typeDefinitions;
+    this.#dynamicSpeciesGroup = new Group();
     this.#allGeometriesGroup = new Group();
+
+    this.#allGeometriesGroup.add(this.#dynamicSpeciesGroup);
 
     // Renderer and Scene setup
     this.#canvas = document.querySelector('#canvas');
@@ -111,7 +114,7 @@ export class VisualizationController {
     this.#clearDynamicSpecies();
 
     for (const [siteIndex, speciesIndex] of this.#config.entries()) {
-      const existingSpeciesMesh = this.#allGeometriesGroup.children.find(
+      const existingSpeciesMesh = this.#dynamicSpeciesGroup.children.find(
         child =>
           child.userData.dynamic === false &&
           child.userData.siteIndex === siteIndex &&
@@ -127,8 +130,8 @@ export class VisualizationController {
   }
 
   #clearDynamicSpecies() {
-    for (let i = 0; i < this.#allGeometriesGroup.children.length; i++) {
-      const dynamicSpeciesMesh = this.#allGeometriesGroup.children.find(child => child.userData.dynamic === true);
+    for (let i = 0; i < this.#dynamicSpeciesGroup.children.length; i++) {
+      const dynamicSpeciesMesh = this.#dynamicSpeciesGroup.children.find(child => child.userData.dynamic === true);
       if (dynamicSpeciesMesh) {
         dynamicSpeciesMesh.userData.dynamic = false;
         dynamicSpeciesMesh.visible = false;
@@ -147,7 +150,7 @@ export class VisualizationController {
     speciesMesh.userData.dynamic = true;
     speciesMesh.visible = true;
 
-    this.#allGeometriesGroup.add(speciesMesh);
+    this.#dynamicSpeciesGroup.add(speciesMesh);
   }
 
   #createMolecule(data) {
@@ -222,7 +225,7 @@ export class VisualizationController {
     let cameraDistance;
     let halfFOVInRadians = this.#getRadians(this.#camera.fov / 2);
     let { width } = this.#getObjectSize(this.#allGeometriesGroup);
-    cameraDistance = width / 2 / Math.tan(halfFOVInRadians);
+    cameraDistance = width / 3 / Math.tan(halfFOVInRadians);
     return cameraDistance;
   }
 
