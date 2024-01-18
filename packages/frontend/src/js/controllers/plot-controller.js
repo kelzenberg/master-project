@@ -24,10 +24,13 @@ export class PlotController {
       hovermode: 'x',
       margin: {
         l: 40,
-        r: 0,
-        t: 0,
+        r: 10,
+        t: 40,
         b: 40,
         pad: 0,
+      },
+      title: {
+        text: 'TOF',
       },
     };
   }

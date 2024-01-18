@@ -5,6 +5,7 @@ template.innerHTML = `
         position: relative;
       }
       span {
+        position: absolute;
         max-width: 100%;
       }
       input[type=range] {
