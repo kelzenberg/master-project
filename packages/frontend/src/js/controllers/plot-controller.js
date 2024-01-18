@@ -23,7 +23,7 @@ export class PlotController {
       },
       hovermode: 'x',
       margin: {
-        l: 50,
+        l: 40,
         r: 0,
         t: 0,
         b: 40,
