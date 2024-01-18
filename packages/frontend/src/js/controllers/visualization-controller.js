@@ -74,7 +74,6 @@ export class VisualizationController {
 
   // Public Functions
   renderInitialData() {
-    this.#initializeSpecies();
     this.#renderFixedSpecies();
     this.#renderSpeciesFromConfig();
     this.#setViewPortAlignment();
@@ -94,25 +93,6 @@ export class VisualizationController {
   }
 
   // Private Functions
-  #initializeSpecies() {
-    for (let siteIndex = 0; siteIndex < this.#sitesGroup.children.length; siteIndex++) {
-      const site = this.#sitesGroup.children[siteIndex];
-
-      for (const [speciesIndex, molecules] of this.#speciesDictionary.entries()) {
-        const species = new Species(site, molecules);
-        const speciesMesh = species.createMesh();
-
-        speciesMesh.userData.siteIndex = siteIndex;
-        speciesMesh.userData.speciesIndex = speciesIndex;
-
-        speciesMesh.userData.dynamic = false; // Initially set to inactive
-        speciesMesh.visible = false; // Initially hide the mesh
-
-        this.#allGeometriesGroup.add(speciesMesh);
-      }
-    }
-  }
-
   #renderFixedSpecies() {
     for (const data of this.#fixedSpecies) {
       let molecule = this.#createMolecule(data);
@@ -140,6 +120,8 @@ export class VisualizationController {
       if (existingSpeciesMesh) {
         existingSpeciesMesh.visible = true;
         existingSpeciesMesh.userData.dynamic = true;
+      } else {
+        this.#createSpeciesMeshAtSite(speciesIndex, siteIndex);
       }
     }
   }
@@ -152,6 +134,20 @@ export class VisualizationController {
         dynamicSpeciesMesh.visible = false;
       }
     }
+  }
+
+  #createSpeciesMeshAtSite(speciesIndex, siteIndex) {
+    const site = this.#sitesGroup.children[siteIndex];
+    const species = new Species(site, this.#speciesDictionary[speciesIndex]);
+    const speciesMesh = species.createMesh();
+
+    speciesMesh.userData.siteIndex = siteIndex;
+    speciesMesh.userData.speciesIndex = speciesIndex;
+
+    speciesMesh.userData.dynamic = true;
+    speciesMesh.visible = true;
+
+    this.#allGeometriesGroup.add(speciesMesh);
   }
 
   #createMolecule(data) {
