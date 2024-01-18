@@ -12,10 +12,10 @@ const PORT = process.env.BACKEND_PORT || 3000;
 const expressServer = createServer(createApp(logger));
 
 if (process.env.WORKER_ACTIVE == 1) {
-  const simURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}/${process.env.SIMULATION_ENDPOINT}`;
-  const worker = startWorker({ targetURL: simURL });
+  const simURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
+  const worker = startWorker({ targetURL: `${simURL}/dynamic` });
 
-  startSocketServer(expressServer, worker)();
+  await startSocketServer(expressServer, { worker, targetURL: `${simURL}/static` })();
 }
 
 const stoppableServer = stoppable(

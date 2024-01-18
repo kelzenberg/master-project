@@ -17,7 +17,6 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       SIMULATION_URL: sim
       SIMULATION_PORT: ${SIMULATION_PORT}
-      SIMULATION_ENDPOINT: ${SIMULATION_ENDPOINT}
     networks:
       - backend
     ports:
