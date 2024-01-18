@@ -30,7 +30,8 @@ export class SliderController {
   }
 
   #sendValueChangedEvent(label, value) {
-    console.log(label + ' new value = ' + value);
+    console.log(label + ' ' + value);
+    //console.log(label + ' new value = ' + value);
     // sendSliderEvent({
     //   label,
     //   value,

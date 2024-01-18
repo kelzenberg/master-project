@@ -17,5 +17,6 @@ socket.on(SocketEventTypes.DYNAMIC, payload => {
 });
 
 export function sendSliderEvent(payload) {
+  console.log(`[TEST]: sendSliderEvent triggered with payload: ${JSON.stringify(payload)}`);
   socket.emit(SocketEventTypes.SLIDER, payload);
 }
