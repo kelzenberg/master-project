@@ -157,13 +157,30 @@ span{
   flex-direction: column;
 }
 
+.outlineContainerTOF p{
+  text-align: center;
+  color: #006c66;
+}
+.outlineContainerCoverage p{
+  text-align: center;
+  color: #006c66;
+}
+
 #plotTOF{
   height: 35vh;
-  outline:#006c66 .5px solid;
 }
 
 #plotCoverage{
   height: 35vh;
+}
+
+.outlineContainerTOF{
+  background-color: white;
+  outline:#006c66 .5px solid;
+}
+
+.outlineContainerCoverage{
+  background-color: white;
   outline:#006c66 .5px solid;
 }
 
