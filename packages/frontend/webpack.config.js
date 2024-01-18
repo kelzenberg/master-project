@@ -2,7 +2,7 @@
 /* eslint-disable unicorn/prefer-module */
 const path = require('node:path');
 const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
@@ -12,7 +12,7 @@ module.exports = {
     clean: true,
   },
   plugins: [
-    new webpack.debug.ProfilingPlugin(),
+    // new webpack.debug.ProfilingPlugin(),
     new HtmlBundlerPlugin({
       entry: { index: './src/index.html', simulation: './src/simulation.html' },
       js: { filename: 'js/[name].[contenthash:8].js' },
@@ -20,6 +20,7 @@ module.exports = {
     }),
   ],
   module: {
+    noParse: /plotly/,
     rules: [
       {
         test: /\.(css|sass|scss)$/,
