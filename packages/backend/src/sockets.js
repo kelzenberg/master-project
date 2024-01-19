@@ -28,15 +28,16 @@ export const startSocketServer =
       throw new Error('Retrieving initial config failed', error);
     }
 
+    worker.on('online', async () => {
+      logger.info(`Worker is online`);
+    });
+
     // Client connection over Sockets
     ioServer.on('connection', async socket => {
       logger.info(`Client connected: ${socket.id}`); // id is not persisting between session, debug only!
 
-      worker.on('online', async () => {
-        logger.info(`Worker is online`);
-        logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
-        socket.emit(SocketEventTypes.INITIAL, initialData);
-      });
+      logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
+      socket.emit(SocketEventTypes.INITIAL, initialData);
 
       worker.on('message', value => {
         logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
