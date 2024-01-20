@@ -7,21 +7,17 @@ const simulationViewController = new SimulationViewController(50);
 simulationViewController.addEventListeners();
 
 socket.on(SocketEventTypes.INITIAL, payload => {
-  console.debug(
-    `[DEBUG]: Socket event on ${SocketEventTypes.INITIAL} arrived with payload: ${JSON.stringify(payload)}`
-  );
+  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
   simulationViewController.renderInitialData(payload);
   simulationViewController.animate();
 });
 
 socket.on(SocketEventTypes.DYNAMIC, payload => {
-  console.debug(
-    `[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC} arrived with payload: ${JSON.stringify(payload)}`
-  );
+  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
   simulationViewController.renderDynamicData(payload);
 });
 
 export const sendSliderEvent = payload => {
-  console.debug(`[DEBUG]: sendSliderEvent triggered with payload: ${JSON.stringify(payload)}`);
+  console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SLIDER.toUpperCase()} with payload`, payload);
   socket.emit(SocketEventTypes.SLIDER, payload);
 };
