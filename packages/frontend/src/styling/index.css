@@ -20,11 +20,27 @@ html {
 
 .titleBar {
   height: 8rem;
-  border-bottom: .1rem solid #006C66;
-  background-image: url("../ressources/misc/fhi_logo.png");
-  background-size: contain;
+  border-bottom: 0.1rem solid #006c66;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.titleBar > * {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+#titleImg {
+  /* height: 100%;
+  width: 100%; */
+  /* background-image: url('../ressources/misc/fhi_logo.png'); */
+  background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center;
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .titleContainer {
