@@ -7,20 +7,24 @@ import { startWorker } from './worker/start.js';
 import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
-const PORT = process.env.BACKEND_PORT || 3000;
+const expressPort = process.env.BACKEND_PORT || 3000;
+const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
+const workerDelay = process.env.WORKER_DELAY ?? 2000;
 
+// ExpressJS
 const expressServer = createServer(createApp(logger));
-
-if (process.env.WORKER_ACTIVE == 1) {
-  const simURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
-  const worker = startWorker({ targetURL: `${simURL}/dynamic` });
-
-  await startSocketServer(expressServer, { worker, targetURL: `${simURL}/static` })();
-}
-
 const stoppableServer = stoppable(
-  expressServer.listen(PORT, () => {
-    logger.info(`Server started on port ${PORT}.`);
+  expressServer.listen(expressPort, async () => {
+    logger.info(`Server started on port ${expressPort}.`);
+
+    // NodeJS Workers
+    let worker;
+    if (process.env.WORKER_ACTIVE == 1) {
+      worker = startWorker({ targetURL: `${simServerURL}/dynamic`, delayTime: workerDelay });
+    }
+
+    // Socket.io
+    await startSocketServer(expressServer, { worker, targetURL: `${simServerURL}/static` })();
   }),
   1000
 );

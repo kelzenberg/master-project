@@ -8,7 +8,7 @@ import { errorHandler } from './middlewares/events/error-handler.js';
 const logger = Logger({ name: 'socket-server' });
 
 export const startSocketServer =
-  (httpServer, { worker, targetURL }, serverOptions) =>
+  (httpServer, { worker = null, targetURL }, serverOptions) =>
   async () => {
     const ioServer = new SocketIOServer(httpServer, serverOptions);
 
@@ -16,7 +16,7 @@ export const startSocketServer =
     ioServer.use(packetLogger(logger));
     ioServer.use(errorHandler(logger));
 
-    // ToDO: this needs to move out of sockets as this is only happening on server-restart
+    // ToDo: this needs to move out of sockets as this is only happening on server-restart
     let initialData;
     try {
       logger.info(`Fetching initial data...`);
@@ -28,43 +28,45 @@ export const startSocketServer =
       throw new Error('Retrieving initial config failed', error);
     }
 
-    worker.on('online', async () => {
-      logger.info(`Worker is online`);
-    });
-
     // Client connection over Sockets
     ioServer.on('connection', async socket => {
       logger.info(`Client connected: ${socket.id}`); // id is not persisting between session, debug only!
 
+      // Sending initial data to client
       logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
       socket.emit(SocketEventTypes.INITIAL, initialData);
 
-      worker.on('message', value => {
-        logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
-        socket.emit(SocketEventTypes.DYNAMIC, value);
-      });
-
-      worker.on('error', error => {
-        logger.error('Received worker error. Closing socket client connection.', { error });
-        socket.disconnect(true);
-      });
-
-      worker.on('messageerror', error => {
-        logger.error('Received worker message error. Closing socket client connection.', { error });
-        socket.disconnect(true);
-      });
-
-      worker.on('exit', exitCode => {
-        if (exitCode !== 0) {
-          const message = `Worker stopped with exit code: ${exitCode}. Closing socket client connection.`;
-          logger.error(message);
-          socket.disconnect(true);
-          throw new Error(message);
-        }
-      });
-
       // Client disconnect event listener
       socket.on('disconnect', () => logger.info('Client disconnected.'));
+
+      // If worker is present, propagate constant worker data via socket events...
+      if (worker) {
+        worker.on('message', value => {
+          logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
+          socket.emit(SocketEventTypes.DYNAMIC, value);
+        });
+
+        worker.on('error', error => {
+          logger.error('Received worker error. Closing socket client connection.', { error });
+          socket.disconnect(true);
+        });
+
+        worker.on('messageerror', error => {
+          logger.error('Received worker message error. Closing socket client connection.', { error });
+          socket.disconnect(true);
+        });
+
+        worker.on('exit', exitCode => {
+          if (exitCode !== 0) {
+            const message = `Worker stopped with exit code: ${exitCode}. Closing socket client connection.`;
+
+            logger.error(message);
+            socket.disconnect(true);
+
+            throw new Error(message);
+          }
+        });
+      }
     });
 
     return ioServer;
