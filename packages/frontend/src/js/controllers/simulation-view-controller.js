@@ -70,22 +70,20 @@ export class SimulationViewController {
     this.#visualizationController.animate();
   }
 
-  addToggleLegendButtonEventListener() {
-    const pauseButton = document.querySelector('#toggleLegendButton');
+  addEventListeners() {
+    const pauseButton = document.querySelector('#pauseButton');
     pauseButton.addEventListener('click', () => {
+      this.#togglePause();
+    });
+
+    const toggleLegendButton = document.querySelector('#toggleLegendButton');
+    toggleLegendButton.addEventListener('click', () => {
       this.#toggleLegend();
     });
   }
 
   #toggleLegend() {
     this.#legendController.toggleLegend();
-  }
-
-  addEventListeners() {
-    const pauseButton = document.querySelector('#pauseButton');
-    pauseButton.addEventListener('click', () => {
-      this.#togglePause();
-    });
   }
 
   #togglePause() {
