@@ -3,6 +3,7 @@ import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
 import { packetLogger } from './middlewares/events/packet-logger.js';
 import { errorHandler } from './middlewares/events/error-handler.js';
+import { handler as sliderHandler } from './handlers/events/slider.js';
 import {
   exitHandler as workerExitHandler,
   messageHandler as workerMessageHandler,
@@ -12,7 +13,7 @@ import {
 const logger = Logger({ name: 'socket-server' });
 
 export const startSocketServer =
-  (httpServer, { worker = null, targetURL }, serverOptions) =>
+  (httpServer, { fetchWorker = null, urls: { staticURL, sliderURL } }, serverOptions) =>
   async () => {
     const ioServer = new SocketIOServer(httpServer, serverOptions);
 
@@ -24,7 +25,7 @@ export const startSocketServer =
     let initialData;
     try {
       logger.info(`Fetching initial data...`);
-      const response = await fetch(targetURL);
+      const response = await fetch(staticURL);
       initialData = await response.json();
       logger.info(`Received initial data...`);
     } catch (error) {
@@ -41,19 +42,17 @@ export const startSocketServer =
       socket.emit(SocketEventTypes.INITIAL, initialData);
 
       // Client slider event listener
-      socket.on(SocketEventTypes.SLIDER, data => {
-        console.log('foo', data);
-      });
+      socket.on(SocketEventTypes.SLIDER, sliderHandler(logger, sliderURL));
 
       // Client disconnect event listener
-      socket.on('disconnect', () => logger.info('Client disconnected.'));
+      socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
 
-      // If worker is present, propagate constant worker data via socket events...
-      if (worker) {
-        worker.on('message', workerMessageHandler(logger, socket));
-        worker.on('error', workerErrorHandler(logger, socket));
-        worker.on('messageerror', workerErrorHandler(logger, socket, true));
-        worker.on('exit', workerExitHandler(logger, socket));
+      // If fetch-worker is present, propagate constant worker data via socket events...
+      if (fetchWorker) {
+        fetchWorker.on('message', workerMessageHandler(logger, socket));
+        fetchWorker.on('error', workerErrorHandler(logger, socket));
+        fetchWorker.on('messageerror', workerErrorHandler(logger, socket, true));
+        fetchWorker.on('exit', workerExitHandler(logger, socket));
       }
     });
 

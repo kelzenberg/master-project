@@ -8,8 +8,11 @@ import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
-const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
 const workerDelay = process.env.WORKER_DELAY ?? 2000;
+const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
+const staticURL = `${simServerURL}/static`;
+const dynamicURL = `${simServerURL}/dynamic`;
+const sliderURL = `${simServerURL}/slider`;
 
 // ExpressJS
 const expressServer = createServer(createApp(logger));
@@ -18,13 +21,13 @@ const stoppableServer = stoppable(
     logger.info(`Server started on port ${expressPort}.`);
 
     // NodeJS Workers
-    let worker;
+    let fetchWorker;
     if (process.env.WORKER_ACTIVE == 1) {
-      worker = startWorker({ targetURL: `${simServerURL}/dynamic`, delayTime: workerDelay });
+      fetchWorker = startWorker({ url: dynamicURL, delayTime: workerDelay });
     }
 
     // Socket.io
-    await startSocketServer(expressServer, { worker, targetURL: `${simServerURL}/static` })();
+    await startSocketServer(expressServer, { fetchWorker, urls: { staticURL, sliderURL } })();
   }),
   1000
 );
