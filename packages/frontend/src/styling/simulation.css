@@ -156,6 +156,19 @@ span {
   height: 1rem;
 }
 
+#pauseButton{
+  border-style: none;
+  cursor: pointer;
+}
+
+#playButtonImage{
+  display: none;
+}
+
+#pauseButtonImage{
+  display: block;
+}
+
 #legendContainer {
   display: none;
   padding-left: 1rem;
@@ -183,11 +196,13 @@ span {
 #plotTOF {
   height: 35vh;
   outline:#006c66 .5px solid;
+  visibility: hidden;
 }
 
 #plotCoverage {
   height: 35vh;
   outline: #006c66 0.5px solid;
+  visibility: hidden;
 }
 
 #loader {
@@ -213,6 +228,7 @@ span {
   animation-iteration-count: infinite, 1;
   animation-fill-mode: forwards;
 }
+
 
 @-webkit-keyframes spin {
   0% {

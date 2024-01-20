@@ -88,10 +88,19 @@ export class SimulationViewController {
 
   #togglePause() {
     this.#isPaused = !this.#isPaused;
+
+    const pauseButton = document.querySelector('#pauseButton');
+    const pauseButtonImage = document.querySelector('#pauseButtonImage');
+    const playButtonImage = document.querySelector('#playButtonImage');
+
     if (this.#isPaused) {
-      // Set Play button icon
+      pauseButton.title = 'Resume the simulation';
+      playButtonImage.style.display = 'block';
+      pauseButtonImage.style.display = 'none';
     } else {
-      // Set Pause button icon
+      pauseButton.title = 'Pause the simulation';
+      pauseButtonImage.style.display = 'block';
+      playButtonImage.style.display = 'none';
     }
   }
 
