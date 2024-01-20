@@ -78,6 +78,7 @@ span{
   flex-direction: column;
   width: 100% !important;
   height: 100% !important;
+  visibility: hidden;
 }
 
 #canvas{
@@ -145,6 +146,7 @@ span{
   flex-direction: column;
   min-width: 5rem;
   max-width: 10rem;
+  visibility: hidden;
 }
 
 .graphContainer {
@@ -164,11 +166,13 @@ span{
 #plotTOF{
   height: 35vh;
   outline:#006c66 .5px solid;
+  visibility: hidden;
 }
 
 #plotCoverage{
   height: 35vh;
   outline:#006c66 .5px solid;
+  visibility: hidden;
 }
 
 /*

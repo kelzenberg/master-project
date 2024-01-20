@@ -21,8 +21,6 @@ export class SimulationViewController {
   }
 
   renderInitialData(jsonData) {
-    // enable loading spinner !
-
     // Render Initial 3D Visualization Data
     const typeDefinitions = jsonData.visualization.typeDefinitions;
     const fixedSpecies = jsonData.visualization.fixedSpecies;
@@ -53,6 +51,7 @@ export class SimulationViewController {
     this.#legendController.initializeLegend();
 
     // disable loading spinner!
+    this.#disableLoadingSpinner();
   }
 
   renderDynamicData(jsonData) {
@@ -97,5 +96,13 @@ export class SimulationViewController {
       speciesDictionary.push(species);
     }
     return speciesDictionary;
+  }
+
+  #disableLoadingSpinner() {
+    document.querySelector('#canvasContainer').style.visibility = 'visible';
+    document.querySelector('#plotTOF').style.visibility = 'visible';
+    document.querySelector('#plotCoverage').style.visibility = 'visible';
+    document.querySelector('#sliderContainer').style.visibility = 'visible';
+    document.querySelector('#loader').style.display = 'none';
   }
 }
