@@ -116,10 +116,10 @@ export class PlotController {
           graphCoverage.y.shift();
         }
       }
-
-      plotUpdate('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
-      plotUpdate('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
     }
+
+    plotUpdate('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
+    plotUpdate('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
   }
 
   #getColors(plotName, key) {
