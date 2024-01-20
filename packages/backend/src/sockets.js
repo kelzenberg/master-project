@@ -1,9 +1,13 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-// import { handler as dynamicHandler } from './handlers/events/dynamic.js';
 import { packetLogger } from './middlewares/events/packet-logger.js';
 import { errorHandler } from './middlewares/events/error-handler.js';
+import {
+  exitHandler as workerExitHandler,
+  messageHandler as workerMessageHandler,
+  errorHandler as workerErrorHandler,
+} from './handlers/events/worker.js';
 
 const logger = Logger({ name: 'socket-server' });
 
@@ -36,36 +40,20 @@ export const startSocketServer =
       logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
       socket.emit(SocketEventTypes.INITIAL, initialData);
 
+      // Client slider event listener
+      socket.on(SocketEventTypes.SLIDER, data => {
+        console.log('foo', data);
+      });
+
       // Client disconnect event listener
       socket.on('disconnect', () => logger.info('Client disconnected.'));
 
       // If worker is present, propagate constant worker data via socket events...
       if (worker) {
-        worker.on('message', value => {
-          logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
-          socket.emit(SocketEventTypes.DYNAMIC, value);
-        });
-
-        worker.on('error', error => {
-          logger.error('Received worker error. Closing socket client connection.', { error });
-          socket.disconnect(true);
-        });
-
-        worker.on('messageerror', error => {
-          logger.error('Received worker message error. Closing socket client connection.', { error });
-          socket.disconnect(true);
-        });
-
-        worker.on('exit', exitCode => {
-          if (exitCode !== 0) {
-            const message = `Worker stopped with exit code: ${exitCode}. Closing socket client connection.`;
-
-            logger.error(message);
-            socket.disconnect(true);
-
-            throw new Error(message);
-          }
-        });
+        worker.on('message', workerMessageHandler(logger, socket));
+        worker.on('error', workerErrorHandler(logger, socket));
+        worker.on('messageerror', workerErrorHandler(logger, socket, true));
+        worker.on('exit', workerExitHandler(logger, socket));
       }
     });
 
