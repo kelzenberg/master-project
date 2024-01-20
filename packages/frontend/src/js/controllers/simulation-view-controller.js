@@ -70,7 +70,14 @@ export class SimulationViewController {
     this.#visualizationController.animate();
   }
 
-  toggleLegend() {
+  addToggleLegendButtonEventListener() {
+    const pauseButton = document.querySelector('#toggleLegendButton');
+    pauseButton.addEventListener('click', () => {
+      this.#toggleLegend();
+    });
+  }
+
+  #toggleLegend() {
     this.#legendController.toggleLegend();
   }
 

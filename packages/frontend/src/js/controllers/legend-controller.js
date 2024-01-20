@@ -8,7 +8,7 @@ export class LegendController {
   }
 
   initializeLegend() {
-    const legendContainer = document.querySelector('#descriptionContainer');
+    const legendContainer = document.querySelector('#legendContainer');
 
     // Loop through each type definition and create corresponding HTML elements
     for (const key in this.#typeDefinitions) {
@@ -68,11 +68,11 @@ export class LegendController {
 
   toggleLegend() {
     this.#isLegendVisible = !this.#isLegendVisible;
-
-    if (this.#isLegendVisible) {
-      // set the legendDiv.style.visibility='visible'
-    } else {
-      // set the legendDiv.style.visibility='hidden'
-    }
+    const toggle = document.querySelector('##legendContainer');
+    this.#isLegendVisible
+      ? // set the legendDiv.style.visibility='visible'
+        (toggle.style.display = 'block')
+      : // set the legendDiv.style.visibility='hidden'
+        (toggle.style.display = 'none');
   }
 }

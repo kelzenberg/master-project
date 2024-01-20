@@ -16,15 +16,15 @@ body {
   overflow-x: hidden;
 }
 
-h1{
-  margin:0;
+h1 {
+  margin: 0;
   font-size: 40px;
   font-weight: 400;
   color: #006c66;
 }
 
-p{
-  font-size: 18px;
+p {
+  font-size: 15px;
   font-weight: 100;
 }
 
@@ -53,22 +53,17 @@ p{
 }
 
 #titleImg {
-  height: 100%;
-  background-image: url('../ressources/misc/fhi_logo.png');
-  background-size: contain;
+  /* height: 100%;
+  width: 100%; */
+  /* background-image: url('../ressources/misc/fhi_logo.png'); */
+  background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center;
   flex-grow: 1;
   flex-shrink: 0;
 }
 
-#userCountContainer {
-  display: flex;
-  flex-direction: row;
-  gap: .5rem;
-}
-
-span{
+span {
   font-size: 20px;
 }
 
@@ -81,10 +76,10 @@ span{
   visibility: hidden;
 }
 
-#canvas{
+#canvas {
   width: 100% !important;
   height: 100% !important;
-  outline:#006c66 .5px solid;
+  outline: #006c66 0.5px solid;
 }
 
 .simulationController {
@@ -103,36 +98,77 @@ span{
 
 #resetViewButton {
   position: absolute;
+  cursor: pointer;
   top: 1rem;
   left: 1rem;
-}
-
-.btn {
-  cursor: pointer;
+  padding: 0.75rem 0.75rem;
   color: white;
   background-color: #006c66;
   border-color: #006c66;
-  padding: 0.85rem 1rem;
   border-radius: 4px;
   text-align: center;
+  border-style: none;
 }
 
-.btn:hover {
+#resetViewButton:hover {
   background-color: #006c66;
   border-color: #006c66;
 }
 
+#toggleButton {
+  /* position: absolute; */
+  cursor: pointer;
+  /* top: 1rem;
+  left: 1rem; */
+  padding: 0.75rem 0.75rem;
+  color: white;
+  border-radius: 4px;
+  text-align: center;
+  border-style: none;
+  background-color: transparent;
+  background-image: url('../ressources/misc/down.png');
+  background-size: 40px 40px;
+  background-repeat: no-repeat;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+#toggleButton:hover {
+  background-image: url('../ressources/misc/down_hover.png');
+  background-repeat: no-repeat;
+}
+
+#toggleButton > img {
+  width: 2rem;
+  height: 2rem;
+}
+
 #backButton {
+  cursor: pointer;
+  color: white;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 0.5rem;
+  padding: 0.7rem 0.7rem;
+  background-color: #006c66;
+  border-color: #006c66;
+  border-radius: 4px;
+  border-style: none;
+}
+
+#backButton:hover {
+  background-color: #006c66;
+  border-color: #006c66;
 }
 
 #backButton > img {
   width: 1rem;
   height: 1rem;
+}
+
+#legendContainer {
+  display: none;
 }
 
 #descriptionContainer {
@@ -154,39 +190,17 @@ span{
   flex-direction: column;
 }
 
-.outlineContainerTOF p{
-  text-align: center;
-  color: #006c66;
-}
-.outlineContainerCoverage p{
-  text-align: center;
-  color: #006c66;
-}
-
-#plotTOF{
+#plotTOF {
   height: 35vh;
   outline:#006c66 .5px solid;
-  visibility: hidden;
 }
 
-#plotCoverage{
+#plotCoverage {
   height: 35vh;
-  outline:#006c66 .5px solid;
-  visibility: hidden;
+  outline: #006c66 0.5px solid;
 }
 
-/*
-.outlineContainerTOF{
-  background-color: white;
-  outline:#006c66 .5px solid;
-}
-
-.outlineContainerCoverage{
-  background-color: white;
-  outline:#006c66 .5px solid;
-} */
-
-#loader{
+#loader {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -211,13 +225,21 @@ span{
 }
 
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Media Query for tablet view */
@@ -230,8 +252,7 @@ span{
     font-size: 15px;
   }
 
-  span{
+  span {
     font-size: 20px;
   }
-
 }

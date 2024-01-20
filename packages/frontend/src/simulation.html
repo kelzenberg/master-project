@@ -9,7 +9,7 @@
     />
     <link
       rel="icon"
-      href="ressources/misc/fhi_logo.svg"
+      href="ressources/misc/favicon.svg"
     />
     <link
       rel="stylesheet"
@@ -48,7 +48,6 @@
           <button
             type="button"
             id="backButton"
-            class="btn"
           >
             <img
               src="./ressources/misc/left-arrow.png"
@@ -56,18 +55,29 @@
             />
           </button>
         </a>
-        <div id="titleImg"></div>
+        <img
+          src="./ressources/misc/fhi_logo.svg"
+          alt="FHI Logo"
+          id="titleImg"
+          width="100"
+          height="100"
+        />
+        <!-- <div id="titleImg"></div> -->
       </div>
       <div class="simulationController">
         <div id="canvasContainer">
           <button
             type="button"
             id="resetViewButton"
-            class="btn"
           >
             Reset View
           </button>
           <canvas id="canvas"></canvas>
+          <button
+            type="button"
+            id="toggleLegendButton"
+          ></button>
+          <div id="legendContainer"></div>
           <div id="descriptionContainer">
             <h1>Methanation</h1>
             <button
@@ -87,15 +97,9 @@
         </div>
         <div id="sliderContainer"></div>
         <div class="graphContainer">
-          <!-- <div class="outlineContainerTOF">
-            <p>TOF</p> -->
           <div id="plotTOF"></div>
-          <!-- </div> -->
           <br />
-          <!-- <div class="outlineContainerCoverage">
-            <p>Coverage</p> -->
           <div id="plotCoverage"></div>
-          <!--  </div> -->
         </div>
       </div>
     </div>
