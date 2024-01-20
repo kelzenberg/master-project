@@ -6,6 +6,7 @@ import { LegendController } from './legend-controller';
 import { SliderController } from './slider-controller';
 
 export class SimulationViewController {
+  #isPaused;
   #visualizationController;
   #plotController;
   #sliderController;
@@ -18,6 +19,7 @@ export class SimulationViewController {
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
     this.#maxStoredPlotDataPoints = maxStoredPlotDataPoints;
+    this.#isPaused = false;
   }
 
   renderInitialData(jsonData) {
@@ -55,11 +57,13 @@ export class SimulationViewController {
   }
 
   renderDynamicData(jsonData) {
-    let config = jsonData.visualization.config;
-    this.#visualizationController.renderDynamicData(config);
+    if (!this.#isPaused) {
+      let config = jsonData.visualization.config;
+      this.#visualizationController.renderDynamicData(config);
 
-    let plotData = jsonData.plots.plotData;
-    this.#plotController.updatePlots(plotData);
+      let plotData = jsonData.plots.plotData;
+      this.#plotController.updatePlots(plotData);
+    }
   }
 
   animate() {
@@ -68,6 +72,22 @@ export class SimulationViewController {
 
   toggleLegend() {
     this.#legendController.toggleLegend();
+  }
+
+  addEventListeners() {
+    const pauseButton = document.querySelector('#pauseButton');
+    pauseButton.addEventListener('click', () => {
+      this.#togglePause();
+    });
+  }
+
+  #togglePause() {
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+      // Set Play button icon
+    } else {
+      // Set Pause button icon
+    }
   }
 
   #initializeSites(sites) {

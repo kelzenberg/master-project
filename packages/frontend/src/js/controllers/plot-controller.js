@@ -3,8 +3,8 @@ import { newPlot, update as plotUpdate } from 'plotly.js-dist-min';
 export class PlotController {
   #plots;
   #maxStoredDataPoints;
-  #initialGraphsTOF;
-  #initialGraphsCoverage;
+  #graphsTOF;
+  #graphsCoverage;
   #tofNumGraphs;
   #coverageNumGraphs;
   #tofLayout;
@@ -15,8 +15,8 @@ export class PlotController {
   constructor(plots, maxStoredDataPoints) {
     this.#plots = plots;
     this.#maxStoredDataPoints = maxStoredDataPoints;
-    this.#initialGraphsTOF = [];
-    this.#initialGraphsCoverage = [];
+    this.#graphsTOF = [];
+    this.#graphsCoverage = [];
     this.#tofNumGraphs = 0;
     this.#coverageNumGraphs = 0;
     this.#tofLayout = {
@@ -77,21 +77,22 @@ export class PlotController {
     }));
 
     newPlot('plotTOF', initialDataTOF, this.#tofLayout, { responsive: true }).then(plotTOF => {
-      this.#initialGraphsTOF = [...plotTOF.data];
+      this.#graphsTOF = [...plotTOF.data];
     });
     newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout, {
       title: 'Coverage',
       responsive: true,
     }).then(plotCoverage => {
-      this.#initialGraphsCoverage = [...plotCoverage.data];
+      this.#graphsCoverage = [...plotCoverage.data];
     });
   }
 
   updatePlots(plotDataList) {
+    this.#clearPlots();
     for (const plotData of plotDataList) {
       // Update each TOF graph with new data
       for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
-        const graphTOF = this.#initialGraphsTOF[tofGraphIndex];
+        const graphTOF = this.#graphsTOF[tofGraphIndex];
 
         graphTOF.x.push(plotData.kmcTime);
         graphTOF.y.push(plotData.tof[tofGraphIndex].values[0]); //hier muss noch ein toggle für values[1] eingebaut werden!
@@ -105,7 +106,7 @@ export class PlotController {
 
       // Update each Coverage graph with new data
       for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
-        const graphCoverage = this.#initialGraphsCoverage[coverageGraphIndex];
+        const graphCoverage = this.#graphsCoverage[coverageGraphIndex];
 
         graphCoverage.x.push(plotData.kmcTime);
         graphCoverage.y.push(this.#calculateAverage(plotData.coverage[coverageGraphIndex].values));
@@ -118,8 +119,19 @@ export class PlotController {
       }
     }
 
-    plotUpdate('plotTOF', this.#initialGraphsTOF, this.#tofLayout);
-    plotUpdate('plotCoverage', this.#initialGraphsCoverage, this.#coverageLayout, { title: 'Coverage' });
+    plotUpdate('plotTOF', this.#graphsTOF, this.#tofLayout);
+    plotUpdate('plotCoverage', this.#graphsCoverage, this.#coverageLayout, { title: 'Coverage' });
+  }
+
+  #clearPlots() {
+    for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
+      this.#graphsTOF[tofGraphIndex].x = [];
+      this.#graphsTOF[tofGraphIndex].y = [];
+    }
+    for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
+      this.#graphsCoverage[coverageGraphIndex].x = [];
+      this.#graphsCoverage[coverageGraphIndex].y = [];
+    }
   }
 
   #getColors(plotName, key) {
