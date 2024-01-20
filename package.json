@@ -27,6 +27,7 @@
     "format:fix": "prettier \"**/*.+(js|ts|json|html|md)\" --write --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
     "up": "docker compose up",
     "down": "docker compose down",
+    "docker:reset": "docker compose up --force-recreate --build --remove-orphans",
     "F": "npm run --workspace @master-project/frontend",
     "install:F": "npm install --workspace @master-project/frontend",
     "remove:F": "npm remove --workspace @master-project/frontend",
