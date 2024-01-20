@@ -53,12 +53,6 @@ p {
 }
 
 #titleImg {
-  /* height: 100%;
-  width: 100%; */
-  /* background-image: url('../ressources/misc/fhi_logo.png'); */
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: center;
   flex-grow: 1;
   flex-shrink: 0;
 }
@@ -115,32 +109,27 @@ span {
   border-color: #006c66;
 }
 
-#toggleButton {
+#toggleLegendButton {
   /* position: absolute; */
   cursor: pointer;
   /* top: 1rem;
   left: 1rem; */
-  padding: 0.75rem 0.75rem;
   color: white;
   border-radius: 4px;
   text-align: center;
   border-style: none;
   background-color: transparent;
   background-image: url('../ressources/misc/down.png');
-  background-size: 40px 40px;
+  background-position: 0rem 0.5rem;
+  background-size: 35px 35px;
   background-repeat: no-repeat;
   width: 50px !important;
   height: 50px !important;
 }
 
-#toggleButton:hover {
+#toggleLegendButton:hover {
   background-image: url('../ressources/misc/down_hover.png');
   background-repeat: no-repeat;
-}
-
-#toggleButton > img {
-  width: 2rem;
-  height: 2rem;
 }
 
 #backButton {
@@ -169,6 +158,7 @@ span {
 
 #legendContainer {
   display: none;
+  padding-left: 1rem;
 }
 
 #descriptionContainer {

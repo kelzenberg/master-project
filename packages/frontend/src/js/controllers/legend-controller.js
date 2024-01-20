@@ -68,7 +68,7 @@ export class LegendController {
 
   toggleLegend() {
     this.#isLegendVisible = !this.#isLegendVisible;
-    const toggle = document.querySelector('##legendContainer');
+    const toggle = document.querySelector('#legendContainer');
     this.#isLegendVisible
       ? // set the legendDiv.style.visibility='visible'
         (toggle.style.display = 'block')
