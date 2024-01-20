@@ -89,8 +89,8 @@ export class SimulationViewController {
   }
 
   #togglePause() {
-    this.isPaused = !this.isPaused;
-    if (this.isPaused) {
+    this.#isPaused = !this.#isPaused;
+    if (this.#isPaused) {
       // Set Play button icon
     } else {
       // Set Pause button icon

@@ -2,7 +2,8 @@ import { SimulationViewController } from './controllers/simulation-view-controll
 
 const maxStoredPlotDataPoints = 50;
 const simulationController = new SimulationViewController(maxStoredPlotDataPoints);
-simulationController.addToggleLegendButtonEventListener();
+simulationController.addEventListeners();
+
 const initialData = await fetchData('../data/new-json-data-format/initial-data.json');
 const dynamicData = await fetchData('../data/new-json-data-format/dynamic-data.json');
 
