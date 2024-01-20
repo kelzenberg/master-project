@@ -2,7 +2,6 @@ import { newPlot, update as plotUpdate } from 'plotly.js-dist-min';
 
 export class PlotController {
   #plots;
-  #maxStoredDataPoints;
   #graphsTOF;
   #graphsCoverage;
   #tofNumGraphs;
@@ -12,9 +11,8 @@ export class PlotController {
   #lineWidth = 1;
   #markerSize = 4;
 
-  constructor(plots, maxStoredDataPoints) {
+  constructor(plots) {
     this.#plots = plots;
-    this.#maxStoredDataPoints = maxStoredDataPoints;
     this.#graphsTOF = [];
     this.#graphsCoverage = [];
     this.#tofNumGraphs = 0;
@@ -96,12 +94,6 @@ export class PlotController {
 
         graphTOF.x.push(plotData.kmcTime);
         graphTOF.y.push(plotData.tof[tofGraphIndex].values[0]); //hier muss noch ein toggle für values[1] eingebaut werden!
-
-        // Remove oldest data points if the limit is reached
-        if (graphTOF.x.length > this.#maxStoredDataPoints) {
-          graphTOF.x.shift();
-          graphTOF.y.shift();
-        }
       }
 
       // Update each Coverage graph with new data
@@ -110,12 +102,6 @@ export class PlotController {
 
         graphCoverage.x.push(plotData.kmcTime);
         graphCoverage.y.push(this.#calculateAverage(plotData.coverage[coverageGraphIndex].values));
-
-        // Remove oldest data points if the limit is reached
-        if (graphCoverage.x.length > this.#maxStoredDataPoints) {
-          graphCoverage.x.shift();
-          graphCoverage.y.shift();
-        }
       }
     }
 

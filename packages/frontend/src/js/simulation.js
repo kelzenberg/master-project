@@ -1,7 +1,6 @@
 import { SimulationViewController } from './controllers/simulation-view-controller';
 
-const maxStoredPlotDataPoints = 50;
-const simulationController = new SimulationViewController(maxStoredPlotDataPoints);
+const simulationController = new SimulationViewController();
 simulationController.addEventListeners();
 
 const initialData = await fetchData('../data/new-json-data-format/initial-data.json');

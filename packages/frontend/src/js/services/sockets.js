@@ -3,7 +3,7 @@ import { SimulationViewController } from '../controllers/simulation-view-control
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
-const simulationViewController = new SimulationViewController(50);
+const simulationViewController = new SimulationViewController();
 simulationViewController.addEventListeners();
 
 socket.on(SocketEventTypes.INITIAL, payload => {

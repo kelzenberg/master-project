@@ -11,14 +11,12 @@ export class SimulationViewController {
   #plotController;
   #sliderController;
   #legendController;
-  #maxStoredPlotDataPoints;
 
-  constructor(maxStoredPlotDataPoints) {
+  constructor() {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
-    this.#maxStoredPlotDataPoints = maxStoredPlotDataPoints;
     this.#isPaused = false;
   }
 
@@ -40,7 +38,7 @@ export class SimulationViewController {
     this.#visualizationController.renderInitialData();
 
     // Render Initial Plot Data
-    this.#plotController = new PlotController(jsonData.plots, this.#maxStoredPlotDataPoints);
+    this.#plotController = new PlotController(jsonData.plots);
     this.#plotController.renderInitialData();
 
     // Initialize sliders
@@ -80,6 +78,13 @@ export class SimulationViewController {
     toggleLegendButton.addEventListener('click', () => {
       this.#toggleLegend();
     });
+
+    const browserLanguage = navigator.language || navigator.userLanguage;
+    const germanTooltip = 'Rendering der Simulationsdaten pausieren';
+
+    if (browserLanguage.startsWith('de')) {
+      pauseButton.title = germanTooltip;
+    }
   }
 
   #toggleLegend() {
@@ -92,13 +97,18 @@ export class SimulationViewController {
     const pauseButton = document.querySelector('#pauseButton');
     const pauseButtonImage = document.querySelector('#pauseButtonImage');
     const playButtonImage = document.querySelector('#playButtonImage');
+    const browserLanguage = navigator.language || navigator.userLanguage;
 
     if (this.#isPaused) {
-      pauseButton.title = 'Resume the simulation';
+      pauseButton.title = browserLanguage.startsWith('de')
+        ? 'Rendering der Simulationsdaten fortsetzen'
+        : 'Resume simulation rendering';
       playButtonImage.style.display = 'block';
       pauseButtonImage.style.display = 'none';
     } else {
-      pauseButton.title = 'Pause the simulation';
+      pauseButton.title = browserLanguage.startsWith('de')
+        ? 'Rendering der Simulationsdaten pausieren'
+        : 'Pause simulation rendering';
       pauseButtonImage.style.display = 'block';
       playButtonImage.style.display = 'none';
     }
