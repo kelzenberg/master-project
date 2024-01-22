@@ -7,7 +7,7 @@ import { SliderController } from './slider-controller';
 
 export class SimulationViewController {
   #isPaused;
-  #legendOpen;
+  #isLegendOpen;
   #visualizationController;
   #plotController;
   #sliderController;
@@ -19,7 +19,7 @@ export class SimulationViewController {
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
     this.#isPaused = false;
-    this.#legendOpen = false;
+    this.#isLegendOpen = false;
   }
 
   renderInitialData(jsonData) {
@@ -100,14 +100,14 @@ export class SimulationViewController {
   }
 
   #toggleLegend() {
-    this.#legendOpen = !this.#legendOpen;
+    this.#isLegendOpen = !this.#isLegendOpen;
 
     const toggleLegendButton = document.querySelector('#toggleLegendButton');
     const legendButtonImage = document.querySelector('#legendButtonImage');
     const openLegendButtonImage = document.querySelector('#openLegendButtonImage');
     const browserLanguage = navigator.language || navigator.userLanguage;
 
-    if (this.#legendOpen) {
+    if (this.#isLegendOpen) {
       toggleLegendButton.title = browserLanguage.startsWith('de') ? 'Schließe Legende' : 'Close legend';
       legendButtonImage.style.display = 'block';
       openLegendButtonImage.style.display = 'none';

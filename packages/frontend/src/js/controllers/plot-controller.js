@@ -126,7 +126,6 @@ export class PlotController {
   }
 
   toggleCoverage() {
-    console.log(this.#plots);
     this.#isCoverageToggled = !this.#isCoverageToggled;
     if (this.#isCoverageToggled) {
       const plotData = this.#plots.plotData[0];
