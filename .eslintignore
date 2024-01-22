@@ -1,0 +1,20 @@
+# From .gitignore
+**/logs
+**/*.log
+**/npm-debug.log*
+
+**/node_modules
+**/dist
+**/dist-ssr
+**/coverage
+
+**/tmp
+**/*.local
+**/*.local.*
+**/*.env
+
+# Additions for ESLint
+**/.git
+**/package-lock.json
+**/.github
+**/husky

@@ -1,0 +1,285 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('../ressources/fonts/Roboto-Medium.ttf');
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  max-width: 100%;
+  background-color: #eeeeee;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+h1 {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 400;
+  color: #006c66;
+}
+
+p {
+  font-size: 13px;
+  font-weight: 100;
+}
+
+span {
+  font-size: 15px;
+}
+
+.pageContent {
+  max-width: 95vw;
+  margin: auto;
+}
+
+.titleBar,
+.titleContainer {
+  margin-bottom: 3rem;
+}
+
+.titleBar {
+  height: 8rem;
+  border-bottom: 0.1rem solid #006c66;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.titleBar > * {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+#titleImg {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+#canvasContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  height: 100% !important;
+  visibility: hidden;
+}
+
+#canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: #006c66 0.5px solid;
+}
+
+.simulationController {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+}
+
+.simulationController,
+.simulationController > * {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+#resetViewButton {
+  position: absolute;
+  cursor: pointer;
+  left: 1rem;
+  top: 1rem;
+  padding: 0.75rem 0.75rem;
+  color: white;
+  background-color: #006c66;
+  border-color: #006c66;
+  border-radius: 4px;
+  text-align: center;
+  border-style: none;
+}
+
+#resetViewButton:hover {
+  background-color: #006c66;
+  border-color: #006c66;
+}
+
+#toggleLegendButton {
+  cursor: pointer;
+  background-color: transparent;
+  text-align: center;
+  border-style: none;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+#toggleButtonDescription {
+  color: #006c66;
+  font-size: 15px;
+}
+
+#backButton {
+  cursor: pointer;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0.7rem 0.7rem;
+  background-color: #006c66;
+  border-color: #006c66;
+  border-radius: 4px;
+  border-style: none;
+}
+
+#backButton:hover {
+  background-color: #006c66;
+  border-color: #006c66;
+}
+
+#backButton > img {
+  width: 1rem;
+  height: 1rem;
+}
+
+#pauseButton {
+  border-style: none;
+  cursor: pointer;
+}
+
+#playButtonImage {
+  display: none;
+}
+
+#pauseButtonImage {
+  display: none;
+}
+
+#legendButtonImage {
+  display: none;
+}
+
+#openLegendButtonImage {
+  display: block;
+}
+
+#legendContainer {
+  display: none;
+  padding-left: 1rem;
+}
+
+.legendContainer p {
+  float: auto;
+  margin: 0 auto;
+}
+
+.toggleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#descriptionContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+#descriptionContainer p {
+  font-size: 15px;
+}
+
+#sliderContainer {
+  display: flex;
+  flex-direction: column;
+  min-width: 5rem;
+  max-width: 10rem;
+  visibility: hidden;
+}
+
+.graphContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+#plotTOF {
+  height: 35vh;
+  outline: #006c66 0.5px solid;
+  visibility: hidden;
+}
+
+#plotCoverage {
+  height: 35vh;
+  outline: #006c66 0.5px solid;
+  visibility: hidden;
+}
+
+#toggleCoverageButton {
+  visibility: hidden;
+}
+
+#toggleTofButton {
+  visibility: hidden;
+}
+
+#loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border: 16px solid black;
+  border-radius: 50%;
+  border-top: 10px solid #006c66;
+  border-right: 10px solid white;
+  border-bottom: 10px solid #006c66;
+  border-left: 10px solid white;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-timing-function: linear, ease;
+  animation-iteration-count: infinite, 1;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Media Query for tablet view */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  h1 {
+    font-size: 30px;
+  }
+
+  p {
+    font-size: 15px;
+  }
+
+  span {
+    font-size: 20px;
+  }
+}

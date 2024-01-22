@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Config",
+  "description": "JSON Schema for the config in initial data",
+  "type": "array",
+  "items": {
+    "type": "number"
+  }
+}

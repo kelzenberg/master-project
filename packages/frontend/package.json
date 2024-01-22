@@ -1,0 +1,41 @@
+{
+  "name": "@master-project/frontend",
+  "version": "0.0.1",
+  "description": "Master Project at Berliner Hochschule für Technik",
+  "author": "Steffen Ansorge <kelzenberg@users.noreply.github.com> (https://github.com/kelzenberg)",
+  "contributors": [
+    "Frederik Busch <fredbusch98@users.noreply.github.com> (https://github.com/fredbusch98)",
+    "Lennart Reinke <leonardin96@users.noreply.github.com> (https://github.com/leonardin96)",
+    "Marc Waclaw <schmarcopolo@users.noreply.github.com> (https://github.com/schmarcopolo)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelzenberg/master-project.git"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite serve",
+    "build": "webpack --config ./webpack.config.js",
+    "start": "vite preview"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
+    "@types/three": "^0.158.3",
+    "babel-loader": "^9.1.3",
+    "css-loader": "^6.9.0",
+    "html-bundler-webpack-plugin": "^3.4.7",
+    "sass": "^1.69.7",
+    "sass-loader": "^13.3.3",
+    "vite": "^4.5.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@master-project/libs": "^0.0.1",
+    "@webcomponents/webcomponentsjs": "^2.8.0",
+    "plotly.js-dist-min": "^2.28.0",
+    "three": "^0.158.0"
+  }
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>FHI</title>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link
+      rel="icon"
+      href="ressources/misc/favicon.svg"
+    />
+    <link
+      rel="stylesheet"
+      href="./styling/index.css"
+    />
+    <script
+      defer
+      src="./js/index.js"
+    ></script>
+    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
+    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script
+      defer
+      src="./js/components/simulation-preview.js"
+    ></script>
+  </head>
+  <body>
+    <div class="pageContent">
+      <div class="titleBar">
+        <img
+          src="./ressources/misc/fhi_logo.svg"
+          alt="FHI Logo"
+          id="titleImg"
+          width="100"
+          height="90"
+        />
+      </div>
+      <div class="titleContainer">
+        <h1>Simulationen zu Wasserstoff</h1>
+        <h2>Wähle eine Simulation aus</h2>
+      </div>
+      <div class="previewContainer">
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+        <simulation-preview></simulation-preview>
+      </div>
+    </div>
+  </body>
+</html>

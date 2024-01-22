@@ -1,0 +1,19 @@
+# From .gitignore
+**/logs
+**/*.log
+**/npm-debug.log*
+
+**/node_modules
+**/dist
+**/dist-ssr
+**/coverage
+
+**/tmp
+**/*.local
+**/*.local.*
+**/*.env
+
+# Additions for Docker
+**/.git
+**/.github
+**/husky
