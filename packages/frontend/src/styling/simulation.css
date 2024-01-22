@@ -93,8 +93,8 @@ span {
 #resetViewButton {
   position: absolute;
   cursor: pointer;
+  right: 1rem;
   top: 1rem;
-  left: 1rem;
   padding: 0.75rem 0.75rem;
   color: white;
   background-color: #006c66;
@@ -109,11 +109,11 @@ span {
   border-color: #006c66;
 }
 
-#toggleLegendButton {
+/* #toggleLegendButton {
   position: relative;
   cursor: pointer;
-  bottom: 3rem;
-  left: .5rem;
+  bottom: 3.2rem;
+  left: 1rem;
   color: white;
   border-radius: 4px;
   text-align: center;
@@ -124,20 +124,34 @@ span {
   background-repeat: no-repeat;
   width: 50px !important;
   height: 50px !important;
+} */
+
+#toggleLegendButton {
+  position: absolute;
+  cursor: pointer;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.75rem 0.75rem;
+  color: white;
+  background-color: #006c66;
+  border-color: #006c66;
+  border-radius: 4px;
+  text-align: center;
+  border-style: none;
 }
 
-#toggleLegendButton:hover {
+/* #toggleLegendButton:hover {
   background-image: url('../ressources/misc/down_hover.png');
   background-repeat: no-repeat;
-}
+} */
 
-#toggleButtonDescription {
+/* #toggleButtonDescription {
   position: relative;
-  bottom: 4rem;
-  left: .5rem;
+  bottom: 4.1rem;
+  left: 1rem;
   color: #006c66;
   font-size: 11px;
-}
+} */
 
 #backButton {
   cursor: pointer;
@@ -178,7 +192,11 @@ span {
 
 #legendContainer {
   display: none;
-  padding-left: 1rem;
+  padding-left: .5rem;
+}
+
+.legendType span {
+  float: auto;
 }
 
 #descriptionContainer {
@@ -239,7 +257,6 @@ span {
   animation-iteration-count: infinite, 1;
   animation-fill-mode: forwards;
 }
-
 
 @-webkit-keyframes spin {
   0% {
