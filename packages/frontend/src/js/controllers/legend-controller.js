@@ -1,10 +1,9 @@
 export class LegendController {
-  #isLegendVisible;
+  #isLegendVisible = false;
   #typeDefinitions;
 
   constructor(typeDefinitions) {
     this.#typeDefinitions = typeDefinitions;
-    this.#isLegendVisible = false;
   }
 
   initializeLegend() {
@@ -72,11 +71,23 @@ export class LegendController {
 
   toggleLegend() {
     this.#isLegendVisible = !this.#isLegendVisible;
-    const toggle = document.querySelector('#legendContainer');
-    this.#isLegendVisible
-      ? // set the legendDiv.style.visibility='visible'
-        (toggle.style.display = 'block')
-      : // set the legendDiv.style.visibility='hidden'
-        (toggle.style.display = 'none');
+
+    const legend = document.querySelector('#legendContainer');
+    const toggleLegendButton = document.querySelector('#toggleLegendButton');
+    const legendButtonImage = document.querySelector('#legendButtonImage');
+    const openLegendButtonImage = document.querySelector('#openLegendButtonImage');
+    const browserLanguage = navigator.language || navigator.userLanguage;
+
+    if (this.#isLegendVisible) {
+      toggleLegendButton.title = browserLanguage.startsWith('de') ? 'Schließe Legende' : 'Close legend';
+      legendButtonImage.style.display = 'block';
+      openLegendButtonImage.style.display = 'none';
+      legend.style.display = 'block';
+    } else {
+      openLegendButtonImage.title = browserLanguage.startsWith('de') ? 'Zeige Legende an' : 'Show legend';
+      openLegendButtonImage.style.display = 'block';
+      legendButtonImage.style.display = 'none';
+      legend.style.display = 'none';
+    }
   }
 }
