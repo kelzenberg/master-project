@@ -157,7 +157,7 @@ span {
 }
 
 #pauseButtonImage {
-  display: block;
+  display: none;
 }
 
 #legendButtonImage {

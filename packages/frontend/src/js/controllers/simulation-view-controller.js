@@ -166,6 +166,7 @@ export class SimulationViewController {
     document.querySelector('#sliderContainer').style.visibility = 'visible';
     document.querySelector('#toggleTofButton').style.visibility = 'visible';
     document.querySelector('#toggleCoverageButton').style.visibility = 'visible';
+    document.querySelector('#pauseButtonImage').style.display = 'block';
     document.querySelector('#loader').style.display = 'none';
   }
 }
