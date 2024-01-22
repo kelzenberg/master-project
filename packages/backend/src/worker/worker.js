@@ -6,7 +6,7 @@ const logger = Logger({ name: 'fetch-worker' });
 const delayFor = ms =>
   new Promise(resolve =>
     setTimeout(() => {
-      logger.info(`Delaying script execution for ${ms / 1000} seconds...`);
+      logger.debug(`Delaying script execution for ${ms / 1000} seconds...`);
       resolve();
     }, ms)
   );
