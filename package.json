@@ -20,18 +20,24 @@
   "scripts": {
     "prepare": "husky install",
     "clean": "rimraf {./dist,./packages/**/dist}",
+    "reset": "npm run clean && rm -rf ./node_modules ./packages/backend/node_modules ./packages/frontend/node_modules ./packages/libs/node_modules && npm install",
     "lint": "eslint --config ./.eslintrc.json .",
     "lint:fix": "eslint --fix --config ./.eslintrc.json .",
     "format": "prettier \"**/*.+(js|ts|json|html|md)\" --check --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "format:fix": "prettier \"**/*.+(js|ts|json|html|md)\" --write --config ./.prettierrc --ignore-path ./.eslintignore --log-level=warn",
+    "up": "docker compose up",
+    "down": "docker compose down",
+    "docker:reset": "docker compose up --force-recreate --build --remove-orphans",
+    "F": "npm run --workspace @master-project/frontend",
     "install:F": "npm install --workspace @master-project/frontend",
     "remove:F": "npm remove --workspace @master-project/frontend",
-    "F": "npm run --workspace @master-project/frontend",
+    "B": "npm run --workspace @master-project/backend",
     "install:B": "npm install --workspace @master-project/backend",
     "remove:B": "npm remove --workspace @master-project/backend",
-    "B": "npm run --workspace @master-project/backend",
+    "L": "npm run --workspace @master-project/libs",
     "install:L": "npm install --workspace @master-project/libs",
     "remove:L": "npm remove --workspace @master-project/libs",
-    "L": "npm run --workspace @master-project/libs"
+    "S": "npm run --workspace @master-project/simulation"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
@@ -43,10 +49,5 @@
     "lint-staged": "^15.1.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5"
-    "vite": "^4.5.1",
-    "vite-plugin-eslint": "^1.8.1"
-  },
-  "dependencies": {
-    "three": "^0.158.0"
   }
 }

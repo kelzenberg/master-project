@@ -19,16 +19,18 @@
     "dev": "nodemon --env-file=../../.env -w ./src ./src/index.js",
     "start": "node --env-file=../../.env ./src/index.js"
   },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
   "dependencies": {
+    "@master-project/libs": "^0.0.1",
     "@vpriem/express-api-key-auth": "^1.3.0",
+    "ajv": "^8.12.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
-    "stoppable": "^1.1.0",
-    "winston": "^3.11.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+    "socket.io": "^4.7.2",
+    "stoppable": "^1.1.0"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dynamic Data",
+  "description": "JSON Schema for the dynamic data send by a simulation",
+  "type": "object",
+  "properties": {
+    "visualization": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "$ref": "./subschemas/visualization/config-schema.json"
+        }
+      },
+      "required": ["config"],
+      "additionalProperties": "false"
+    },
+    "plots": {
+      "type": "object",
+      "properties": {
+        "plotData": {
+          "type": "array",
+          "$ref": "./subschemas/plots/plotdata-schema.json"
+        }
+      },
+      "required": ["plotData"],
+      "additionalProperties": "false"
+    }
+  },
+  "required": ["visualization", "plots"],
+  "additionalProperties": "false"
+}

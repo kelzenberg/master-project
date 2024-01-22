@@ -13,7 +13,7 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
 ## Usage
 
 - Start development-only server
-  _(on [http://localhost:5173](http://localhost:5173) if not in use)_
+  _(on [http://localhost:3000](http://localhost:3000))_
 
   ```sh
   npm run B dev

@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./packages/backend/Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: master-project-app
+    environment:
+      BACKEND_PORT: ${BACKEND_PORT}
+      API_KEY_DEV: ${API_KEY_DEV}
+      WORKER_ACTIVE: ${WORKER_ACTIVE}
+      WORKER_DELAY: ${WORKER_DELAY}
+      REDIS_HOST: cache
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SIMULATION_URL: sim
+      SIMULATION_PORT: ${SIMULATION_PORT}
+    networks:
+      - backend
+    ports:
+      - 8080:${BACKEND_PORT}
+    command: node ./src/index.js
+    depends_on:
+      - sim
+      - cache
+
+  sim:
+    build:
+      context: .
+      dockerfile: ./packages/simulation/Dockerfile
+      args:
+        - ENV=production
+    container_name: master-project-sim
+    restart: on-failure:3
+    environment:
+      SIMULATION_PORT: ${SIMULATION_PORT}
+    networks:
+      - backend
+    ports:
+      - 3001:${SIMULATION_PORT}
+    command: python3 /app/simulations/methanation/Methanation_local_smart/start.py
+
+  cache:
+    image: redis:7.2
+    container_name: master-project-cache
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 6379:${REDIS_PORT}
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache_data:/data
+    depends_on:
+      - sim
+
+networks:
+  backend:
+
+volumes:
+  cache_data:

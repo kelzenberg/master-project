@@ -38,7 +38,8 @@
 
     /* OTHER */
     "max-classes-per-file": ["error", 1],
-    "unicorn/prevent-abbreviations": ["off"]
+    "unicorn/prevent-abbreviations": ["off"],
+    "unicorn/no-null": ["off"]
   },
   "overrides": [
     {

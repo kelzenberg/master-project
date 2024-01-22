@@ -15,11 +15,13 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --ignore-path ./.eslintignore --write \"**/*.+(js|ts|json)\""
+  "exports": {
+    "./src/logger": "./src/logger.js",
+    "./src/events": "./src/events.js"
   },
+  "scripts": {},
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "winston": "^3.11.0"
+  }
 }
