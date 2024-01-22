@@ -18,23 +18,40 @@ export class PlotController {
     this.#tofNumGraphs = 0;
     this.#coverageNumGraphs = 0;
     this.#tofLayout = {
+      font: {
+        family: 'Roboto, sans-serif',
+        weight: 'normal',
+      },
       xaxis: {
-        title: 'kmc time',
+        title: {
+          text: 'kmc time',
+        },
       },
       hovermode: 'x',
       margin: {
         l: 40,
-        r: 10,
-        t: 30,
+        r: 5,
+        t: 40,
         b: 40,
         pad: 0,
       },
       title: {
         text: 'TOF',
+        font: {
+          color: '#006c66',
+        },
       },
       responsive: true,
     };
-    this.#coverageLayout = { ...this.#tofLayout, title: { text: 'Coverage' } };
+    this.#coverageLayout = {
+      ...this.#tofLayout,
+      title: {
+        text: 'Coverage',
+        font: {
+          color: '#006c66',
+        },
+      },
+    };
   }
 
   renderInitialData() {
