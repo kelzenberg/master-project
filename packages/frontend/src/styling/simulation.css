@@ -109,7 +109,7 @@ span {
   border-color: #006c66;
 }
 
-/* #toggleLegendButton {
+#toggleLegendButton {
   position: relative;
   cursor: pointer;
   bottom: 3.2rem;
@@ -124,9 +124,9 @@ span {
   background-repeat: no-repeat;
   width: 50px !important;
   height: 50px !important;
-} */
+}
 
-#toggleLegendButton {
+/* #toggleLegendButton {
   position: absolute;
   cursor: pointer;
   top: 1rem;
@@ -138,20 +138,20 @@ span {
   border-radius: 4px;
   text-align: center;
   border-style: none;
-}
-
-/* #toggleLegendButton:hover {
-  background-image: url('../ressources/misc/down_hover.png');
-  background-repeat: no-repeat;
 } */
 
-/* #toggleButtonDescription {
+#toggleLegendButton:hover {
+  background-image: url('../ressources/misc/down_hover.png');
+  background-repeat: no-repeat;
+}
+
+#toggleButtonDescription {
   position: relative;
   bottom: 4.1rem;
   left: 1rem;
   color: #006c66;
   font-size: 11px;
-} */
+}
 
 #backButton {
   cursor: pointer;
