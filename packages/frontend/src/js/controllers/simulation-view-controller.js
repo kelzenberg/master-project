@@ -55,11 +55,8 @@ export class SimulationViewController {
 
   renderDynamicData(jsonData) {
     if (!this.#isPaused) {
-      let config = jsonData.visualization.config;
-      this.#visualizationController.renderDynamicData(config);
-
-      let plotData = jsonData.plots.plotData;
-      this.#plotController.updatePlots(plotData);
+      this.#visualizationController.renderDynamicData(jsonData.visualization.config);
+      this.#plotController.updatePlots(jsonData.plots);
     }
   }
 

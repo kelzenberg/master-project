@@ -9,7 +9,7 @@ export class SliderController {
   initializeSliders() {
     const sliderContainer = document.querySelector('#sliderContainer');
 
-    for (const sliderData of this.#sliders) {
+    const sliders = this.#sliders.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
 
       // Setzen der Attribute für den Range-Slider
@@ -20,13 +20,15 @@ export class SliderController {
       rangeSlider.setAttribute('scale', sliderData.scale);
       rangeSlider.setAttribute('info', sliderData.info);
 
-      sliderContainer.append(rangeSlider);
-
       // Add event listener for the custom event
       rangeSlider.addEventListener('valueChanged', event => {
         this.#sendValueChangedEvent(event.detail.label, event.detail.value);
       });
-    }
+
+      return rangeSlider;
+    });
+
+    sliderContainer.replaceChildren(...sliders);
   }
 
   #sendValueChangedEvent(label, value) {

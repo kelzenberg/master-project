@@ -85,9 +85,10 @@ export class PlotController {
     this.#newPlotCoverage();
   }
 
-  updatePlots(plotDataList) {
+  updatePlots(plots) {
+    this.#plots = plots;
     this.#clearPlots();
-    for (const plotData of plotDataList) {
+    for (const plotData of this.#plots.plotData) {
       // Update each TOF graph with new data
       for (let i = 0; i < this.#tofNumGraphs; i++) {
         const graphTOF = this.#graphsTof[i];
@@ -128,8 +129,7 @@ export class PlotController {
   toggleCoverage() {
     this.#isCoverageToggled = !this.#isCoverageToggled;
     if (this.#isCoverageToggled) {
-      const plotData = this.#plots.plotData[0];
-      this.#newPlotCoverageSingle(plotData);
+      this.#newPlotCoverageSingle();
     } else {
       this.#newPlotCoverage();
     }
@@ -177,8 +177,8 @@ export class PlotController {
     });
   }
 
-  #newPlotCoverageSingle(plotData) {
-    let values = this.#getAllSingleValues(plotData);
+  #newPlotCoverageSingle() {
+    let values = this.#getAllSingleValues();
 
     let initialData = Array.from({ length: this.#coverageSingleNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
@@ -202,20 +202,14 @@ export class PlotController {
   }
 
   #clearPlots() {
-    for (let i = 0; i < this.#tofNumGraphs; i++) {
+    for (let i = 0; i < this.#graphsTof.length; i++) {
       this.#graphsTof[i].x = [];
       this.#graphsTof[i].y = [];
     }
-    if (this.#isCoverageToggled) {
-      for (let j = 0; j < this.#coverageSingleNumGraphs; j++) {
-        this.#graphsCoverage[j].x = [];
-        this.#graphsCoverage[j].y = [];
-      }
-    } else {
-      for (let j = 0; j < this.#coverageNumGraphs; j++) {
-        this.#graphsCoverage[j].x = [];
-        this.#graphsCoverage[j].y = [];
-      }
+
+    for (let j = 0; j < this.#graphsCoverage.length; j++) {
+      this.#graphsCoverage[j].x = [];
+      this.#graphsCoverage[j].y = [];
     }
   }
 
@@ -255,8 +249,8 @@ export class PlotController {
     return allColors;
   }
 
-  #getAllSingleValues(plotData) {
-    const coverage = plotData.coverage;
+  #getAllSingleValues() {
+    const coverage = this.#plots.plotData[0].coverage;
     const result = [];
 
     for (const entry of coverage) {
