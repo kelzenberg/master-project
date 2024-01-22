@@ -110,19 +110,19 @@ span {
 }
 
 #toggleLegendButton {
-  width: 2rem;
-  height: 2rem;
   cursor: pointer;
-  margin-top: .5rem;
-  margin-left: .1rem;
+  margin-top: .4rem;
+  margin-left: .2rem;
   color: white;
   border-radius: 4px;
   text-align: center;
   border-style: none;
   background-color: transparent;
   background-image: url('../ressources/misc/down.png');
-  background-size: 30px 30px;
+  background-size: 25px 25px;
   background-repeat: no-repeat;
+  width: 3rem;
+  height: 1.6rem;
 }
 
 #toggleLegendButton:hover {
@@ -133,6 +133,8 @@ span {
 #toggleButtonDescription {
   color: #006c66;
   font-size: 11px;
+  top: .2rem;
+  position: relative;
 }
 
 #backButton {
@@ -152,6 +154,7 @@ span {
 #backButton:hover {
   background-color: #006c66;
   border-color: #006c66;
+  margin-top: 2rem;
 }
 
 #backButton > img {
@@ -174,11 +177,16 @@ span {
 
 #legendContainer {
   display: none;
-  padding-left: .5rem;
+  padding-left: 2rem;
 }
 
 .legendType span {
   float: auto;
+}
+
+.toggleContainer {
+  display: flex;
+  flex-direction: row;
 }
 
 #descriptionContainer {
