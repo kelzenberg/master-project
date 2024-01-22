@@ -219,6 +219,14 @@ span {
   visibility: hidden;
 }
 
+#toggleCoverageButton {
+  visibility: hidden;
+}
+
+#toggleTofButton {
+  visibility: hidden;
+}
+
 #loader {
   position: absolute;
   top: 0;

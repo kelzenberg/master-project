@@ -2,18 +2,28 @@ import { newPlot, update as plotUpdate } from 'plotly.js-dist-min';
 
 export class PlotController {
   #plots;
-  #graphsTOF;
+  #graphsTof;
   #graphsCoverage;
   #tofNumGraphs;
   #coverageNumGraphs;
+  #coverageSingleNumGraphs;
   #tofLayout;
   #coverageLayout;
   #lineWidth = 1;
   #markerSize = 4;
+  #isTofToggled = false;
+  #isCoverageToggled = false;
+
+  #tofColors;
+  #tofLabels;
+  #coverageColors;
+  #coverageLabels;
+  #coverageSingleColors;
+  #coverageSingleLabels;
 
   constructor(plots) {
     this.#plots = plots;
-    this.#graphsTOF = [];
+    this.#graphsTof = [];
     this.#graphsCoverage = [];
     this.#tofNumGraphs = 0;
     this.#coverageNumGraphs = 0;
@@ -55,100 +65,207 @@ export class PlotController {
   }
 
   renderInitialData() {
-    // Set up initial data for each graph
+    // Set up initial data for each graph:
+    // TOF
     this.#tofNumGraphs = this.#plots.tof.length;
+    this.#tofColors = this.#getColors('tof', 'color');
+    this.#tofLabels = this.#getLabels('tof', 'label');
+
+    // Coverage average
     this.#coverageNumGraphs = this.#plots.coverage.length;
-    let tofColors = this.#getColors('tof', 'color');
-    let coverageColors = this.#getColors('coverage', 'averageColor');
-    let tofLabels = this.#getLabels('tof', 'label');
-    let coverageLabels = this.#getLabels('coverage', 'averageLabel');
+    this.#coverageColors = this.#getColors('coverage', 'averageColor');
+    this.#coverageLabels = this.#getLabels('coverage', 'averageLabel');
 
-    let initialDataTOF = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
-      x: [this.#plots.plotData[0].kmcTime],
-      y: [this.#plots.plotData[0].tof[index].values[0]],
-      mode: 'lines+markers',
-      color: tofColors[index],
-      line: {
-        width: this.#lineWidth,
-      },
-      marker: {
-        size: this.#markerSize,
-      },
-      name: tofLabels[index],
-    }));
+    // Coverage single
+    this.#coverageSingleColors = this.#getAllSingleColors();
+    this.#coverageSingleLabels = this.#getAllSingleLabels();
+    this.#coverageSingleNumGraphs = this.#coverageSingleLabels.length;
 
-    let initialDataCoverage = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
-      x: [this.#plots.plotData[0].kmcTime],
-      y: [this.#calculateAverage(this.#plots.plotData[0].coverage[index].values)],
-      mode: 'lines+markers',
-      color: coverageColors[index],
-      line: {
-        width: this.#lineWidth,
-      },
-      marker: {
-        size: this.#markerSize,
-      },
-      name: coverageLabels[index],
-    }));
-
-    newPlot('plotTOF', initialDataTOF, this.#tofLayout, { responsive: true }).then(plotTOF => {
-      this.#graphsTOF = [...plotTOF.data];
-    });
-    newPlot('plotCoverage', initialDataCoverage, this.#coverageLayout, {
-      title: 'Coverage',
-      responsive: true,
-    }).then(plotCoverage => {
-      this.#graphsCoverage = [...plotCoverage.data];
-    });
+    this.#newPlotTof();
+    this.#newPlotCoverage();
   }
 
   updatePlots(plotDataList) {
     this.#clearPlots();
     for (const plotData of plotDataList) {
       // Update each TOF graph with new data
-      for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
-        const graphTOF = this.#graphsTOF[tofGraphIndex];
+      for (let i = 0; i < this.#tofNumGraphs; i++) {
+        const graphTOF = this.#graphsTof[i];
 
         graphTOF.x.push(plotData.kmcTime);
-        graphTOF.y.push(plotData.tof[tofGraphIndex].values[0]); //hier muss noch ein toggle für values[1] eingebaut werden!
+        const tofValues = plotData.tof[i].values;
+        this.#setYValueForTof(graphTOF, tofValues);
       }
 
-      // Update each Coverage graph with new data
-      for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
-        const graphCoverage = this.#graphsCoverage[coverageGraphIndex];
+      if (this.#isCoverageToggled) {
+        // Update each Coverage single graph with new data
+        let coverageSingleValues = this.#getAllSingleValues(plotData);
+        for (let k = 0; k < this.#coverageSingleNumGraphs; k++) {
+          const graphCoverageSingle = this.#graphsCoverage[k];
 
-        graphCoverage.x.push(plotData.kmcTime);
-        graphCoverage.y.push(this.#calculateAverage(plotData.coverage[coverageGraphIndex].values));
+          graphCoverageSingle.x.push(plotData.kmcTime);
+          graphCoverageSingle.y.push(coverageSingleValues[k]);
+        }
+      } else {
+        // Update each Coverage graph with new data
+        for (let j = 0; j < this.#coverageNumGraphs; j++) {
+          const graphCoverage = this.#graphsCoverage[j];
+
+          graphCoverage.x.push(plotData.kmcTime);
+          graphCoverage.y.push(this.#calculateAverage(plotData.coverage[j].values));
+        }
       }
     }
 
-    plotUpdate('plotTOF', this.#graphsTOF, this.#tofLayout);
-    plotUpdate('plotCoverage', this.#graphsCoverage, this.#coverageLayout, { title: 'Coverage' });
+    plotUpdate('plotTOF', this.#graphsTof, this.#tofLayout);
+    plotUpdate('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
+  }
+
+  toggleTof() {
+    this.#isTofToggled = !this.#isTofToggled;
+  }
+
+  toggleCoverage() {
+    console.log(this.#plots);
+    this.#isCoverageToggled = !this.#isCoverageToggled;
+    if (this.#isCoverageToggled) {
+      const plotData = this.#plots.plotData[0];
+      this.#newPlotCoverageSingle(plotData);
+    } else {
+      this.#newPlotCoverage();
+    }
+  }
+
+  #newPlotTof() {
+    let initialData = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
+      x: [this.#plots.plotData[0].kmcTime],
+      y: [this.#plots.plotData[0].tof[index].values[0]],
+      mode: 'lines+markers',
+      color: this.#tofColors[index],
+      line: {
+        width: this.#lineWidth,
+      },
+      marker: {
+        size: this.#markerSize,
+      },
+      name: this.#tofLabels[index],
+    }));
+
+    newPlot('plotTOF', initialData, this.#tofLayout, { responsive: true }).then(plotTOF => {
+      this.#graphsTof = [...plotTOF.data];
+    });
+  }
+
+  #newPlotCoverage() {
+    let initialData = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
+      x: [this.#plots.plotData[0].kmcTime],
+      y: [this.#calculateAverage(this.#plots.plotData[0].coverage[index].values)],
+      mode: 'lines+markers',
+      color: this.#coverageColors[index],
+      line: {
+        width: this.#lineWidth,
+      },
+      marker: {
+        size: this.#markerSize,
+      },
+      name: this.#coverageLabels[index],
+    }));
+
+    newPlot('plotCoverage', initialData, this.#coverageLayout, {
+      responsive: true,
+    }).then(plotCoverage => {
+      this.#graphsCoverage = [...plotCoverage.data];
+    });
+  }
+
+  #newPlotCoverageSingle(plotData) {
+    let values = this.#getAllSingleValues(plotData);
+
+    let initialData = Array.from({ length: this.#coverageSingleNumGraphs }, (_, index) => ({
+      x: [this.#plots.plotData[0].kmcTime],
+      y: [values[index]],
+      mode: 'lines+markers',
+      color: this.#coverageSingleColors[index],
+      line: {
+        width: this.#lineWidth,
+      },
+      marker: {
+        size: this.#markerSize,
+      },
+      name: this.#coverageSingleLabels[index],
+    }));
+
+    newPlot('plotCoverage', initialData, this.#coverageLayout, {
+      responsive: true,
+    }).then(plotCoverage => {
+      this.#graphsCoverage = [...plotCoverage.data];
+    });
   }
 
   #clearPlots() {
-    for (let tofGraphIndex = 0; tofGraphIndex < this.#tofNumGraphs; tofGraphIndex++) {
-      this.#graphsTOF[tofGraphIndex].x = [];
-      this.#graphsTOF[tofGraphIndex].y = [];
+    for (let i = 0; i < this.#tofNumGraphs; i++) {
+      this.#graphsTof[i].x = [];
+      this.#graphsTof[i].y = [];
     }
-    for (let coverageGraphIndex = 0; coverageGraphIndex < this.#coverageNumGraphs; coverageGraphIndex++) {
-      this.#graphsCoverage[coverageGraphIndex].x = [];
-      this.#graphsCoverage[coverageGraphIndex].y = [];
+    if (this.#isCoverageToggled) {
+      for (let j = 0; j < this.#coverageSingleNumGraphs; j++) {
+        this.#graphsCoverage[j].x = [];
+        this.#graphsCoverage[j].y = [];
+      }
+    } else {
+      for (let j = 0; j < this.#coverageNumGraphs; j++) {
+        this.#graphsCoverage[j].x = [];
+        this.#graphsCoverage[j].y = [];
+      }
     }
+  }
+
+  #setYValueForTof(graphTOF, values) {
+    graphTOF.y.push(this.#isTofToggled ? values[1] : values[0]);
   }
 
   #getColors(plotName, key) {
     return this.#plots[plotName].map(object => {
       const rgbColor = object[key];
-      return this.#rgbToHex(rgbColor.x, rgbColor.y, rgbColor.z);
+      return this.#rgbToHex(rgbColor[0], rgbColor[1], rgbColor[2]);
     });
   }
 
   #getLabels(plotName, key) {
-    return this.#plots[plotName].map(object => {
-      const label = object[key];
-      return label;
-    });
+    const dataValues = this.#plots[plotName].map(entry => entry[key]);
+    return dataValues;
+  }
+
+  #getAllSingleLabels() {
+    let allLabels = [];
+
+    for (const item of this.#plots.coverage) {
+      allLabels = [...allLabels, ...item.singleLabels];
+    }
+
+    return allLabels;
+  }
+
+  #getAllSingleColors() {
+    let allColors = [];
+
+    for (const item of this.#plots.coverage) {
+      allColors = [...allColors, ...item.singleColors];
+    }
+
+    return allColors;
+  }
+
+  #getAllSingleValues(plotData) {
+    const coverage = plotData.coverage;
+    const result = [];
+
+    for (const entry of coverage) {
+      const values = entry.values;
+      result.push(...values);
+    }
+
+    return result;
   }
 
   #rgbToHex(red, green, blue) {

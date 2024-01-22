@@ -71,14 +71,24 @@ export class SimulationViewController {
   }
 
   addEventListeners() {
-    const pauseButton = document.querySelector('#pauseButton');
-    pauseButton.addEventListener('click', () => {
-      this.#togglePause();
-    });
-
     const toggleLegendButton = document.querySelector('#toggleLegendButton');
     toggleLegendButton.addEventListener('click', () => {
       this.#toggleLegend();
+    });
+
+    const toggleTofButton = document.querySelector('#toggleTofButton');
+    toggleTofButton.addEventListener('click', () => {
+      this.#toggleTof();
+    });
+
+    const toggleCoverageButton = document.querySelector('#toggleCoverageButton');
+    toggleCoverageButton.addEventListener('click', () => {
+      this.#toggleCoverage();
+    });
+
+    const pauseButton = document.querySelector('#pauseButton');
+    pauseButton.addEventListener('click', () => {
+      this.#togglePause();
     });
 
     const browserLanguage = navigator.language || navigator.userLanguage;
@@ -107,6 +117,14 @@ export class SimulationViewController {
       legendButtonImage.style.display = 'none';
     }
     this.#legendController.toggleLegend();
+  }
+
+  #toggleTof() {
+    this.#plotController.toggleTof();
+  }
+
+  #toggleCoverage() {
+    this.#plotController.toggleCoverage();
   }
 
   #togglePause() {
@@ -165,6 +183,8 @@ export class SimulationViewController {
     document.querySelector('#plotTOF').style.visibility = 'visible';
     document.querySelector('#plotCoverage').style.visibility = 'visible';
     document.querySelector('#sliderContainer').style.visibility = 'visible';
+    document.querySelector('#toggleTofButton').style.visibility = 'visible';
+    document.querySelector('#toggleCoverageButton').style.visibility = 'visible';
     document.querySelector('#loader').style.display = 'none';
   }
 }
