@@ -48,7 +48,7 @@ export class LegendController {
         const keySpan = document.createElement('span');
         keySpan.textContent = `(${key})`;
         keySpan.style.marginRight = '30px'; // Add right margin (adjust as needed)
-        nameSpan.style.alignItems = 'center';
+        keySpan.style.alignItems = 'center';
 
         // Append the circle and text elements to the rowContainer
         rowContainer.append(circleDiv);

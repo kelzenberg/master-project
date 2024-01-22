@@ -93,14 +93,31 @@
             Reset View
           </button>
           <canvas id="canvas"></canvas>
-          <span id="toggleButtonDescription">Legend</span>
           <div class="toggleContainer">
             <button
               type="button"
               id="toggleLegendButton"
-            ></button>
-            <div id="legendContainer"></div>
+              class="btn"
+              title="Show legend"
+            >
+              <img
+                src="./ressources/misc/up.png"
+                alt="Show legend"
+                id="legendButtonImage"
+                width="25"
+                height="25"
+              />
+              <img
+                src="./ressources/misc/down.png"
+                alt="Close legend"
+                id="openLegendButtonImage"
+                width="25"
+                height="25"
+              />
+            </button>
+            <span id="toggleButtonDescription">Legend</span>
           </div>
+          <div id="legendContainer"></div>
           <div id="descriptionContainer">
             <h1>Methanation</h1>
             <p>
