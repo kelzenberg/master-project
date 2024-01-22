@@ -93,7 +93,7 @@ span {
 #resetViewButton {
   position: absolute;
   cursor: pointer;
-  right: 1rem;
+  left: 1rem;
   top: 1rem;
   padding: 0.75rem 0.75rem;
   color: white;
@@ -110,35 +110,20 @@ span {
 }
 
 #toggleLegendButton {
-  position: relative;
+  width: 2rem;
+  height: 2rem;
   cursor: pointer;
-  bottom: 3.2rem;
-  left: 1rem;
+  margin-top: .5rem;
+  margin-left: .1rem;
   color: white;
   border-radius: 4px;
   text-align: center;
   border-style: none;
   background-color: transparent;
   background-image: url('../ressources/misc/down.png');
-  background-size: 35px 35px;
+  background-size: 30px 30px;
   background-repeat: no-repeat;
-  width: 50px !important;
-  height: 50px !important;
 }
-
-/* #toggleLegendButton {
-  position: absolute;
-  cursor: pointer;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.75rem 0.75rem;
-  color: white;
-  background-color: #006c66;
-  border-color: #006c66;
-  border-radius: 4px;
-  text-align: center;
-  border-style: none;
-} */
 
 #toggleLegendButton:hover {
   background-image: url('../ressources/misc/down_hover.png');
@@ -146,9 +131,6 @@ span {
 }
 
 #toggleButtonDescription {
-  position: relative;
-  bottom: 4.1rem;
-  left: 1rem;
   color: #006c66;
   font-size: 11px;
 }
