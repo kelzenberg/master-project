@@ -173,11 +173,6 @@ span {
   padding-left: 1rem;
 }
 
-.legendContainer p {
-  float: auto;
-  margin: 0 auto;
-}
-
 .toggleContainer {
   display: flex;
   flex-direction: row;

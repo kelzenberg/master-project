@@ -9,65 +9,57 @@ export class LegendController {
   initializeLegend() {
     const legendContainer = document.querySelector('#legendContainer');
 
-    // Loop through each type definition and create corresponding HTML elements
-    const typeDivs = Object.entries(this.#typeDefinitions)
+    // Create a table element
+    const legendTable = document.createElement('table');
+    legendTable.classList.add('legendTable'); // You can add a class for styling if needed
+
+    // Map each type definition to a table row
+    const typeRows = Object.entries(this.#typeDefinitions)
+      .filter(([key]) => key !== 'empty')
       .map(([key, type]) => {
-        if (key !== 'empty') {
-          // Create a div element for each type
-          const typeDiv = document.createElement('div');
-          typeDiv.classList.add('legendType');
-          typeDiv.style.display = 'flex'; // Set display to flex
-          typeDiv.style.flexDirection = 'row'; // Arrange children vertically
+        // Create a table row for each type
+        const typeRow = document.createElement('tr');
 
-          // Create a div container for the circle and text elements
-          const rowContainer = document.createElement('div');
-          rowContainer.style.display = 'flex'; // Set display to flex
-          rowContainer.style.alignItems = 'center'; // Center items vertically
+        // Create a table data for the circle
+        const circleCell = document.createElement('td');
+        const circleDiv = document.createElement('div');
+        circleDiv.classList.add('legendCircle');
+        circleDiv.style.backgroundColor = `rgb(${type.color.map(val => val * 255).join(',')})`;
+        circleDiv.style.border = '1px solid black';
+        circleDiv.style.borderRadius = '50%';
+        circleDiv.style.width = `${type.radius * 15}px`; // Adjust the size as needed
+        circleDiv.style.height = `${type.radius * 15}px`; // Adjust the size as needed
+        circleCell.append(circleDiv);
 
-          // Create a colored circle with outline
-          const circleDiv = document.createElement('div');
-          circleDiv.classList.add('legendCircle');
-          circleDiv.style.backgroundColor = `rgb(${type.color.map(val => val * 255).join(',')})`;
-          circleDiv.style.border = '1px solid black';
-          circleDiv.style.borderRadius = '50%';
-          circleDiv.style.width = `${type.radius * 15}px`; // Adjust the size as needed
-          circleDiv.style.height = `${type.radius * 15}px`; // Adjust the size as needed
-          circleDiv.style.flex = '0 0 auto'; // Prevent the circle from shrinking
-          circleDiv.style.marginRight = '5px'; // Add right margin (adjust as needed)
-          circleDiv.style.alignItems = 'center';
+        // Create a table data for the name
+        const nameCell = document.createElement('td');
+        nameCell.textContent = type.name;
 
-          // Create a span element for the type name
-          const nameSpan = document.createElement('span');
-          nameSpan.textContent = type.name;
-          nameSpan.style.marginRight = '30px'; // Add right margin (adjust as needed)
-          nameSpan.style.alignItems = 'center';
+        // Create a table data for the type key
+        const keyCell = document.createElement('td');
+        keyCell.textContent = `(${key})`;
 
-          // Create a span element for the type key (C, H, O, ...)
-          const keySpan = document.createElement('span');
-          keySpan.textContent = `(${key})`;
-          keySpan.style.marginRight = '30px'; // Add right margin (adjust as needed)
-          keySpan.style.alignItems = 'center';
+        // Create a table data for the type info
+        const infoCell = document.createElement('td');
+        const infoP = document.createElement('p');
+        infoP.textContent = type.info;
+        infoP.style.margin = '10px';
+        infoCell.append(infoP);
 
-          // Append the circle and text elements to the rowContainer
-          rowContainer.append(circleDiv);
-          rowContainer.append(nameSpan);
-          rowContainer.append(keySpan);
+        // Append cells to the row
+        typeRow.append(circleCell);
+        typeRow.append(nameCell);
+        typeRow.append(keyCell);
+        typeRow.append(infoCell);
 
-          // Create a span element for the type info
-          const infoP = document.createElement('p');
-          infoP.textContent = type.info;
-          infoP.style.padding = '0';
+        return typeRow;
+      });
 
-          // Append the rowContainer and infoSpan to the typeDiv
-          typeDiv.append(rowContainer);
-          typeDiv.append(infoP);
+    // Append all rows to the table
+    legendTable.append(...typeRows);
 
-          return typeDiv;
-        }
-      })
-      .filter(typeDiv => typeDiv !== undefined);
-
-    legendContainer.replaceChildren(...typeDivs);
+    // Replace the content of legendContainer with the table
+    legendContainer.replaceChildren(legendTable);
   }
 
   toggleLegend() {
