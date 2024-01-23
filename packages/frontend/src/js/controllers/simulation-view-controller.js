@@ -65,19 +65,11 @@ export class SimulationViewController {
   }
 
   addEventListeners() {
+    this.#addCheckboxEventlisteners();
+
     const toggleLegendButton = document.querySelector('#toggleLegendButton');
     toggleLegendButton.addEventListener('click', () => {
       this.#toggleLegend();
-    });
-
-    const toggleTofButton = document.querySelector('#toggleTofButton');
-    toggleTofButton.addEventListener('click', () => {
-      this.#toggleTof();
-    });
-
-    const toggleCoverageButton = document.querySelector('#toggleCoverageButton');
-    toggleCoverageButton.addEventListener('click', () => {
-      this.#toggleCoverage();
     });
 
     const pauseButton = document.querySelector('#pauseButton');
@@ -90,41 +82,6 @@ export class SimulationViewController {
 
     if (browserLanguage.startsWith('de')) {
       pauseButton.title = germanTooltip;
-    }
-  }
-
-  #toggleLegend() {
-    this.#legendController.toggleLegend();
-  }
-
-  #toggleTof() {
-    this.#plotController.toggleTof();
-  }
-
-  #toggleCoverage() {
-    this.#plotController.toggleCoverage();
-  }
-
-  #togglePause() {
-    this.#isPaused = !this.#isPaused;
-
-    const pauseButton = document.querySelector('#pauseButton');
-    const pauseButtonImage = document.querySelector('#pauseButtonImage');
-    const playButtonImage = document.querySelector('#playButtonImage');
-    const browserLanguage = navigator.language || navigator.userLanguage;
-
-    if (this.#isPaused) {
-      pauseButton.title = browserLanguage.startsWith('de')
-        ? 'Rendering der Simulationsdaten fortsetzen'
-        : 'Resume simulation rendering';
-      playButtonImage.style.display = 'block';
-      pauseButtonImage.style.display = 'none';
-    } else {
-      pauseButton.title = browserLanguage.startsWith('de')
-        ? 'Rendering der Simulationsdaten pausieren'
-        : 'Pause simulation rendering';
-      pauseButtonImage.style.display = 'block';
-      playButtonImage.style.display = 'none';
     }
   }
 
@@ -156,14 +113,105 @@ export class SimulationViewController {
     return speciesDictionary;
   }
 
+  #addCheckboxEventlisteners() {
+    const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
+    const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
+
+    checkbox1Coverage.checked = true;
+    checkbox2Coverage.checked = false;
+
+    checkbox1Coverage.addEventListener('change', () => {
+      if (checkbox1Coverage.checked) {
+        checkbox2Coverage.checked = false;
+      } else {
+        checkbox1Coverage.checked = true;
+      }
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    checkbox2Coverage.addEventListener('change', () => {
+      if (checkbox2Coverage.checked) {
+        checkbox1Coverage.checked = false;
+      } else {
+        checkbox2Coverage.checked = true;
+        checkbox1Coverage.checked = false;
+      }
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    const checkbox1Tof = document.querySelector('#toggleTofButton1');
+    const checkbox2Tof = document.querySelector('#toggleTofButton2');
+
+    checkbox1Tof.checked = true;
+    checkbox2Tof.checked = false;
+
+    checkbox1Tof.addEventListener('change', () => {
+      if (checkbox1Tof.checked) {
+        checkbox2Tof.checked = false;
+      } else {
+        checkbox1Tof.checked = true;
+      }
+      this.#toggleTof(checkbox2Tof.checked);
+    });
+
+    checkbox2Tof.addEventListener('change', () => {
+      if (checkbox2Tof.checked) {
+        checkbox1Tof.checked = false;
+      } else {
+        checkbox2Tof.checked = true;
+        checkbox1Tof.checked = false;
+      }
+      this.#toggleTof(checkbox2Tof.checked);
+    });
+  }
+
+  #toggleLegend() {
+    this.#legendController.toggleLegend();
+  }
+
+  #toggleTof(configurationCountActive) {
+    this.#plotController.toggleTof(configurationCountActive);
+  }
+
+  #toggleCoverage(singleCoverageActive) {
+    this.#plotController.toggleCoverage(singleCoverageActive);
+  }
+
+  #togglePause() {
+    this.#isPaused = !this.#isPaused;
+
+    const pauseButton = document.querySelector('#pauseButton');
+    const pauseButtonImage = document.querySelector('#pauseButtonImage');
+    const playButtonImage = document.querySelector('#playButtonImage');
+    const browserLanguage = navigator.language || navigator.userLanguage;
+
+    if (this.#isPaused) {
+      pauseButton.title = browserLanguage.startsWith('de')
+        ? 'Rendering der Simulationsdaten fortsetzen'
+        : 'Resume simulation rendering';
+      playButtonImage.style.display = 'block';
+      pauseButtonImage.style.display = 'none';
+    } else {
+      pauseButton.title = browserLanguage.startsWith('de')
+        ? 'Rendering der Simulationsdaten pausieren'
+        : 'Pause simulation rendering';
+      pauseButtonImage.style.display = 'block';
+      playButtonImage.style.display = 'none';
+    }
+  }
+
   #disableLoadingSpinner() {
     document.querySelector('#canvasContainer').style.visibility = 'visible';
     document.querySelector('#plotTOF').style.visibility = 'visible';
     document.querySelector('#plotCoverage').style.visibility = 'visible';
     document.querySelector('#sliderContainer').style.visibility = 'visible';
-    document.querySelector('#toggleTofButton').style.visibility = 'visible';
-    document.querySelector('#toggleCoverageButton').style.visibility = 'visible';
     document.querySelector('#pauseButtonImage').style.display = 'block';
+    document.querySelector('#coverageCheckboxContainer').style.display = 'block';
+    document.querySelector('#tofCheckboxContainer').style.display = 'block';
+    document.querySelector('#toggleCoverageButton1').checked = true;
+    document.querySelector('#toggleCoverageButton2').checked = false;
+    document.querySelector('#toggleTofButton1').checked = true;
+    document.querySelector('#toggleTofButton2').checked = false;
     document.querySelector('#loader').style.display = 'none';
   }
 }

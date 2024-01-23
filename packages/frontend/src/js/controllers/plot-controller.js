@@ -12,7 +12,7 @@ export class PlotController {
   #lineWidth = 1;
   #markerSize = 4;
   #isTofToggled = false;
-  #isCoverageToggled = false;
+  #isSingleCoverageActive = false;
 
   #tofColors;
   #tofLabels;
@@ -98,7 +98,7 @@ export class PlotController {
         this.#setYValueForTof(graphTOF, tofValues);
       }
 
-      if (this.#isCoverageToggled) {
+      if (this.#isSingleCoverageActive) {
         // Update each Coverage single graph with new data
         let coverageSingleValues = this.#getAllSingleValues(plotData);
         for (let k = 0; k < this.#coverageSingleNumGraphs; k++) {
@@ -122,16 +122,19 @@ export class PlotController {
     plotUpdate('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
   }
 
-  toggleTof() {
-    this.#isTofToggled = !this.#isTofToggled;
+  toggleTof(configurationCountActive) {
+    this.#isTofToggled = configurationCountActive ?? !configurationCountActive;
   }
 
-  toggleCoverage() {
-    this.#isCoverageToggled = !this.#isCoverageToggled;
-    if (this.#isCoverageToggled) {
-      this.#newPlotCoverageSingle();
-    } else {
-      this.#newPlotCoverage();
+  toggleCoverage(singleCoverageActive) {
+    let initialState = this.#isSingleCoverageActive;
+    this.#isSingleCoverageActive = singleCoverageActive;
+    if (initialState !== this.#isSingleCoverageActive) {
+      if (this.#isSingleCoverageActive) {
+        this.#newPlotCoverageSingle();
+      } else {
+        this.#newPlotCoverage();
+      }
     }
   }
 

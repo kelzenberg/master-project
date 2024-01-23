@@ -222,6 +222,24 @@ span {
   visibility: hidden;
 }
 
+#coverageCheckboxContainer {
+  display: flex;
+  flex-direction: row;
+  display: none;
+}
+
+#tofCheckboxContainer {
+  display: flex;
+  flex-direction: row;
+  display: none;
+}
+
+#tofCheckboxContainer {
+  display: flex;
+  flex-direction: row;
+  display: none;
+}
+
 #loader {
   position: absolute;
   top: 0;

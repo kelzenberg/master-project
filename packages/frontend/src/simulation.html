@@ -131,20 +131,39 @@
         <div id="sliderContainer"></div>
         <div class="graphContainer">
           <div id="plotTOF"></div>
-          <button
-            type="button"
-            id="toggleTofButton"
-          >
-            Toggle TOF
-          </button>
+          <div id="tofCheckboxContainer">
+            <input
+              type="checkbox"
+              id="toggleTofButton1"
+              class="toggleCheckbox"
+            />
+            <label for="toggleTofButton1">Process count</label>
+
+            <input
+              type="checkbox"
+              id="toggleTofButton2"
+              class="toggleCheckbox"
+            />
+            <label for="toggleCoverageButton2">Configuration count </label>
+          </div>
           <br />
           <div id="plotCoverage"></div>
-          <button
-            type="button"
-            id="toggleCoverageButton"
-          >
-            Toggle Coverage
-          </button>
+          <!-- Add two checkboxes for Coverage -->
+          <div id="coverageCheckboxContainer">
+            <input
+              type="checkbox"
+              id="toggleCoverageButton1"
+              class="toggleCheckbox"
+            />
+            <label for="toggleCoverageButton1">Average coverage</label>
+
+            <input
+              type="checkbox"
+              id="toggleCoverageButton2"
+              class="toggleCheckbox"
+            />
+            <label for="toggleCoverageButton2">Coverage per site type </label>
+          </div>
         </div>
       </div>
     </div>
