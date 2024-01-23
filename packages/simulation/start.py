@@ -320,26 +320,26 @@ if __name__ == "__main__":
         data = request.get_json()
         try:
             name = data["name"]
-        except KeyError:
-            return jsonify(success=False)
+        except:
+            return jsonify(success=False), 400
         try:
             value = data["value"]
-        except KeyError:
-            return jsonify(success=False)
+        except:
+            return jsonify(success=False), 400
         if not name or not value:
-            return jsonify(success=False)
+            return jsonify(success=False), 400
         try:
             value = float(value)
         except:
-            return jsonify(success=False)
+            return jsonify(success=False), 400
         if name not in settings.parameters.keys():
-            return jsonify(success=False)
+            return jsonify(success=False), 400
         if not settings.parameters[name]["adjustable"]:
-            return jsonify(success=False)
+            return jsonify(success=False), 400
         vmin = float(settings.parameters[name]["min"])
         vmax = float(settings.parameters[name]["max"])
         if value < vmin or value > vmax:
-            return jsonify(success=False)
+            return jsonify(success=False), 400
         settings.parameters[name]['value'] = str(value)
         app.kmc_model.parameter_queue.put(settings.parameters)
         return jsonify(success=True)
@@ -350,7 +350,7 @@ if __name__ == "__main__":
             os.kill(app.kmc_model.pid, 19)
             app._simulation_running = False
             return jsonify(success=True)
-        return jsonify(success=False)
+        return jsonify(success=False), 400
 
     @app.route('/resume', methods=['PUT'])
     def resume_simulation():
@@ -358,7 +358,7 @@ if __name__ == "__main__":
             os.kill(app.kmc_model.pid, 18)
             app._simulation_running = True
             return jsonify(success=True)
-        return jsonify(success=False)
+        return jsonify(success=False), 400
 
     try:
         port = int(os.environ.get('SIMULATION_PORT', 3001))
