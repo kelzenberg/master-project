@@ -151,7 +151,10 @@ export class PlotController {
       name: this.#tofLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialData, this.#tofLayout, { responsive: true }).then(plotTOF => {
+    Plotly.newPlot('plotTOF', initialData, this.#tofLayout, {
+      responsive: true,
+      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    }).then(plotTOF => {
       this.#graphsTof = [...plotTOF.data];
     });
   }
@@ -173,6 +176,7 @@ export class PlotController {
 
     Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
       responsive: true,
+      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
     }).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];
     });
@@ -197,6 +201,7 @@ export class PlotController {
 
     Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
       responsive: true,
+      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
     }).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];
     });
