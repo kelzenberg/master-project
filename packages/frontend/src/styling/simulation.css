@@ -6,7 +6,7 @@
 @font-face {
   font-family: 'Roboto';
   src: url('../ressources/fonts/Roboto-Medium.ttf');
-  font-weight: 500; /* Medium font-weight */
+  font-weight: 500;
 }
 
 * {

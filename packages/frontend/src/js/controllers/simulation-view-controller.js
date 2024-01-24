@@ -117,50 +117,22 @@ export class SimulationViewController {
     const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
     const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
 
-    checkbox1Coverage.checked = true;
-    checkbox2Coverage.checked = false;
-
     checkbox1Coverage.addEventListener('change', () => {
-      if (checkbox1Coverage.checked) {
-        checkbox2Coverage.checked = false;
-      } else {
-        checkbox1Coverage.checked = true;
-      }
       this.#toggleCoverage(checkbox2Coverage.checked);
     });
 
     checkbox2Coverage.addEventListener('change', () => {
-      if (checkbox2Coverage.checked) {
-        checkbox1Coverage.checked = false;
-      } else {
-        checkbox2Coverage.checked = true;
-        checkbox1Coverage.checked = false;
-      }
       this.#toggleCoverage(checkbox2Coverage.checked);
     });
 
     const checkbox1Tof = document.querySelector('#toggleTofButton1');
     const checkbox2Tof = document.querySelector('#toggleTofButton2');
 
-    checkbox1Tof.checked = true;
-    checkbox2Tof.checked = false;
-
     checkbox1Tof.addEventListener('change', () => {
-      if (checkbox1Tof.checked) {
-        checkbox2Tof.checked = false;
-      } else {
-        checkbox1Tof.checked = true;
-      }
       this.#toggleTof(checkbox2Tof.checked);
     });
 
     checkbox2Tof.addEventListener('change', () => {
-      if (checkbox2Tof.checked) {
-        checkbox1Tof.checked = false;
-      } else {
-        checkbox2Tof.checked = true;
-        checkbox1Tof.checked = false;
-      }
       this.#toggleTof(checkbox2Tof.checked);
     });
   }
