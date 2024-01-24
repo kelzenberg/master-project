@@ -231,8 +231,6 @@ input[type='radio']:before {
   display: inline-block;
   visibility: visible;
   border: 1px solid #006c66;
-  box-shadow: 0 0 5px #006c66;
-  transition: box-shadow 0.3s ease;
 }
 
 input[type='radio']:checked:before {
