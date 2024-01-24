@@ -1,5 +1,3 @@
-import { newPlot, update as plotUpdate } from 'plotly.js-dist-min';
-
 export class PlotController {
   #plots;
   #graphsTof;
@@ -118,8 +116,8 @@ export class PlotController {
       }
     }
 
-    plotUpdate('plotTOF', this.#graphsTof, this.#tofLayout);
-    plotUpdate('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
+    Plotly.update('plotTOF', this.#graphsTof, this.#tofLayout);
+    Plotly.update('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
   }
 
   toggleTof(configurationCountActive) {
@@ -153,7 +151,7 @@ export class PlotController {
       name: this.#tofLabels[index],
     }));
 
-    newPlot('plotTOF', initialData, this.#tofLayout, { responsive: true }).then(plotTOF => {
+    Plotly.newPlot('plotTOF', initialData, this.#tofLayout, { responsive: true }).then(plotTOF => {
       this.#graphsTof = [...plotTOF.data];
     });
   }
@@ -173,7 +171,7 @@ export class PlotController {
       name: this.#coverageLabels[index],
     }));
 
-    newPlot('plotCoverage', initialData, this.#coverageLayout, {
+    Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
       responsive: true,
     }).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];
@@ -197,7 +195,7 @@ export class PlotController {
       name: this.#coverageSingleLabels[index],
     }));
 
-    newPlot('plotCoverage', initialData, this.#coverageLayout, {
+    Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
       responsive: true,
     }).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];

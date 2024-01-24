@@ -15,26 +15,26 @@
       rel="stylesheet"
       href="./styling/simulation.css"
     />
-    <!-- / Socket IO -->
     <script
       defer
-      type="module"
+      src="./js/webcomponents-loader.js"
+    ></script>
+    <script
+      defer
+      src="./js/plotly.min.js"
+    ></script>
+    <script
+      defer
       src="/socket.io/socket.io.js"
     ></script>
     <script
       defer
-      type="module"
       src="./js/services/sockets.js"
     ></script>
     <script
       defer
-      type="module"
       src="./js/simulation.js"
     ></script>
-    <!-- Socket IO / -->
-    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
-    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../../../node_modules/plotly.js-dist-min/plotly.min.js"></script>
     <script
       defer
       src="js/components/range-slider.js"
