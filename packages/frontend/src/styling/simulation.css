@@ -118,7 +118,7 @@ span {
   height: 2.5rem;
 }
 
-#toggleButtonDescription {
+#toggleLegendButtonDescription {
   color: #006c66;
   font-size: 15px;
 }
@@ -182,7 +182,7 @@ span {
 #descriptionContainer {
   display: flex;
   flex-direction: column;
-  margin-top: 2rem;
+  margin-top: -2px;
 }
 
 #descriptionContainer p {
