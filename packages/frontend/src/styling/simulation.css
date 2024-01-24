@@ -214,8 +214,42 @@ span {
   visibility: hidden;
 }
 
-#toggleCoverageButton {
-  visibility: hidden;
+input[type='radio'] {
+  appearance: none;
+}
+
+input[type='radio']:before {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 2px;
+  left: 1px;
+  bottom: -2px;
+  position: relative;
+  background-color: white;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 1px solid #006c66;
+  box-shadow: 0 0 5px #006c66;
+  transition: box-shadow 0.3s ease;
+}
+
+input[type='radio']:checked:before {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 2px;
+  left: 1px;
+  bottom: -2px;
+  position: relative;
+  background-color: #006c66;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 1px solid #006c66;
+  box-shadow: 0 0 5px #006c66;
+  transition: box-shadow 0.3s ease;
 }
 
 #toggleTofButton {

@@ -133,36 +133,42 @@
           <div id="plotTOF"></div>
           <div id="tofCheckboxContainer">
             <input
-              type="checkbox"
+              type="radio"
               id="toggleTofButton1"
-              class="toggleCheckbox"
+              class="toggleRadio"
+              name="tofOptions"
+              checked
             />
             <label for="toggleTofButton1">Process count</label>
 
             <input
-              type="checkbox"
+              type="radio"
               id="toggleTofButton2"
-              class="toggleCheckbox"
+              class="toggleRadio"
+              name="tofOptions"
             />
-            <label for="toggleCoverageButton2">Configuration count </label>
+            <label for="toggleTofButton2">Configuration count</label>
           </div>
           <br />
           <div id="plotCoverage"></div>
-          <!-- Add two checkboxes for Coverage -->
+          <!-- Add two radio buttons for Coverage -->
           <div id="coverageCheckboxContainer">
             <input
-              type="checkbox"
+              type="radio"
               id="toggleCoverageButton1"
-              class="toggleCheckbox"
+              class="toggleRadio"
+              name="coverageOptions"
+              checked
             />
             <label for="toggleCoverageButton1">Average coverage</label>
 
             <input
-              type="checkbox"
+              type="radio"
               id="toggleCoverageButton2"
-              class="toggleCheckbox"
+              class="toggleRadio"
+              name="coverageOptions"
             />
-            <label for="toggleCoverageButton2">Coverage per site type </label>
+            <label for="toggleCoverageButton2">Coverage per site type</label>
           </div>
         </div>
       </div>
