@@ -264,12 +264,14 @@ input[type='radio']:checked:before {
   display: flex;
   flex-direction: row;
   display: none;
+  margin-bottom: -5px;
 }
 
 #tofCheckboxContainer {
   display: flex;
   flex-direction: row;
   display: none;
+  margin-bottom: -5px;
 }
 
 #loader {
