@@ -20,6 +20,19 @@ const stoppableServer = stoppable(
   expressServer.listen(expressPort, async () => {
     logger.info(`Server started on port ${expressPort}.`);
 
+    // ToDo: this is placed temporarily here until the backend knows all simulations, their URLs
+    // and has an option to dynamically get and store the initial sim data
+    let initialData;
+    try {
+      logger.info(`Fetching initial data...`);
+      const response = await fetch(staticURL);
+      initialData = await response.json();
+      logger.info(`Received initial data...`);
+    } catch (error) {
+      logger.error('Retrieving initial config failed', error);
+      throw new Error('Retrieving initial config failed', error);
+    }
+
     // NodeJS Workers
     let fetchWorker;
     if (process.env.WORKER_ACTIVE == 1) {
@@ -27,7 +40,7 @@ const stoppableServer = stoppable(
     }
 
     // Socket.io
-    await startSocketServer(expressServer, { fetchWorker, urls: { staticURL, sliderURL } })();
+    await startSocketServer(expressServer, { fetchWorker, url: sliderURL, initialData })();
   }),
   1000
 );
