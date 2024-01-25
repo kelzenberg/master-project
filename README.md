@@ -19,6 +19,7 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
   - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
   - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions, see `.nvmrc`
 - [Docker Desktop](https://docs.docker.com/desktop/) or similar container virtualization software
+- Some form of UNIX-based shell, especially on Windows: [WSL](https://code.visualstudio.com/docs/remote/wsl)
 
 ### Recommendations
 
@@ -223,3 +224,7 @@ git clone git@github.com:kelzenberg/master-project.wiki.git
 ### Q: How can I adjust the speed in which the Backend worker will request and distribute new Python simulation updates?
 
 - **A:** Via the environment variable `WORKER_DELAY` in either your `.env` file if you are developing locally or within the environment you are exposing in your production system to the Backend server. The value is an integer describing milliseconds, e.g. `2000` creates a two second delay between simulation update requests.
+
+### Q: Everything is broken, what should I do now[?](https://knowyourmeme.com/memes/this-is-fine)
+
+- **A:** Run `cp ./.env.dist ./.env && npm install && npm run reset && npm run docker:reset`.
