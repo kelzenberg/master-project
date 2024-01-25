@@ -20,11 +20,20 @@ const stoppableServer = stoppable(
   expressServer.listen(expressPort, async () => {
     logger.info(`Server started on port ${expressPort}.`);
 
+    // ToDo: Temporary sim list until sim config file is present
+    const simList = {
+      1234: {
+        id: 1234,
+        name: 'Methanation',
+        description: 'This is the sim for Methanation...',
+        initial: null,
+      },
+    };
+
     // ToDo: this is placed temporarily here until the backend knows all simulations, their URLs
     // and has an option to dynamically get and store the initial sim data
-    let initialData;
     try {
-      logger.info(`Starting sim server...`);
+      logger.info(`Fetching initial config for sim ${1234}...`);
       const startResponse = await fetch(startURL, { method: 'POST' });
       // eslint-disable-next-line unicorn/no-await-expression-member
       const hasStarted = (await startResponse.json()).success;
@@ -44,8 +53,8 @@ const stoppableServer = stoppable(
     try {
       logger.info(`Fetching initial data...`);
       const response = await fetch(staticURL);
-      initialData = await response.json();
-      logger.info(`Received initial data...`);
+      simList[1234].initial = await response.json();
+      logger.info(`Stored initial config for sim ${1234}`);
     } catch (error) {
       logger.error('Retrieving initial config failed', error);
       throw new Error('Retrieving initial config failed', error);
@@ -56,7 +65,7 @@ const stoppableServer = stoppable(
       const methanationWorker = new FetchWorker('Methanation', dynamicURL);
 
       // Socket.io
-      await startSocketServer(expressServer, { fetchWorker: methanationWorker.start(), url: sliderURL, initialData })();
+      await startSocketServer(expressServer, { fetchWorker: methanationWorker.start(), url: sliderURL, simList })();
     } catch (error) {
       logger.error(error);
       throw error;
