@@ -8,7 +8,7 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 ## Prerequisites
 
 > **Before you start...**  
-> Everything you need to successfully run and develop this project is described in this README **and** the READMEs inside the `./packages/**` folders.
+> Everything you need to successfully run and develop this project is described in this README **and** the READMEs inside the `./packages/**` folders. Please also see the FAQ section below.
 
 ### Requirements
 
@@ -24,7 +24,7 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 
 - Create your local `.env` file copy ([info](https://nodejs.org/docs/latest-v21.x/api/cli.html#--env-fileconfig)) with
   ```sh
-  # MacOS/Linux
+  # Linux/MacOS
   cp ./.env.dist ./.env
   # Windows
   copy .\.env.dist .\.env
@@ -92,7 +92,7 @@ During the `git commit` action you will see the hooks running in your console.
 
 - [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/frontend/README.md)
 - Short: `npm run F ...`
-- **Usage: `npm run F [dev|build|start]`**
+- **Usage: `npm run F [dev|build]`**
 - Install dependencies: `npm run install:F {NPM-package-name}`
 - Remove dependencies: `npm run remove:F {NPM-package-name}`
 
@@ -122,7 +122,8 @@ During the `git commit` action you will see the hooks running in your console.
 
 - [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/simulation/README.md)
 - Short: `npm run S ...`
-- **Usage: `npm run S [dev|start]`**
+- **Usage: `npm run S [dev]`**
+- For more information, please see the project documentation from FHI.
 
 ---
 
@@ -146,32 +147,32 @@ This repository offers package containerization via [Docker](https://docs.docker
   npm run up
   ```
 
-- Stop locally running container images
+- Stop locally running containers
 
   ```sh
   npm run down
   ```
 
-- Recreate local images forcibly (optional)
+- Recreate local container images forcibly (optional)
 
   ```sh
-  docker compose up --force-recreate --build --remove-orphans
+  npm run docker:reset
   ```
 
 ### Global Commands
 
 These NPM commands will be executed for ALL packages.
 
-- Reset installed dependencies and build artifacts
-
-  ```sh
-  npm run reset
-  ```
-
 - Remove build artifacts
 
   ```sh
   npm run clean
+  ```
+
+- Cleanly re-install the whole project & its dependencies
+
+  ```sh
+  npm run reset
   ```
 
 - Lint source files (with ESLint)
@@ -203,3 +204,22 @@ Clone the Wiki to edit pages locally in your editor.
 ```sh
 git clone git@github.com:kelzenberg/master-project.wiki.git
 ```
+
+## FAQ
+
+### Q: Why is Docker complaining about missing environment variables on build/start?
+
+- **A:** Please check if your local `.env` file lists **all** values that are present in the `.env.dist` file.
+
+### Q: How can I develop the Frontend or Backend with actual data from the Python simulation?
+
+- **A:**
+  - Start the Python simulation and HTTP server package in Docker (e.g. `npm run up`, stop the `app` container but keep the `sim` container running),
+  - then build the Frontend package with `npm run F build`,
+  - then start the development server of the Backend package with `npm run B dev`.  
+    It will use the build files in the `dist` folder of the Frontend package.
+  - You will need to rebuild the Frontend package and restart the Backend server to see Frontend code changes.
+
+### Q: How can I adjust the speed in which the Backend worker will request and distribute new Python simulation updates?
+
+- **A:** Via the environment variable `WORKER_DELAY` in either your `.env` file if you are developing locally or within the environment you are exposing in your production system to the Backend server. The value is an integer describing milliseconds, e.g. `2000` creates a two second delay between simulation update requests.
