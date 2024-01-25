@@ -5,7 +5,22 @@ const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
+  devtool: 'eval-source-map',
+  devServer: {
+    static: path.join(__dirname, './dist/'),
+    hot: true,
+    port: 3000,
+    watchFiles: {
+      paths: ['src/**/*.*'],
+      options: {
+        usePolling: true,
+      },
+    },
+  },
+  optimization: {
+    runtimeChunk: 'single',
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
@@ -38,6 +53,8 @@ module.exports = {
           from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
           to: 'js/webcomponents-loader.js',
         },
+        { from: 'src/data/new-json-data-format/initial-data.json', to: 'data/initial-data.json' },
+        { from: 'src/data/new-json-data-format/dynamic-data.json', to: 'data/dynamic-data.json' },
       ],
       options: { concurrency: 100 },
     }),
