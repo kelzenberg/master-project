@@ -13,7 +13,7 @@ import {
 const logger = Logger({ name: 'socket-server' });
 
 export const startSocketServer =
-  (httpServer, { fetchWorker = null, url, initialData }, serverOptions) =>
+  (httpServer, { fetchWorker, url, initialData }, serverOptions) =>
   async () => {
     const ioServer = new SocketIOServer(httpServer, serverOptions);
 
@@ -35,13 +35,10 @@ export const startSocketServer =
       // Client disconnect event listener
       socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
 
-      // If fetch-worker is present, propagate constant worker data via socket events...
-      if (fetchWorker) {
-        fetchWorker.on('message', workerMessageHandler(logger, socket));
-        fetchWorker.on('error', workerErrorHandler(logger, socket));
-        fetchWorker.on('messageerror', workerErrorHandler(logger, socket, true));
-        fetchWorker.on('exit', workerExitHandler(logger, socket));
-      }
+      fetchWorker.on('message', workerMessageHandler(logger, socket));
+      fetchWorker.on('error', workerErrorHandler(logger, socket));
+      fetchWorker.on('messageerror', workerErrorHandler(logger, socket, true));
+      fetchWorker.on('exit', workerExitHandler(logger, socket));
     });
 
     return ioServer;

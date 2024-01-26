@@ -1,7 +1,8 @@
 import { parentPort, workerData } from 'node:worker_threads';
 import { Logger } from '../utils/logger.js';
 
-const logger = Logger({ name: 'fetch-worker' });
+const { workerName, URL, fetchDelay } = workerData;
+const logger = Logger({ name: `fetch-worker-${workerName.toLowerCase()}` });
 
 const delayFor = ms =>
   new Promise(resolve =>
@@ -12,19 +13,19 @@ const delayFor = ms =>
   );
 
 const main = async () => {
-  const { url, delayTime } = workerData;
-
-  if (!url || `${url}` == '') {
-    throw new Error(`Target URL is missing`, { url });
+  if (!URL || `${URL}` == '') {
+    throw new Error(`Target URL is missing`, { url: URL });
   }
+
+  logger.info(`Starting '${workerName}' worker loop to fetch URL '${URL}' every ${fetchDelay} milliseconds`);
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(URL);
       parentPort.postMessage(await response.json());
 
-      await delayFor(delayTime ?? 0);
+      await delayFor(fetchDelay ?? 0);
     } catch (error) {
       logger.error('Worker failed', error);
       throw new Error(error);

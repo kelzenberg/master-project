@@ -8,7 +8,6 @@ import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
-const workerDelay = process.env.WORKER_DELAY ?? 2000;
 const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
 const staticURL = `${simServerURL}/static`;
 const dynamicURL = `${simServerURL}/dynamic`;
@@ -33,14 +32,16 @@ const stoppableServer = stoppable(
       throw new Error('Retrieving initial config failed', error);
     }
 
-    // NodeJS Workers
-    let fetchWorker;
-    if (process.env.WORKER_ACTIVE == 1) {
-      fetchWorker = new FetchWorker('Methanation', { url: dynamicURL, delayTime: workerDelay }).start();
-    }
+    try {
+      // NodeJS Workers
+      const methanationWorker = new FetchWorker('Methanation', dynamicURL);
 
-    // Socket.io
-    await startSocketServer(expressServer, { fetchWorker, url: sliderURL, initialData })();
+      // Socket.io
+      await startSocketServer(expressServer, { fetchWorker: methanationWorker.start(), url: sliderURL, initialData })();
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    }
   }),
   1000
 );
