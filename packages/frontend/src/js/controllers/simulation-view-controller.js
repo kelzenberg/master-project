@@ -47,7 +47,7 @@ export class SimulationViewController {
     const slider = jsonData.slider;
     this.#sliderController = new SliderController(slider);
     //pass something to the initializSliders() function that tells if user is super-user or not!
-    this.#sliderController.initializeSlider(false);
+    this.#sliderController.initializeSlider(true);
 
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
