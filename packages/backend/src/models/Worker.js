@@ -26,7 +26,7 @@ export class FetchWorker {
     this.#runFilePath = path.resolve(`${process.env.WORKER_RUN_FILE_PATH}` || '../worker/main.js');
 
     // optional
-    this.#fetchDelay = workerOptions.fetchDelay ?? Number(`${process.env.WORKER_DELAY}`) ?? 2000;
+    this.#fetchDelay = Number(`${process.env.WORKER_DELAY}`) ?? workerOptions.fetchDelay ?? 2000;
   }
 
   start() {
