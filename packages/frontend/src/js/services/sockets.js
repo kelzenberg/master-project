@@ -6,6 +6,9 @@ const socket = io(); // `io` object is being exported by '/socket.io/socket.io.j
 const simulationViewController = new SimulationViewController();
 simulationViewController.addEventListeners();
 
+const errorOverlay = document.querySelector('#errorOverlay');
+const errorContent = document.querySelector('#errorContent');
+
 socket.on(SocketEventTypes.INITIAL, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
   simulationViewController.renderInitialData(payload);
@@ -15,6 +18,17 @@ socket.on(SocketEventTypes.INITIAL, payload => {
 socket.on(SocketEventTypes.DYNAMIC, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
   simulationViewController.renderDynamicData(payload);
+});
+
+socket.on('connect_error', err => {
+  errorOverlay.style.display = 'flex';
+
+  errorContent.innerHTML = `
+    <h2>Error:</h2>
+    <span>${err.message}</span>
+    <br>
+    <span>${err.data}</span>
+  `;
 });
 
 export const sendSliderEvent = payload => {

@@ -304,6 +304,23 @@ input[type='radio']:checked:before {
   animation-fill-mode: forwards;
 }
 
+#errorOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+#errorContent {
+  text-align: center;
+}
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);

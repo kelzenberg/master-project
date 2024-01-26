@@ -24,8 +24,11 @@ export class SimulationViewController {
     const typeDefinitions = jsonData.visualization.typeDefinitions;
     const fixedSpecies = jsonData.visualization.fixedSpecies;
     const config = jsonData.visualization.config;
-    const sitesGroup = this.#initializeSites(jsonData.visualization.sites);
-    const speciesDictionary = this.#initializeSpeciesDictionary(jsonData.visualization.species, typeDefinitions);
+    const sites = jsonData.visualization.sites;
+    const species = jsonData.visualization.species;
+
+    const sitesGroup = this.#initializeSites(sites);
+    const speciesDictionary = this.#initializeSpeciesDictionary(species, typeDefinitions);
 
     this.#visualizationController = new VisualizationController(
       fixedSpecies,
@@ -43,7 +46,8 @@ export class SimulationViewController {
     // Initialize sliders
     const sliders = jsonData.slider;
     this.#sliderController = new SliderController(sliders);
-    this.#sliderController.initializeSliders();
+    //pass something to the initializSliders() function that tells if user is super-user or not!
+    this.#sliderController.initializeSliders(false);
 
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
@@ -57,6 +61,7 @@ export class SimulationViewController {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
       this.#plotController.updatePlots(jsonData.plots);
+      this.#sliderController.updateLabeledInfoFields(jsonData.sliderData, false);
     }
   }
 
