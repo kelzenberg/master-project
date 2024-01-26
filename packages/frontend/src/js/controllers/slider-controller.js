@@ -1,16 +1,14 @@
 //import { sendSliderEvent } from '../services/sockets';
 export class SliderController {
-  #sliders;
+  #slider;
 
-  constructor(sliders) {
-    this.#sliders = sliders;
+  constructor(slider) {
+    this.#slider = slider;
   }
 
-  // Depending on if the user is a super-user with slider-controls or not either the range-sliders or
-  // the labeled info fields with current values of the sliders (parameters like temperature etc.) should be initialized
-  initializeSliders(isSuperUser) {
+  initializeSlider(isSuperUser) {
     const sliderContainer = document.querySelector('#sliderContainer');
-    const sliders = this.#sliders.map(sliderData => {
+    const slider = this.#slider.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
 
       rangeSlider.setAttribute('min', sliderData.min);
@@ -29,7 +27,18 @@ export class SliderController {
       return rangeSlider;
     });
 
-    sliderContainer.replaceChildren(...sliders);
+    sliderContainer.replaceChildren(...slider);
+  }
+
+  updateSliderValues(sliderData) {
+    sliderData.map(sliderData => {
+      let rangeSlider = this.#findRangeSliderByLabel(sliderData.label);
+      rangeSlider.setAttribute('value', sliderData.value);
+    });
+  }
+
+  #findRangeSliderByLabel(label) {
+    return document.querySelector(`range-slider[label="${label}"]`);
   }
 
   #sendValueChangedEvent(label, value) {
