@@ -1,4 +1,4 @@
-//import { sendSliderEvent } from '../services/sockets';
+import { sendSliderEvent } from '../services/sockets';
 export class SliderController {
   #slider;
 
@@ -44,9 +44,9 @@ export class SliderController {
   #sendValueChangedEvent(label, value) {
     console.log(label + ' ' + value);
     //console.log(label + ' new value = ' + value);
-    // sendSliderEvent({
-    //   label,
-    //   value,
-    // });
+    sendSliderEvent({
+      label,
+      value,
+    });
   }
 }
