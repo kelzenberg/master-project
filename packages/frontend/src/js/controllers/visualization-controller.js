@@ -13,6 +13,7 @@ import {
   Box3,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
 import Molecule from '../models/Molecule';
 import Species from '../models/Species';
 
@@ -31,6 +32,7 @@ export class VisualizationController {
   #controls;
   #ambientLight;
   #directionalLight;
+  #viewHelper;
 
   constructor(fixedSpecies, config, sitesGroup, speciesDictionary, typeDefinitions) {
     this.#fixedSpecies = fixedSpecies;
@@ -51,6 +53,7 @@ export class VisualizationController {
     this.#renderer.setPixelRatio(window.devicePixelRatio);
     this.#renderer.setSize(window.innerWidth * 0.4, window.innerHeight * 0.4);
     this.#renderer.setClearColor(0xff_ff_ff);
+    this.#renderer.autoClear = false;
 
     // Camera setup
     this.#camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -67,6 +70,9 @@ export class VisualizationController {
 
     this.#scene.add(this.#directionalLight);
     this.#scene.add(this.#ambientLight);
+
+    // gizmo
+    this.#viewHelper = new ViewHelper(this.#camera, this.#renderer, 'bottom-left', 64);
 
     // Enable Reset View function
     const resetButton = document.querySelector('#resetViewButton');
@@ -90,7 +96,9 @@ export class VisualizationController {
   animate() {
     requestAnimationFrame(() => this.animate());
     this.#controls.update();
+    this.#renderer.clear();
     this.#renderer.render(this.#scene, this.#camera);
+    this.#viewHelper.render(this.#renderer);
   }
 
   // Private Functions
