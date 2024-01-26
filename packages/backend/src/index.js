@@ -3,7 +3,7 @@ import stoppable from 'stoppable';
 import { createServer } from 'node:http';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
-import { startWorker } from './worker/start.js';
+import { FetchWorker } from './worker/model/Worker.js';
 import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
@@ -36,7 +36,7 @@ const stoppableServer = stoppable(
     // NodeJS Workers
     let fetchWorker;
     if (process.env.WORKER_ACTIVE == 1) {
-      fetchWorker = startWorker({ url: dynamicURL, delayTime: workerDelay });
+      fetchWorker = new FetchWorker('Methanation', { url: dynamicURL, delayTime: workerDelay }).start();
     }
 
     // Socket.io
