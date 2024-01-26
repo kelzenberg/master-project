@@ -121,8 +121,6 @@ export class PlotController {
       }
     }
 
-    console.log(this.#graphsTof);
-    this.#getMinValueTofDynamic();
     Plotly.update('plotTOF', this.#graphsTof, this.#tofLayout);
     Plotly.update('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
   }
@@ -144,8 +142,6 @@ export class PlotController {
   }
 
   #newPlotTof() {
-    let minValue = this.#getMinValueTofInitial();
-    console.log(minValue);
     let initialData = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
       y: [this.#plots.plotData[0].tof[index].values[0]],
@@ -286,22 +282,6 @@ export class PlotController {
     }
 
     return allColors;
-  }
-
-  #getMinValueTofInitial() {
-    const allValues = [];
-
-    for (const plot of this.#plots.plotData) {
-      for (const tofData of plot.tof) {
-        allValues.push(...tofData.values);
-      }
-    }
-
-    return Math.min(...allValues);
-  }
-
-  #getMinValueTofDynamic() {
-    this.#graphsTof;
   }
 
   #getAllSingleValuesCoverage() {
