@@ -379,7 +379,7 @@ if __name__ == "__main__":
             return jsonify(success=True)
         return jsonify(success=False), 400
 
-    @app.route('/reset', methods=['PUT'])
+    @app.route('/reset', methods=['POST'])
     def reset_simulation():
         try:
             app.kmc_model.deallocate()
@@ -388,7 +388,7 @@ if __name__ == "__main__":
         except:
             return jsonify(success=False), 400
 
-    @app.route('/start', methods=['PUT'])
+    @app.route('/start', methods=['POST'])
     def start_simulation():
         if not app.simulation_running and not app.kmc_model.pid:
             app.start_simulation()
