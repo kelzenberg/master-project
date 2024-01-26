@@ -182,7 +182,13 @@ export class SimulationViewController {
     document.querySelector('#plotTOF').style.visibility = 'visible';
     document.querySelector('#plotCoverage').style.visibility = 'visible';
     document.querySelector('#sliderContainer').style.visibility = 'visible';
-    document.querySelector('#pauseButtonImage').style.display = 'block';
+
+    if (this.#isPaused) {
+      document.querySelector('#playButtonImage').style.display = 'block';
+    } else {
+      document.querySelector('#pauseButtonImage').style.display = 'block';
+    }
+
     document.querySelector('#coverageCheckboxContainer').style.display = 'block';
     document.querySelector('#tofCheckboxContainer').style.display = 'block';
     document.querySelector('#toggleCoverageButton1').checked = true;

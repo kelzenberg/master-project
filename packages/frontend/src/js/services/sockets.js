@@ -20,14 +20,19 @@ socket.on(SocketEventTypes.DYNAMIC, payload => {
   simulationViewController.renderDynamicData(payload);
 });
 
+socket.on('connect', () => {
+  errorOverlay.style.display = 'none';
+
+  errorContent.innerHTML = '';
+});
+
 socket.on('connect_error', err => {
   errorOverlay.style.display = 'flex';
 
   errorContent.innerHTML = `
     <h2>Error:</h2>
-    <span>${err.message}</span>
-    <br>
-    <span>${err.data}</span>
+    <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
+    <p>${err.message} ${err.data}</p>
   `;
 });
 

@@ -32,7 +32,7 @@ export class PlotController {
       },
       xaxis: {
         title: {
-          text: 'kmc time',
+          text: 'kmc time [s]',
         },
       },
       hovermode: 'x',
@@ -48,6 +48,10 @@ export class PlotController {
         font: {
           color: '#006c66',
         },
+        yaxis: {
+          type: 'log',
+          autorange: true,
+        },
       },
       responsive: true,
     };
@@ -58,6 +62,7 @@ export class PlotController {
         font: {
           color: '#006c66',
         },
+        yaxis: { range: [0, 1], autorange: false },
       },
     };
   }
@@ -98,7 +103,7 @@ export class PlotController {
 
       if (this.#isSingleCoverageActive) {
         // Update each Coverage single graph with new data
-        let coverageSingleValues = this.#getAllSingleValues(plotData);
+        let coverageSingleValues = this.#getAllSingleValuesCoverage(plotData);
         for (let k = 0; k < this.#coverageSingleNumGraphs; k++) {
           const graphCoverageSingle = this.#graphsCoverage[k];
 
@@ -116,6 +121,8 @@ export class PlotController {
       }
     }
 
+    console.log(this.#graphsTof);
+    this.#getMinValueTofDynamic();
     Plotly.update('plotTOF', this.#graphsTof, this.#tofLayout);
     Plotly.update('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
   }
@@ -137,6 +144,8 @@ export class PlotController {
   }
 
   #newPlotTof() {
+    let minValue = this.#getMinValueTofInitial();
+    console.log(minValue);
     let initialData = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
       y: [this.#plots.plotData[0].tof[index].values[0]],
@@ -151,10 +160,18 @@ export class PlotController {
       name: this.#tofLabels[index],
     }));
 
-    Plotly.newPlot('plotTOF', initialData, this.#tofLayout, {
-      responsive: true,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-    }).then(plotTOF => {
+    Plotly.newPlot(
+      'plotTOF',
+      initialData,
+      {
+        ...this.#tofLayout,
+        yaxis: { type: 'log', autorange: true },
+      },
+      {
+        responsive: true,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+      }
+    ).then(plotTOF => {
       this.#graphsTof = [...plotTOF.data];
     });
   }
@@ -174,16 +191,24 @@ export class PlotController {
       name: this.#coverageLabels[index],
     }));
 
-    Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
-      responsive: true,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-    }).then(plotCoverage => {
+    Plotly.newPlot(
+      'plotCoverage',
+      initialData,
+      {
+        ...this.#coverageLayout,
+        yaxis: { range: [0, 1] },
+      },
+      {
+        responsive: true,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+      }
+    ).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];
     });
   }
 
   #newPlotCoverageSingle() {
-    let values = this.#getAllSingleValues();
+    let values = this.#getAllSingleValuesCoverage();
 
     let initialData = Array.from({ length: this.#coverageSingleNumGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
@@ -199,10 +224,18 @@ export class PlotController {
       name: this.#coverageSingleLabels[index],
     }));
 
-    Plotly.newPlot('plotCoverage', initialData, this.#coverageLayout, {
-      responsive: true,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-    }).then(plotCoverage => {
+    Plotly.newPlot(
+      'plotCoverage',
+      initialData,
+      {
+        ...this.#coverageLayout,
+        yaxis: { range: [0, 1] },
+      },
+      {
+        responsive: true,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+      }
+    ).then(plotCoverage => {
       this.#graphsCoverage = [...plotCoverage.data];
     });
   }
@@ -255,7 +288,23 @@ export class PlotController {
     return allColors;
   }
 
-  #getAllSingleValues() {
+  #getMinValueTofInitial() {
+    const allValues = [];
+
+    for (const plot of this.#plots.plotData) {
+      for (const tofData of plot.tof) {
+        allValues.push(...tofData.values);
+      }
+    }
+
+    return Math.min(...allValues);
+  }
+
+  #getMinValueTofDynamic() {
+    this.#graphsTof;
+  }
+
+  #getAllSingleValuesCoverage() {
     const coverage = this.#plots.plotData[0].coverage;
     const result = [];
 
@@ -268,12 +317,10 @@ export class PlotController {
   }
 
   #rgbToHex(red, green, blue) {
-    // Ensure that the input values are within the valid range (0.0 to 1.0)
     red = Math.min(1, Math.max(0, red));
     green = Math.min(1, Math.max(0, green));
     blue = Math.min(1, Math.max(0, blue));
 
-    // Convert the decimal values to hexadecimal
     const redHex = Math.round(red * 255)
       .toString(16)
       .padStart(2, '0');
@@ -284,7 +331,6 @@ export class PlotController {
       .toString(16)
       .padStart(2, '0');
 
-    // Concatenate the hexadecimal values
     const hexCode = `#${redHex}${greenHex}${blueHex}`;
 
     return hexCode;
