@@ -8,7 +8,7 @@ template.innerHTML = `
 
 class rangeSlider extends HTMLElement {
   static get observedAttributes() {
-    return ['min', 'max', 'value', 'scale'];
+    return ['min', 'max', 'value', 'scale', 'disabled'];
   }
 
   constructor() {
@@ -17,6 +17,7 @@ class rangeSlider extends HTMLElement {
     this.min = 1;
     this.max = 100;
     this.value = 50;
+    this.disabled = false;
 
     this.inputHandler = this.handleInput.bind(this);
   }
@@ -39,7 +40,7 @@ class rangeSlider extends HTMLElement {
 
     this.dispatchEvent(valueChangedEvent);
 
-    this.renderValueText();
+    this.renderValues();
   }
 
   renderValues() {
@@ -52,6 +53,7 @@ class rangeSlider extends HTMLElement {
     this.input?.setAttribute('min', this.min);
     this.input?.setAttribute('max', this.max);
     this.input?.setAttribute('value', this.value);
+    this.input?.toggleAttribute('disabled', this.disabled);
   }
 
   // Life-cycle methods
@@ -72,20 +74,25 @@ class rangeSlider extends HTMLElement {
         this.value = newValue;
         break;
       }
+      case 'disabled': {
+        this.disabled = newValue;
+        break;
+      }
     }
 
     this.renderValues();
+    this.setInitialAttributeValues();
   }
 
   connectedCallback() {
     this.append(template.content.cloneNode(true));
 
-    this.setInitialAttributeValues();
-
     this.querySelector('#slider').addEventListener('input', this.inputHandler);
 
     this.text = this.querySelector('span');
     this.input = this.querySelector('input');
+
+    this.setInitialAttributeValues();
 
     this.renderValues();
   }

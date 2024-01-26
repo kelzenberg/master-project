@@ -10,8 +10,7 @@ export class SliderController {
   // the labeled info fields with current values of the sliders (parameters like temperature etc.) should be initialized
   initializeSliders(isSuperUser) {
     const sliderContainer = document.querySelector('#sliderContainer');
-    var content = null;
-    this.#sliders.map(sliderData => {
+    const sliders = this.#sliders.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
 
       rangeSlider.setAttribute('min', sliderData.min);
@@ -21,18 +20,16 @@ export class SliderController {
       rangeSlider.setAttribute('scale', sliderData.scale);
       rangeSlider.setAttribute('info', sliderData.info);
 
-      if (isSuperUser) {
-        rangeSlider.addEventListener('valueChanged', event => {
-          this.#sendValueChangedEvent(event.detail.label, event.detail.value);
-        });
-      } else {
-        rangeSlider.setInteractable(false);
-      }
+      rangeSlider.setAttribute('disabled', !isSuperUser);
+
+      rangeSlider.addEventListener('valueChanged', event => {
+        this.#sendValueChangedEvent(event.detail.label, event.detail.value);
+      });
 
       return rangeSlider;
     });
 
-    sliderContainer.replaceChildren(...content);
+    sliderContainer.replaceChildren(...sliders);
   }
 
   #sendValueChangedEvent(label, value) {
