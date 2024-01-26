@@ -3,7 +3,7 @@ import stoppable from 'stoppable';
 import { createServer } from 'node:http';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
-import { FetchWorker } from './worker/model/Worker.js';
+import { FetchWorker } from './models/Worker.js';
 import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
