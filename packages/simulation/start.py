@@ -76,7 +76,7 @@ class WebGLInterface(KMC_Model):
             self.do_steps(self.steps_per_frame, progress=False)
             if self.dynamic_data.full():
                 self.dynamic_data.get()
-            self.dynamic_data.put(self._get_dynamic_data())
+            self.dynamic_data.put(self._get_dynamic_data(slider=True))
             if not self.parameter_queue.empty():
                 while not self.parameter_queue.empty():
                     parameters = self.parameter_queue.get()
@@ -167,6 +167,19 @@ class WebGLInterface(KMC_Model):
                 )
         return adjustable_params
 
+    def _get_params(self):
+        params = []
+        for param in sorted(self.settings.parameters):
+            if self.settings.parameters[param]['adjustable']:
+                sett = self.settings.parameters[param]
+                params.append(
+                    {
+                        "value": sett['value'],
+                        "label": param,
+                    }
+                )
+        return params
+
     def _get_initial_data(self):
         initial_data_format_json = {
             "visualization": {
@@ -249,8 +262,7 @@ class WebGLInterface(KMC_Model):
             )
         return kmc_time, config, tofs, occs
 
-
-    def _get_dynamic_data(self, history_lenght=30, state=None):
+    def _get_dynamic_data(self, history_lenght=30, state=None, slider=False):
         if not state:
             state = self.get_atoms()
         kmc_time, config, tofs, occs = self._get_single_dynamic_data(state=state)
@@ -269,6 +281,8 @@ class WebGLInterface(KMC_Model):
             self._history.pop(0)
         dynamic_data_format_json["plots"]["plotData"] = \
             self._history
+        if slider:
+            dynamic_data_format_json["sliderData"] = self._get_params()
         return dynamic_data_format_json
 
 class FlaskWrapper(Flask):
@@ -284,6 +298,9 @@ class FlaskWrapper(Flask):
                                         signal_queue=signal_queue,
                                         steps_per_frame=steps_per_frame, banner=False)
         self.kmc_model.daemon = True
+        self._simulation_running = False
+
+    def start_simulation(self):
         self.kmc_model.start()
         self._simulation_running = True
 
@@ -309,7 +326,9 @@ if __name__ == "__main__":
 
     @app.route('/dynamic', methods=['GET'])
     def get_dynamic_data():
-        return json.dumps(app.kmc_model.dynamic_data.get())
+        if app.simulation_running:
+            return json.dumps(app.kmc_model.dynamic_data.get())
+        return jsonify(success=False), 400
 
     @app.route('/initial', methods=['GET'])
     def get_initial_data():
@@ -356,6 +375,23 @@ if __name__ == "__main__":
     def resume_simulation():
         if not app.simulation_running:
             os.kill(app.kmc_model.pid, 18)
+            app._simulation_running = True
+            return jsonify(success=True)
+        return jsonify(success=False), 400
+
+    @app.route('/reset', methods=['PUT'])
+    def reset_simulation():
+        try:
+            app.kmc_model.deallocate()
+            app.kmc_model.reset()
+            return jsonify(success=True)
+        except:
+            return jsonify(success=False), 400
+
+    @app.route('/start', methods=['PUT'])
+    def start_simulation():
+        if not app.simulation_running and not app.kmc_model.pid:
+            app.start_simulation()
             app._simulation_running = True
             return jsonify(success=True)
         return jsonify(success=False), 400
