@@ -9,7 +9,7 @@ import { Logger } from './utils/logger.js';
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
 const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
-const staticURL = `${simServerURL}/static`;
+const staticURL = `${simServerURL}/initial`;
 const dynamicURL = `${simServerURL}/dynamic`;
 const sliderURL = `${simServerURL}/slider`;
 
