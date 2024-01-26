@@ -53,7 +53,8 @@ class rangeSlider extends HTMLElement {
     this.input?.setAttribute('min', this.min);
     this.input?.setAttribute('max', this.max);
     this.input?.setAttribute('value', this.value);
-    this.input?.toggleAttribute('disabled', this.disabled);
+    console.log('disabled', this.disabled, 'input', this.input);
+    this.input?.toggleAttribute('disabled', this.disabled === true);
   }
 
   // Life-cycle methods
@@ -98,9 +99,8 @@ class rangeSlider extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.innerHTML = '';
-
     this.querySelector('#slider').removeEventListener('input', this.inputHandler);
+    this.innerHTML = '';
   }
 }
 
