@@ -1,0 +1,20 @@
+simulation-preview > * {
+    cursor: pointer;
+  }
+
+  .simulationPreview__container {
+    position: relative;
+    display: flex;
+    width: 500px;
+    height: 350px;
+    background-image: url("../ressources/simulation-images/placeholder.png");
+    border-radius: 4px;
+  }
+
+  .simulationPreview__innerContainer {
+    max-width: 100%;
+    max-height: 45%;
+    padding: 1rem;
+    background-color: hsla(0, 0%, 93%, 0.7);
+    align-self: flex-end;
+  }
