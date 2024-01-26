@@ -311,8 +311,8 @@ if __name__ == "__main__":
     def get_dynamic_data():
         return json.dumps(app.kmc_model.dynamic_data.get())
 
-    @app.route('/static', methods=['GET'])
-    def get_static_data():
+    @app.route('/initial', methods=['GET'])
+    def get_initial_data():
         return json.dumps(app.kmc_model.initial_data)
 
     @app.route('/slider', methods=['POST'])
