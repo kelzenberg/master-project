@@ -47,7 +47,7 @@ export class SimulationViewController {
     const sliders = jsonData.slider;
     this.#sliderController = new SliderController(sliders);
     //pass something to the initializSliders() function that tells if user is super-user or not!
-    this.#sliderController.initializeSliders(true);
+    this.#sliderController.initializeSliders(false);
 
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
@@ -61,7 +61,6 @@ export class SimulationViewController {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
       this.#plotController.updatePlots(jsonData.plots);
-      this.#sliderController.updateLabeledInfoFields(jsonData.sliderData, true);
     }
   }
 

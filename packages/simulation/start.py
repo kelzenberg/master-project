@@ -330,8 +330,8 @@ if __name__ == "__main__":
             return json.dumps(app.kmc_model.dynamic_data.get())
         return jsonify(success=False), 400
 
-    @app.route('/static', methods=['GET'])
-    def get_static_data():
+    @app.route('/initial', methods=['GET'])
+    def get_initial_data():
         return json.dumps(app.kmc_model.initial_data)
 
     @app.route('/slider', methods=['POST'])
