@@ -9,6 +9,7 @@ import { Logger } from './utils/logger.js';
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
 const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
+const startURL = `${simServerURL}/start`;
 const staticURL = `${simServerURL}/initial`;
 const dynamicURL = `${simServerURL}/dynamic`;
 const sliderURL = `${simServerURL}/slider`;
@@ -22,6 +23,24 @@ const stoppableServer = stoppable(
     // ToDo: this is placed temporarily here until the backend knows all simulations, their URLs
     // and has an option to dynamically get and store the initial sim data
     let initialData;
+    try {
+      logger.info(`Starting sim server...`);
+      const startResponse = await fetch(startURL, { method: 'POST' });
+      // eslint-disable-next-line unicorn/no-await-expression-member
+      const hasStarted = (await startResponse.json()).success;
+
+      if (!hasStarted) {
+        const message = 'Python sim could not be started';
+        logger.error(message, { hasStarted });
+        throw new Error(message);
+      }
+
+      logger.info('Python sim has started');
+    } catch (error) {
+      logger.error(error);
+      throw new Error(error);
+    }
+
     try {
       logger.info(`Fetching initial data...`);
       const response = await fetch(staticURL);
