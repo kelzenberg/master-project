@@ -17,12 +17,12 @@ export class Simulation {
   description;
   createdAt;
 
-  constructor({ name, description, simURL }) {
+  constructor({ name, description, envKeyForURL }) {
     this.id = uuid();
     this.name = name;
     this.description = description;
-    this.#URL = simURL;
     this.createdAt = new Date().toISOString();
+    this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
     this.#logger = Logger({ name: `simulation-instance-${this.name}` });

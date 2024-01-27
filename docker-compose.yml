@@ -17,24 +17,25 @@ services:
       REDIS_HOST: cache
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      SIMULATION_URL: sim
+      SIMULATION_URL: sim_001
       SIMULATION_PORT: ${SIMULATION_PORT}
+      METHANATION_001_URL: sim_001
     networks:
       - backend
     ports:
       - 8080:${BACKEND_PORT}
     command: node ./src/index.js
     depends_on:
-      - sim
+      - sim_001
       - cache
 
-  sim:
+  sim_001:
     build:
       context: .
       dockerfile: ./packages/simulation/Dockerfile
       args:
         - ENV=production
-    container_name: master-project-sim
+    container_name: master-project-sim_001
     restart: on-failure:3
     environment:
       SIMULATION_PORT: ${SIMULATION_PORT}
@@ -55,8 +56,6 @@ services:
     command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - cache_data:/data
-    depends_on:
-      - sim
 
 networks:
   backend:

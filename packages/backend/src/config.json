@@ -2,6 +2,6 @@
   {
     "name": "Methanation",
     "description": "This is the sim for Methanation...",
-    "simURL": "http://localhost:3001"
+    "envKeyForURL": "METHANATION_001"
   }
 ]
