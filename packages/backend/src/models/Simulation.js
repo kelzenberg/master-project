@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
 
@@ -6,21 +7,25 @@ import { Logger } from '../utils/logger.js';
  */
 export class Simulation {
   #URL;
+  #isHealthy;
   #data;
   #worker;
   #logger;
 
+  id;
   name;
   description;
-  isHealthy;
+  createdAt;
 
   constructor({ name, description, simURL }) {
+    this.id = uuid();
     this.name = name;
     this.description = description;
     this.#URL = simURL;
+    this.createdAt = new Date().toISOString();
+    this.#isHealthy = null;
     this.#data = { initial: null };
     this.#logger = Logger({ name: `simulation-instance-${this.name}` });
-    this.isHealthy = null;
   }
 
   async #getSimHealth(attempt = 1) {
@@ -29,17 +34,17 @@ export class Simulation {
     try {
       const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
       const { success: isHealthy } = await response.json();
-      this.isHealthy = isHealthy;
+      this.#isHealthy = isHealthy;
     } catch (error) {
       const message = `Checking health for ${this.name} sim failed`;
       this.#logger.error(message, error);
       throw new Error(message, error);
     }
 
-    this.#logger[this.isHealthy ? 'info' : 'warn'](
-      `Python sim ${this.name} is ${this.isHealthy ? 'healthy' : 'UNHEALTHY'}`
+    this.#logger[this.#isHealthy ? 'info' : 'warn'](
+      `Python sim ${this.name} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
     );
-    return this.isHealthy;
+    return this.#isHealthy;
   }
 
   async waitForSimHealth() {
@@ -121,5 +126,13 @@ export class Simulation {
     }
 
     return false;
+  }
+
+  toJSON() {
+    return {
+      ...this,
+      URL: this.#URL,
+      data: this.#data,
+    };
   }
 }
