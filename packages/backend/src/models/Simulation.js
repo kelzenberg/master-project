@@ -35,8 +35,7 @@ export class Simulation {
 
   async waitUntilSimIsHealthy() {
     let repeatCounter = 0;
-
-    const check = async () => {
+    const checkHealth = async () => {
       if (repeatCounter >= 5) return false;
 
       const isHealthy = await this.#getSimHealth();
@@ -44,11 +43,19 @@ export class Simulation {
 
       repeatCounter++;
       await delayFor(1000, this.#logger);
-      await check();
+
+      return await checkHealth();
     };
 
-    const isHealthy = check();
-    this.#logger[isHealthy ? 'info' : 'error'](`Python sim ${this.name} is ${isHealthy ? 'alive' : 'not available'}`);
+    const isHealthy = await checkHealth();
+
+    if (!isHealthy) {
+      const message = `Python sim ${this.name} is not responding`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    this.#logger.info(`Python sim ${this.name} is healthy`);
   }
 
   async start() {
