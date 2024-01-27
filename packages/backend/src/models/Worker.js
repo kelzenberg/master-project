@@ -23,10 +23,10 @@ export class FetchWorker {
     this.#name = name;
     this.#URL = URL;
     this.#isRunning = false;
-    this.#runFilePath = path.resolve(`${process.env.WORKER_RUN_FILE_PATH}` || '../worker/main.js');
+    this.#runFilePath = path.resolve(process.env.WORKER_RUN_FILE_PATH || '../worker/main.js');
 
     // optional
-    this.#fetchDelay = Number(`${process.env.WORKER_DELAY}`) ?? workerOptions.fetchDelay ?? 2000;
+    this.#fetchDelay = Number(process.env.WORKER_DELAY) ?? workerOptions.fetchDelay ?? 2000;
   }
 
   start() {

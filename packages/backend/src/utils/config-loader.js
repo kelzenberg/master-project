@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { Logger } from './logger.js';
 
 const logger = Logger({ name: 'simulation-config-loader' });
-const filePath = path.resolve(`${process.env.CONFIG_PATH}` || '../config.json');
+const filePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 
 const loadConfigsFromFile = async path => {
   let configs;
