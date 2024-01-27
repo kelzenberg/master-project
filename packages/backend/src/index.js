@@ -5,15 +5,11 @@ import { writeFile } from 'node:fs/promises';
 import { getSimulationConfigs } from './utils/config-loader.js';
 import { getSimulationInstances } from './simulations.js';
 import { createApp } from './app.js';
-import { FetchWorker } from './models/Worker.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
 
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
-const simServerURL = `http://${process.env.SIMULATION_URL}:${process.env.SIMULATION_PORT}`;
-const dynamicURL = `${simServerURL}/dynamic`;
-const sliderURL = `${simServerURL}/slider`;
 
 const simConfigs = await getSimulationConfigs();
 const simInstances = await getSimulationInstances(simConfigs);
@@ -36,13 +32,9 @@ const stoppableServer = stoppable(
   expressServer.listen(expressPort, async () => {
     logger.info(`Server started on port ${expressPort}.`);
 
+    // Socket.io
     try {
-      // NodeJS Workers
-      const methanationWorker = new FetchWorker('Methanation', dynamicURL);
-
-      // Socket.io
-      const simList = { 1234: { initial: { foo: 'foo' } } }; // WIP
-      await startSocketServer(expressServer, { fetchWorker: methanationWorker.start(), url: sliderURL, simList })();
+      await startSocketServer(expressServer, simInstances);
     } catch (error) {
       logger.error(error);
       throw error;

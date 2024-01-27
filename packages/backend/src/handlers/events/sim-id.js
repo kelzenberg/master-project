@@ -1,22 +1,32 @@
 import { SocketEventTypes } from '../../utils/events.js';
 
-export const handler = (logger, socket, simList) => data => {
-  if (!data.id || `${!data.id}` === '') {
+export const handler = socket => data => {
+  const {
+    data: { id: clientId, logger, simInstances },
+  } = socket;
+  const { simId } = data;
+
+  if (!simId || `${!simId}` === '') {
     logger.error('Received no simulation ID in payload', { data });
     return;
   }
 
-  const simId = `${data.id}`;
-  if (!Object.keys(simList).includes(simId)) {
-    logger.error('Simulation ID does not exist in sim list', { data: simId });
-    return;
+  const chosenSimInstance = simInstances.find(instance => instance.id === `${simId}`);
+  if (!chosenSimInstance) {
+    logger.error('Could not find simulation instance with provided ID', { data: simId });
+    return; // ToDo: return Error to Frontend
   }
 
-  // Sending initial config of simulation to client
-  logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, { data: simList[simId] }); // DEBUG data log
-  socket.emit(SocketEventTypes.INITIAL, simList[simId].initial);
+  // Sending initial sim data to client
+  logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
+    data: { id: chosenSimInstance.id, title: chosenSimInstance.title },
+  });
+  socket.emit(SocketEventTypes.INITIAL, chosenSimInstance.getInitialData());
 
   // Assigning client to simulation room
-  logger.info(`Assigning ${socket.id} to room 'sim:${simId}'`, { data: simId });
-  socket.join(`sim:${simId}`);
+  const roomId = `sim:${simId}`;
+  logger.info(`Assigning ${clientId} to room '${roomId}'`, { data: roomId });
+  socket.join(roomId);
+
+  socket.data.client = { chosenSimId: simId, roomId };
 };
