@@ -88,6 +88,10 @@ export class Simulation {
     }
   }
 
+  getInitialData() {
+    return this.#data.initial;
+  }
+
   async start() {
     this.#logger.info(`Requesting to start ${this.title} Python sim...`);
 
