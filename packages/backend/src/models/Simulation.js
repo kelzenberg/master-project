@@ -64,7 +64,21 @@ export class Simulation {
       this.#logger.error(message);
       throw new Error(message);
     }
+  }
 
+  async fetchInitialData() {
+    try {
+      this.#logger.info(`Fetching initial data for ${this.name} sim...`);
+
+      const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
+      this.#data = { initial: await response.json() };
+
+      this.#logger.info(`Stored initial data for ${this.name} sim`);
+      return this.#data.initial;
+    } catch (error) {
+      this.#logger.error(`Retrieving initial data for ${this.name} sim failed`, error);
+      throw new Error(error);
+    }
   }
 
   async start() {
