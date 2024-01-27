@@ -5,7 +5,7 @@ import { Logger } from './logger.js';
 const logger = Logger({ name: 'simulation-config-loader' });
 const filePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 
-const loadConfigsFromFile = async path => {
+const loadSimConfigsFromFile = async path => {
   let configs;
   logger.info(`Loading list of configs from file`, { data: path });
 
@@ -28,4 +28,4 @@ const loadConfigsFromFile = async path => {
   return configs;
 };
 
-export const getSimulationConfigs = async () => loadConfigsFromFile(filePath);
+export const getSimulationConfigs = async () => loadSimConfigsFromFile(filePath);
