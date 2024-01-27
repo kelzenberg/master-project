@@ -16,7 +16,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=../../.env -w ./src ./src/index.js",
+    "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*'",
     "start": "node --env-file=../../.env ./src/index.js"
   },
   "devDependencies": {
