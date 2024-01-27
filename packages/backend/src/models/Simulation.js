@@ -1,5 +1,5 @@
-import { delayFor } from '../utils/delay';
-import { Logger } from '../utils/logger';
+import { delayFor } from '../utils/delay.js';
+import { Logger } from '../utils/logger.js';
 
 /**
  * Represents all information of a Python simulation in the cluster
@@ -19,18 +19,27 @@ export class Simulation {
     this.description = description;
     this.#URL = simURL;
     this.#data = { initial: null };
-    this.#logger = new Logger({ name: `simulation-instance-${this.name}` });
+    this.#logger = Logger({ name: `simulation-instance-${this.name}` });
     this.isHealthy = null;
   }
 
-  async #getSimHealth() {
-    this.#logger.info(`Checking if ${this.name} Python sim is healthy...`);
-    const response = await fetch(`${this.#URL}/start`, { method: 'POST' });
-    const { success: isHealthy } = await response.json();
+  async #getSimHealth(attempt = 1) {
+    this.#logger.info(`Checking health of ${this.name} Python sim (attempt #${attempt})...`);
 
-    this.isHealthy = isHealthy;
-    this.#logger.info(`Python sim ${this.name} is ${isHealthy ? 'healthy' : 'unhealthy'}...`);
-    return isHealthy;
+    try {
+      const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
+      const { success: isHealthy } = await response.json();
+      this.isHealthy = isHealthy;
+    } catch (error) {
+      const message = `Checking health for ${this.name} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+
+    this.#logger[this.isHealthy ? 'info' : 'warn'](
+      `Python sim ${this.name} is ${this.isHealthy ? 'healthy' : 'UNHEALTHY'}`
+    );
+    return this.isHealthy;
   }
 
   async waitForSimHealth() {
@@ -38,7 +47,7 @@ export class Simulation {
     const checkHealth = async () => {
       if (repeatCounter >= 5) return false;
 
-      const isHealthy = await this.#getSimHealth();
+      const isHealthy = await this.#getSimHealth(repeatCounter + 1);
       if (isHealthy) return true;
 
       repeatCounter++;
@@ -47,15 +56,15 @@ export class Simulation {
       return await checkHealth();
     };
 
+    this.#logger.info(`Waiting for Python sim ${this.name} to become ready to accept connections...`);
     const isHealthy = await checkHealth();
 
     if (!isHealthy) {
-      const message = `Python sim ${this.name} is not responding`;
+      const message = `Python sim ${this.name} is not responding healthy after ${repeatCounter} attempts. Aborting...`;
       this.#logger.error(message);
       throw new Error(message);
     }
 
-    this.#logger.info(`Python sim ${this.name} is healthy`);
   }
 
   async start() {
