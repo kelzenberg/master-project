@@ -2,15 +2,6 @@
   {
     "name": "Methanation",
     "description": "This is the sim for Methanation...",
-    "simURL": "http://localhost:3001",
-    "endpoints": {
-      "start": { "path": "/start", "method": "POST" },
-      "initial": { "path": "/initial", "method": "GET" },
-      "dynamic": { "path": "/dynamic", "method": "GET" },
-      "slider": { "path": "/slider", "method": "POST" },
-      "pause": { "path": "/pause", "method": "PUT" },
-      "resume": { "path": "/resume", "method": "PUT" },
-      "reset": { "path": "/reset", "method": "POST" }
-    }
+    "simURL": "http://localhost:3001"
   }
 ]
