@@ -33,7 +33,7 @@ export class Simulation {
     return isHealthy;
   }
 
-  async waitUntilSimIsHealthy() {
+  async waitForSimHealth() {
     let repeatCounter = 0;
     const checkHealth = async () => {
       if (repeatCounter >= 5) return false;
