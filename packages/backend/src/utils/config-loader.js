@@ -24,7 +24,7 @@ const loadConfigsFromFile = async path => {
     throw new Error(message);
   }
 
-  logger.info('Successfully loaded list of configs', { data: path });
+  logger.info('Successfully loaded list of configs');
   return configs;
 };
 
