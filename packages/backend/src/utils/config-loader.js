@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { v4 as uuid } from 'uuid';
 import { Logger } from './logger.js';
 
 const logger = Logger({ name: 'simulation-config-loader' });
@@ -29,21 +28,4 @@ const loadConfigsFromFile = async path => {
   return configs;
 };
 
-const mapIDsOnConfigs = configs => {
-  const configsMap = {};
-
-  for (const config of configs) {
-    const id = uuid();
-    configsMap[id] = { ...config, id };
-  }
-
-  logger.info('Assigned each config a unique ID', { data: Object.keys(configsMap) });
-  return configsMap;
-};
-
-export const getSimulationConfigs = async () => {
-  const configs = await loadConfigsFromFile(filePath);
-  const configsMap = await mapIDsOnConfigs(configs);
-
-  return configsMap;
-};
+export const getSimulationConfigs = async () => loadConfigsFromFile(filePath);
