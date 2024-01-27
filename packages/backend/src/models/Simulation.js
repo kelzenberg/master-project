@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { FetchWorker } from './Worker.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
 
@@ -9,7 +10,7 @@ export class Simulation {
   #URL;
   #isHealthy;
   #data;
-  #worker;
+  #fetchWorker;
   #logger;
 
   id;
@@ -25,6 +26,7 @@ export class Simulation {
     this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
+    this.#fetchWorker = new FetchWorker(this.name, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `simulation-instance-${this.name}` });
   }
 
@@ -132,6 +134,7 @@ export class Simulation {
     return {
       ...this,
       URL: this.#URL,
+      isHealthy: this.#isHealthy,
       data: this.#data,
     };
   }
