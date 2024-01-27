@@ -8,7 +8,7 @@ const filePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 
 const loadConfigsFromFile = async path => {
   let configs;
-  logger.info(`Loading list of configs from file path: ${path}`, { data: path });
+  logger.info(`Loading list of configs from file`, { data: path });
 
   try {
     const file = await readFile(path, { encoding: 'utf8' });
