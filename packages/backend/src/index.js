@@ -1,6 +1,6 @@
 import bluebird from 'bluebird';
 import stoppable from 'stoppable';
-import { path } from 'node:path';
+import path from 'node:path';
 import { writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { loadSimConfigsFromFile } from './utils/config-loader.js';
