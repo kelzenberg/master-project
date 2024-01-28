@@ -16,18 +16,20 @@ export class Simulation {
   id;
   title;
   description;
+  roomId;
   createdAt;
 
   constructor({ title, description, envKeyForURL }) {
     this.id = uuid();
     this.title = title;
     this.description = description;
+    this.roomId = `sim:${this.id}`;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
-    this.#fetchWorker = new FetchWorker(this.title, `${this.#URL}/dynamic`);
-    this.#logger = Logger({ name: `simulation-instance-${this.title}` });
+    this.#fetchWorker = new FetchWorker(`${this.title}-worker`, `${this.#URL}/dynamic`);
+    this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
 
   async #getSimHealth(attempt = 1) {
@@ -38,6 +40,7 @@ export class Simulation {
       const { success: isHealthy } = await response.json();
       this.#isHealthy = isHealthy;
     } catch (error) {
+      this.#isHealthy = false;
       const message = `Checking health for ${this.title} sim failed`;
       this.#logger.error(message, error);
       throw new Error(message, error);
@@ -81,15 +84,28 @@ export class Simulation {
       this.#data = { initial: await response.json() };
 
       this.#logger.info(`Stored initial data for ${this.title} sim`);
-      return this.#data.initial;
     } catch (error) {
-      this.#logger.error(`Retrieving initial data for ${this.title} sim failed`, error);
-      throw new Error(error);
+      const message = `Retrieving initial data for ${this.title} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
     }
   }
 
   getInitialData() {
     return this.#data.initial;
+  }
+
+  getRunningFetchWorker() {
+    if (!this.#fetchWorker.isRunning) return null;
+    return this.#fetchWorker;
+  }
+
+  #startFetchWorker() {
+    if (this.#fetchWorker.isRunning) {
+      this.#logger.warn(`Fetch-worker for ${this.title} sim is already running`);
+      return;
+    }
+    this.#fetchWorker.start();
   }
 
   async start() {
@@ -101,14 +117,13 @@ export class Simulation {
 
       if (hasStarted) {
         this.#logger.info(`Python sim ${this.title} has started`);
+        this.#startFetchWorker();
         return true;
       }
-
-      this.#logger.warn(`Python sim ${this.title} could not be started. Trying to reset it...`);
-      const hasReset = this.reset();
-      return hasReset;
     } catch (error) {
-      this.#logger.error(`Starting Python sim ${this.title} failed`, error);
+      const message = `Starting Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
     }
 
     return false;
@@ -123,6 +138,12 @@ export class Simulation {
 
       if (hasReset) {
         this.#logger.info(`Python sim ${this.title} has reset`);
+
+        if (!this.#fetchWorker.isRunning) {
+          this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
+          this.#startFetchWorker();
+        }
+
         return true;
       }
 
