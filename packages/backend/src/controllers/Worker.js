@@ -31,6 +31,10 @@ export class FetchWorker {
     this.#fetchDelay = Number(process.env.WORKER_DELAY) ?? workerOptions.fetchDelay ?? 2000;
   }
 
+  getInstance() {
+    return this.isRunning ? this.#instance : null;
+  }
+
   start() {
     if (process.env.WORKER_ACTIVE != 1) {
       const message = "Workers are not enabled in environment, set environment variable 'WORKER_ACTIVE' to 1";

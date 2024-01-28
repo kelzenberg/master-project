@@ -113,8 +113,19 @@ export class Simulation {
     await this.#fetchWorker.stop();
   }
 
-  getRunningFetchWorker() {
-    return this.#fetchWorker.isRunning ? this.#fetchWorker : null;
+  setFetchWorkerEventHandlers({ messageHandler, errorHandler, exitHandler }) {
+    const workerInstance = this.#fetchWorker.getInstance();
+
+    if (!workerInstance) {
+      const message = `Fetch-worker instance for ${this.title} sim is not available`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    workerInstance.on('message', messageHandler(this.roomId));
+    workerInstance.on('error', errorHandler(this.roomId));
+    workerInstance.on('messageerror', errorHandler(this.roomId, true));
+    workerInstance.on('exit', exitHandler(this.roomId));
   }
 
   async start() {
