@@ -5,6 +5,35 @@ import { errorHandler } from './middlewares/sockets/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
+const getFetchWorkerCallbacks = ioServer => ({
+  messageHandler: roomId => value => {
+    logger.info(
+      `Received worker message for room ${roomId}. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`
+    );
+    ioServer.to(roomId).emit(SocketEventTypes.DYNAMIC, value);
+  },
+  errorHandler:
+    (roomId, messageError = false) =>
+    error => {
+      logger.error(
+        `Received worker ${messageError ? 'message ' : ''}error for room ${roomId}. Closing all socket client connections.`,
+        {
+          error,
+        }
+      );
+      ioServer.in(roomId).disconnectSockets();
+    },
+
+  exitHandler: roomId => exitCode => {
+    if (exitCode !== 0) {
+      const message = `Worker for room ${roomId} stopped with exit code: ${exitCode}. Closing all socket client connections.`;
+      logger.error(message);
+      ioServer.in(roomId).disconnectSockets();
+      throw new Error(message);
+    }
+  },
+});
+
 export const startSocketServer = (httpServer, simControllers, serverOptions) => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
@@ -16,29 +45,6 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
     logger.info(`Client connected: ${socket.id}`); // Id is not persisting between session, debug only!
 
     socket.data.client = { currentRoomId: null };
-
-    const messageHandler = roomId => value => {
-      logger.info(`Received worker message. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`);
-      ioServer.to(roomId).emit(SocketEventTypes.DYNAMIC, value);
-    };
-
-    const errorHandler =
-      (roomId, messageError = false) =>
-      error => {
-        logger.error(`Received worker ${messageError ? 'message ' : ''}error. Closing all socket client connections.`, {
-          error,
-        });
-        ioServer.in(roomId).disconnectSockets();
-      };
-
-    const exitHandler = roomId => exitCode => {
-      if (exitCode !== 0) {
-        const message = `Worker stopped with exit code: ${exitCode}. Closing all socket client connections.`;
-        logger.error(message);
-        ioServer.in(roomId).disconnectSockets();
-        throw new Error(message);
-      }
-    };
 
     // Sending client initial sim data and assigning client to sim room based on received simId
     socket.on(SocketEventTypes.SIM_ID, async ({ simId }) => {
@@ -59,11 +65,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
       if (!chosenSimController.isRunning) {
         await chosenSimController.start();
 
-        chosenSimController.setFetchWorkerEventHandlers({
-          messageHandler,
-          errorHandler,
-          exitHandler,
-        });
+        chosenSimController.setFetchWorkerEventHandlers(getFetchWorkerCallbacks(ioServer));
       }
 
       logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
