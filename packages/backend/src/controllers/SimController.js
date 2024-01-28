@@ -6,7 +6,7 @@ import { Logger } from '../utils/logger.js';
 /**
  * Represents all information of a Python simulation in the cluster
  */
-export class Simulation {
+export class SimController {
   id;
   title;
   description;

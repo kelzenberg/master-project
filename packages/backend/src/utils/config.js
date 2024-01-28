@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { Logger } from './logger.js';
+import { SimController } from '../controllers/SimController.js';
 
 const logger = Logger({ name: 'simulation-config-loader' });
 
@@ -25,3 +26,13 @@ export const loadSimConfigsFromFile = async filePath => {
   logger.info('Successfully loaded list of configs');
   return configs;
 };
+
+export const createSimControllersFromConfigs = async simConfigs =>
+  Promise.all(
+    Object.values(simConfigs).map(async simConfig => {
+      const simController = new SimController({ ...simConfig });
+      await simController.waitForSimHealth();
+      await simController.fetchInitialData();
+      return simController;
+    })
+  );
