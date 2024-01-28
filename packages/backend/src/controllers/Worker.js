@@ -13,7 +13,7 @@ export class FetchWorker {
   #runFilePath;
   #instance;
   #logger;
-  #fetchDelay; // optional
+  #fetchDelay;
 
   /**
    * @param {string} title Title of the worker
@@ -28,8 +28,6 @@ export class FetchWorker {
     this.#runFilePath = path.resolve(process.env.WORKER_RUN_FILE_PATH || '../worker/main.js');
     this.#instance = null;
     this.#logger = Logger({ name: `${this.title}-controller` });
-
-    // optional
     this.#fetchDelay = Number(process.env.WORKER_DELAY) ?? workerOptions.fetchDelay ?? 2000;
   }
 

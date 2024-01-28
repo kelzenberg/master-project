@@ -7,23 +7,25 @@ import { Logger } from '../utils/logger.js';
  * Represents all information of a Python simulation in the cluster
  */
 export class Simulation {
+  id;
+  title;
+  description;
+  roomId;
+  isRunning;
+  createdAt;
+
   #URL;
   #isHealthy;
   #data;
   #fetchWorker;
   #logger;
 
-  id;
-  title;
-  description;
-  roomId;
-  createdAt;
-
   constructor({ title, description, envKeyForURL }) {
     this.id = uuid();
     this.title = title;
     this.description = description;
     this.roomId = `sim:${this.id}`;
+    this.isRunning = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
     this.#isHealthy = null;
@@ -95,11 +97,6 @@ export class Simulation {
     return this.#data.initial;
   }
 
-  getRunningFetchWorker() {
-    if (!this.#fetchWorker.isRunning) return null;
-    return this.#fetchWorker;
-  }
-
   #startFetchWorker() {
     if (this.#fetchWorker.isRunning) {
       this.#logger.warn(`Fetch-worker for ${this.title} sim is already running`);
@@ -108,28 +105,68 @@ export class Simulation {
     this.#fetchWorker.start();
   }
 
+  async #stopFetchWorker() {
+    if (!this.#fetchWorker.isRunning) {
+      this.#logger.warn(`Fetch-worker for ${this.title} sim is not running`);
+      return;
+    }
+    await this.#fetchWorker.stop();
+  }
+
+  getRunningFetchWorker() {
+    return this.#fetchWorker.isRunning ? this.#fetchWorker : null;
+  }
+
   async start() {
+    if (this.isRunning) {
+      this.#logger.warn(`Python sim ${this.title} is already running`);
+
+      if (!this.#fetchWorker.isRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
+        this.#startFetchWorker();
+      }
+
+      return;
+    }
+
     this.#logger.info(`Requesting to start ${this.title} Python sim...`);
 
     try {
       const response = await fetch(`${this.#URL}/start`, { method: 'POST' });
       const { success: hasStarted } = await response.json();
+      this.isRunning = hasStarted;
 
       if (hasStarted) {
         this.#logger.info(`Python sim ${this.title} has started`);
         this.#startFetchWorker();
-        return true;
+      } else {
+        this.#logger.error(`Python sim ${this.title} returned unsuccessfully on START request`);
       }
     } catch (error) {
       const message = `Starting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
+
+      this.isRunning = false;
+      if (this.#fetchWorker.isRunning) {
+        await this.#stopFetchWorker();
+      }
+
       throw new Error(message, error);
     }
-
-    return false;
   }
 
   async reset() {
+    if (!this.isRunning) {
+      this.#logger.warn(`Python sim ${this.title} is not running`);
+
+      if (this.#fetchWorker.isRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is running but sim is not. Stopping worker...`);
+        await this.#stopFetchWorker();
+      }
+
+      return;
+    }
+
     this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
 
     try {
@@ -139,20 +176,25 @@ export class Simulation {
       if (hasReset) {
         this.#logger.info(`Python sim ${this.title} has reset`);
 
+        this.isRunning = true;
         if (!this.#fetchWorker.isRunning) {
           this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
           this.#startFetchWorker();
         }
+      } else {
+        this.#logger.error(`Python sim ${this.title} returned unsuccessfully on RESET request`);
+      }
+    } catch (error) {
+      const message = `Resetting Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
 
-        return true;
+      this.isRunning = false;
+      if (this.#fetchWorker.isRunning) {
+        await this.#stopFetchWorker();
       }
 
-      this.#logger.error(`Python sim ${this.title} could not be reset...`);
-    } catch (error) {
-      this.#logger.error(`Resetting Python sim ${this.title} failed`, error);
+      throw new Error(message, error);
     }
-
-    return false;
   }
 
   toJSON() {
