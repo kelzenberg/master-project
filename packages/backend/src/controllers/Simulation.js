@@ -51,12 +51,13 @@ export class Simulation {
     this.#logger[this.#isHealthy ? 'info' : 'warn'](
       `Python sim ${this.title} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
     );
+
     return this.#isHealthy;
   }
 
   async waitForSimHealth() {
     let repeatCounter = 0;
-    const checkHealth = async () => {
+    const checkHealthDelayed = async () => {
       if (repeatCounter >= 5) return false;
 
       const isHealthy = await this.#getSimHealth(repeatCounter + 1);
@@ -65,14 +66,14 @@ export class Simulation {
       repeatCounter++;
       await delayFor(1000, this.#logger);
 
-      return await checkHealth();
+      return await checkHealthDelayed();
     };
 
     this.#logger.info(`Waiting for Python sim ${this.title} to become ready to accept connections...`);
-    const isHealthy = await checkHealth();
+    const isHealthy = await checkHealthDelayed();
 
     if (!isHealthy) {
-      const message = `Python sim ${this.title} is not responding healthy after ${repeatCounter} attempts. Aborting...`;
+      const message = `Python sim ${this.title} is responding UNHEALTHY after ${repeatCounter} attempts`;
       this.#logger.error(message);
       throw new Error(message);
     }
@@ -145,14 +146,20 @@ export class Simulation {
     try {
       const response = await fetch(`${this.#URL}/start`, { method: 'POST' });
       const { success: hasStarted } = await response.json();
+
       this.isRunning = hasStarted;
 
-      if (hasStarted) {
-        this.#logger.info(`Python sim ${this.title} has started`);
-        this.#startFetchWorker();
-      } else {
-        this.#logger.error(`Python sim ${this.title} returned unsuccessfully on START request`);
+      if (!hasStarted) {
+        const message = `Python sim ${this.title} returned unsuccessfully on START request`;
+        this.#logger.error(message);
+        throw new Error(message);
       }
+
+      this.#startFetchWorker();
+      const wasRunningBefore = !(response.status === 201);
+      this.#logger[wasRunningBefore ? 'warn' : 'info'](
+        `Python sim ${this.title} ${wasRunningBefore ? 'is already running' : 'has started'}`
+      );
     } catch (error) {
       const message = `Starting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
@@ -167,34 +174,19 @@ export class Simulation {
   }
 
   async reset() {
-    if (!this.isRunning) {
-      this.#logger.warn(`Python sim ${this.title} is not running`);
-
-      if (this.#fetchWorker.isRunning) {
-        this.#logger.warn(`Fetch-worker for ${this.title} sim is running but sim is not. Stopping worker...`);
-        await this.#stopFetchWorker();
-      }
-
-      return;
-    }
-
     this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
 
     try {
       const response = await fetch(`${this.#URL}/reset`, { method: 'POST' });
       const { success: hasReset } = await response.json();
 
-      if (hasReset) {
-        this.#logger.info(`Python sim ${this.title} has reset`);
-
-        this.isRunning = true;
-        if (!this.#fetchWorker.isRunning) {
-          this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
-          this.#startFetchWorker();
-        }
-      } else {
-        this.#logger.error(`Python sim ${this.title} returned unsuccessfully on RESET request`);
+      if (!hasReset) {
+        const message = `Python sim ${this.title} returned unsuccessfully on RESET request`;
+        this.#logger.error(message);
+        throw new Error(message);
       }
+
+      this.#logger.info(`Python sim ${this.title} has reset`);
     } catch (error) {
       const message = `Resetting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
