@@ -36,8 +36,9 @@ const stoppableServer = stoppable(
     try {
       await startSocketServer(expressServer, simInstances);
     } catch (error) {
-      logger.error(error);
-      throw error;
+      const message = 'Starting socket server failed';
+      logger.error(message, error);
+      throw new Error(message, error);
     }
   }),
   1000
