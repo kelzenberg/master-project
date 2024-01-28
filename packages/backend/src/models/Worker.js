@@ -1,29 +1,33 @@
 import { Worker, isMainThread } from 'node:worker_threads';
 import path from 'node:path';
+import { Logger } from '../utils/logger.js';
 
 /**
  * Fetches a given endpoint URL constantly (loop) in a different NodeJS thread
  * and emits its response when retrieved.
  */
 export class FetchWorker {
-  #name;
+  title;
+  isRunning;
   #URL;
-  #isRunning;
   #runFilePath;
   #instance;
+  #logger;
   #fetchDelay; // optional
 
   /**
-   * @param {string} name Name of the worker
+   * @param {string} title Title of the worker
    * @param {string} URL Address that will be fetched by the worker
    * @param {{fetchDelay: number}} workerOptions Additional worker options, e.g. `fetchDelay` in milliseconds (default `2000`)
    */
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  constructor(name, URL, workerOptions = { fetchDelay: 2000 }) {
-    this.#name = name;
+  constructor(title, URL, workerOptions = { fetchDelay: 2000 }) {
+    this.title = title;
+    this.isRunning = false;
     this.#URL = URL;
-    this.#isRunning = false;
     this.#runFilePath = path.resolve(process.env.WORKER_RUN_FILE_PATH || '../worker/main.js');
+    this.#instance = null;
+    this.#logger = Logger({ name: `${this.title}-controller` });
 
     // optional
     this.#fetchDelay = Number(process.env.WORKER_DELAY) ?? workerOptions.fetchDelay ?? 2000;
@@ -31,38 +35,45 @@ export class FetchWorker {
 
   start() {
     if (process.env.WORKER_ACTIVE != 1) {
-      throw new Error("Workers are not enabled in environment, check env variable 'WORKER_ACTIVE'.");
+      const message = "Workers are not enabled in environment, set environment variable 'WORKER_ACTIVE' to 1";
+      this.#logger.error(message);
+      throw new Error(message);
     }
     if (!isMainThread) {
-      throw new Error('Worker run script cannot be run outside of main thread.');
+      const message = 'Worker run script cannot be run outside of main thread';
+      this.#logger.error(message);
+      throw new Error(message);
     }
 
+    this.#logger.info(`Starting ${this.title} instance...`);
     this.#instance = new Worker(this.#runFilePath, {
-      name: this.#name,
+      name: this.title,
       workerData: {
-        workerName: this.#name,
+        workerName: this.title,
         URL: this.#URL,
         fetchDelay: this.#fetchDelay,
       },
     });
-    this.#isRunning = true;
-    return this.#instance;
+    this.isRunning = true;
   }
 
-  stop() {
-    this.#isRunning = false;
+  async stop() {
+    this.#logger.info(`Stopping ${this.title} instance...`);
+
     if (this.#instance) {
-      this.#instance.terminate();
+      await this.#instance.terminate();
+      this.isRunning = false;
+      this.#instance = null;
+      this.#logger.info(`Successfully stopped ${this.title} instance...`);
     }
   }
 
   toJSON() {
     return {
-      name: this.#name,
+      ...this,
       URL: this.#URL,
-      fetchDelay: this.#fetchDelay,
       runFilePath: this.#runFilePath,
-      isRunning: this.#isRunning,
+      fetchDelay: this.#fetchDelay,
     };
   }
 }
