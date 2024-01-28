@@ -6,10 +6,10 @@ import { errorHandler } from './middlewares/events/error-handler.js';
 import { handler as updateSimParamsHandler } from './handlers/events/slider.js';
 import { handler as assignSimHandler } from './handlers/events/sim-id.js';
 import {
-  exitHandler as workerExitHandler,
   messageHandler as workerMessageHandler,
   errorHandler as workerErrorHandler,
-} from './handlers/events/worker.js';
+  exitHandler as workerExitHandler,
+} from './worker/events.js';
 
 const logger = Logger({ name: 'socket-server' });
 

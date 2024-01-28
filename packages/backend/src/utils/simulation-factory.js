@@ -1,6 +1,6 @@
-import { Simulation } from './models/Simulation.js';
+import { Simulation } from '../controllers/Simulation.js';
 
-const createSimInstances = async simConfigs =>
+export const createSimControllersFromConfigs = async simConfigs =>
   Promise.all(
     Object.values(simConfigs).map(async simConfig => {
       const instance = new Simulation({ ...simConfig });
@@ -9,5 +9,3 @@ const createSimInstances = async simConfigs =>
       return instance;
     })
   );
-
-export const getSimulationInstances = async simConfigs => createSimInstances(simConfigs);

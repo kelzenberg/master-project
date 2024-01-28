@@ -1,9 +1,10 @@
 import bluebird from 'bluebird';
 import stoppable from 'stoppable';
-import { createServer } from 'node:http';
+import { path } from 'node:path';
 import { writeFile } from 'node:fs/promises';
-import { getSimulationConfigs } from './utils/config-loader.js';
-import { getSimulationInstances } from './simulations.js';
+import { createServer } from 'node:http';
+import { loadSimConfigsFromFile } from './utils/config-loader.js';
+import { createSimControllersFromConfigs } from './utils/simulation-factory.js';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
@@ -11,8 +12,9 @@ import { Logger } from './utils/logger.js';
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
 
-const simConfigs = await getSimulationConfigs();
-const simInstances = await getSimulationInstances(simConfigs);
+const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
+const simConfigs = await loadSimConfigsFromFile(configFilePath);
+const simInstances = await createSimControllersFromConfigs(simConfigs);
 
 // DEBUG sim configs and instances output to file
 if (process.env.NODE_ENV === 'development') {
