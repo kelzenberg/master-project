@@ -62,16 +62,16 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
         return;
       }
 
-      if (!chosenSimController.isRunning) {
-        await chosenSimController.start();
+      if (!chosenSimController.isSimRunning) {
+        await chosenSimController.startSim();
 
-        chosenSimController.setFetchWorkerEventHandlers(getFetchWorkerCallbacks(ioServer));
+        chosenSimController.setWorkerEventHandlers(getFetchWorkerCallbacks(ioServer));
       }
 
       logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
         data: { id: chosenSimController.id, roomId: chosenSimController.roomId, title: chosenSimController.title },
       });
-      socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialData());
+      socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
 
       socket.data.client = { ...socket.data.client, currentRoomId: chosenSimController.roomId };
       logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });

@@ -32,7 +32,7 @@ export const createSimControllersFromConfigs = async simConfigs =>
     Object.values(simConfigs).map(async simConfig => {
       const simController = new SimController({ ...simConfig });
       await simController.waitForSimHealth();
-      await simController.fetchInitialData();
+      await simController.fetchInitialSimData();
       return simController;
     })
   );

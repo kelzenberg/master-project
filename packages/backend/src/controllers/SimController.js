@@ -1,36 +1,40 @@
 import { v4 as uuid } from 'uuid';
-import { FetchWorker } from './Worker.js';
+import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
 
 /**
- * Represents all information of a Python simulation in the cluster
+ * Holds all information about a Python simulation in the cluster
+ * and manages the attached fetch workers.
  */
 export class SimController {
   id;
   title;
   description;
   roomId;
-  isRunning;
+  isSimRunning;
   createdAt;
 
   #URL;
   #isHealthy;
   #data;
-  #fetchWorker;
+  #workerController;
   #logger;
 
+  /**
+   * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
+   */
   constructor({ title, description, envKeyForURL }) {
     this.id = uuid();
     this.title = title;
     this.description = description;
     this.roomId = `sim:${this.id}`;
-    this.isRunning = false;
+    this.isSimRunning = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
-    this.#fetchWorker = new FetchWorker(`${this.title}-worker`, `${this.#URL}/dynamic`);
+    this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
 
@@ -79,7 +83,7 @@ export class SimController {
     }
   }
 
-  async fetchInitialData() {
+  async fetchInitialSimData() {
     try {
       this.#logger.info(`Fetching initial data for ${this.title} sim...`);
 
@@ -94,28 +98,28 @@ export class SimController {
     }
   }
 
-  getInitialData() {
+  getInitialSimData() {
     return this.#data.initial;
   }
 
-  #startFetchWorker() {
-    if (this.#fetchWorker.isRunning) {
+  #startWorker() {
+    if (this.#workerController.isWorkerRunning) {
       this.#logger.warn(`Fetch-worker for ${this.title} sim is already running`);
       return;
     }
-    this.#fetchWorker.start();
+    this.#workerController.startWorker();
   }
 
-  async #stopFetchWorker() {
-    if (!this.#fetchWorker.isRunning) {
+  async #stopWorker() {
+    if (!this.#workerController.isWorkerRunning) {
       this.#logger.warn(`Fetch-worker for ${this.title} sim is not running`);
       return;
     }
-    await this.#fetchWorker.stop();
+    await this.#workerController.stopWorker();
   }
 
-  setFetchWorkerEventHandlers({ messageHandler, errorHandler, exitHandler }) {
-    const workerInstance = this.#fetchWorker.getInstance();
+  setWorkerEventHandlers({ messageHandler, errorHandler, exitHandler }) {
+    const workerInstance = this.#workerController.getWorker();
 
     if (!workerInstance) {
       const message = `Fetch-worker instance for ${this.title} sim is not available`;
@@ -129,13 +133,13 @@ export class SimController {
     workerInstance.on('exit', exitHandler(this.roomId));
   }
 
-  async start() {
-    if (this.isRunning) {
+  async startSim() {
+    if (this.isSimRunning) {
       this.#logger.warn(`Python sim ${this.title} is already running`);
 
-      if (!this.#fetchWorker.isRunning) {
+      if (!this.#workerController.isWorkerRunning) {
         this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
-        this.#startFetchWorker();
+        this.#startWorker();
       }
 
       return;
@@ -147,7 +151,7 @@ export class SimController {
       const response = await fetch(`${this.#URL}/start`, { method: 'POST' });
       const { success: hasStarted } = await response.json();
 
-      this.isRunning = hasStarted;
+      this.isSimRunning = hasStarted;
 
       if (!hasStarted) {
         const message = `Python sim ${this.title} returned unsuccessfully on START request`;
@@ -155,7 +159,7 @@ export class SimController {
         throw new Error(message);
       }
 
-      this.#startFetchWorker();
+      this.#startWorker();
       const wasRunningBefore = !(response.status === 201);
       this.#logger[wasRunningBefore ? 'warn' : 'info'](
         `Python sim ${this.title} ${wasRunningBefore ? 'is already running' : 'has started'}`
@@ -164,16 +168,16 @@ export class SimController {
       const message = `Starting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
 
-      this.isRunning = false;
-      if (this.#fetchWorker.isRunning) {
-        await this.#stopFetchWorker();
+      this.isSimRunning = false;
+      if (this.#workerController.isWorkerRunning) {
+        await this.#stopWorker();
       }
 
       throw new Error(message, error);
     }
   }
 
-  async reset() {
+  async resetSim() {
     this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
 
     try {
@@ -191,9 +195,9 @@ export class SimController {
       const message = `Resetting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
 
-      this.isRunning = false;
-      if (this.#fetchWorker.isRunning) {
-        await this.#stopFetchWorker();
+      this.isSimRunning = false;
+      if (this.#workerController.isWorkerRunning) {
+        await this.#stopWorker();
       }
 
       throw new Error(message, error);

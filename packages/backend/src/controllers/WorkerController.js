@@ -3,17 +3,17 @@ import path from 'node:path';
 import { Logger } from '../utils/logger.js';
 
 /**
- * Fetches a given endpoint URL constantly (loop) in a different NodeJS thread
- * and emits its response when retrieved.
+ * Creates a worker in a NodeJS thread that fetches a given endpoint URL constantly (loop)
+ * and emits the endpoint's response when successfully retrieved.
  */
-export class FetchWorker {
+export class WorkerController {
   title;
-  isRunning;
+  isWorkerRunning;
   #URL;
   #runFilePath;
-  #instance;
-  #logger;
+  #worker;
   #fetchDelay;
+  #logger;
 
   /**
    * @param {string} title Title of the worker
@@ -23,19 +23,19 @@ export class FetchWorker {
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   constructor(title, URL, workerOptions = { fetchDelay: 2000 }) {
     this.title = title;
-    this.isRunning = false;
+    this.isWorkerRunning = false;
     this.#URL = URL;
     this.#runFilePath = path.resolve(process.env.WORKER_RUN_FILE_PATH || '../worker/main.js');
-    this.#instance = null;
-    this.#logger = Logger({ name: `${this.title}-controller` });
+    this.#worker = null;
     this.#fetchDelay = Number(process.env.WORKER_DELAY) ?? workerOptions.fetchDelay ?? 2000;
+    this.#logger = Logger({ name: `${this.title}-controller` });
   }
 
-  getInstance() {
-    return this.isRunning ? this.#instance : null;
+  getWorker() {
+    return this.isWorkerRunning ? this.#worker : null;
   }
 
-  start() {
+  startWorker() {
     if (process.env.WORKER_ACTIVE != 1) {
       const message = "Workers are not enabled in environment, set environment variable 'WORKER_ACTIVE' to 1";
       this.#logger.error(message);
@@ -46,9 +46,13 @@ export class FetchWorker {
       this.#logger.error(message);
       throw new Error(message);
     }
+    if (this.isWorkerRunning) {
+      this.#logger.warn(`${this.title} worker is already running`);
+      return;
+    }
 
-    this.#logger.info(`Starting ${this.title} instance...`);
-    this.#instance = new Worker(this.#runFilePath, {
+    this.#logger.info(`Starting ${this.title} worker...`);
+    this.#worker = new Worker(this.#runFilePath, {
       name: this.title,
       workerData: {
         workerName: this.title,
@@ -56,18 +60,25 @@ export class FetchWorker {
         fetchDelay: this.#fetchDelay,
       },
     });
-    this.isRunning = true;
+    this.isWorkerRunning = true;
+    this.#logger.info(`Successfully started ${this.title} worker`);
   }
 
-  async stop() {
-    this.#logger.info(`Stopping ${this.title} instance...`);
-
-    if (this.#instance) {
-      await this.#instance.terminate();
-      this.isRunning = false;
-      this.#instance = null;
-      this.#logger.info(`Successfully stopped ${this.title} instance...`);
+  async stopWorker() {
+    if (!this.#worker) {
+      this.#logger.warn(`No ${this.title} worker exists`);
+      return;
     }
+    if (!this.isWorkerRunning) {
+      this.#logger.warn(`${this.title} worker is not running`);
+      return;
+    }
+
+    this.#logger.info(`Stopping ${this.title} worker...`);
+    await this.#worker.terminate();
+    this.#worker = null;
+    this.isWorkerRunning = false;
+    this.#logger.info(`Successfully stopped ${this.title} worker`);
   }
 
   toJSON() {
