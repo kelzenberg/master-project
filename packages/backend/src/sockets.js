@@ -31,27 +31,27 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
         return;
       }
 
-      console.log('foo', simId);
       // const chosenSimInstance = simInstances.find(sim => sim.id === `${simId}`);
-      const chosenSimInstance = simControllers[0];
+      console.log('Fake selecting sim controller, based on fake simId', simId);
+      const chosenSimController = simControllers[0]; // Fake selection
 
-      if (!chosenSimInstance) {
+      if (!chosenSimController) {
         logger.error('Could not find simulation instance with provided ID', { data: simId });
         return;
       }
 
-      if (!chosenSimInstance.isRunning) {
-        await chosenSimInstance.start();
+      if (!chosenSimController.isRunning) {
+        await chosenSimController.start();
       }
 
       logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
-        data: { id: chosenSimInstance.id, roomId: chosenSimInstance.roomId, title: chosenSimInstance.title },
+        data: { id: chosenSimController.id, roomId: chosenSimController.roomId, title: chosenSimController.title },
       });
-      socket.emit(SocketEventTypes.INITIAL, chosenSimInstance.getInitialData());
+      socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialData());
 
-      socket.data.client = { ...socket.data.client, currentRoomId: chosenSimInstance.roomId };
-      logger.info(`Assigning ${socket.id} to room ${chosenSimInstance.roomId}`, { data: chosenSimInstance.roomId });
-      socket.join(chosenSimInstance.roomId);
+      socket.data.client = { ...socket.data.client, currentRoomId: chosenSimController.roomId };
+      logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
+      socket.join(chosenSimController.roomId);
     });
 
     // this.#fetchWorker.on('message', workerMessageHandler(ioLogger, ioServer, this.roomId));

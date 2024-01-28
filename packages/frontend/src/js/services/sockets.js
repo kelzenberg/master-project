@@ -9,6 +9,9 @@ simulationViewController.addEventListeners();
 const errorOverlay = document.querySelector('#errorOverlay');
 const errorContent = document.querySelector('#errorContent');
 
+console.log('FAKE send 1234 as sim id until id is retrieved from sim selection on index.html');
+socket.emit(SocketEventTypes.SIM_ID, { simId: 1234 });
+
 socket.on(SocketEventTypes.INITIAL, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
   simulationViewController.renderInitialData(payload);
