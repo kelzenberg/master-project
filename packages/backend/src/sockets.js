@@ -1,7 +1,6 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { packetLogger } from './middlewares/events/packet-logger.js';
 import { errorHandler } from './middlewares/events/error-handler.js';
 // import {
 //   messageHandler as workerMessageHandler,
@@ -15,7 +14,6 @@ export const startSocketServer = (httpServer, simInstances, serverOptions) => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   // Packet middlewares
-  ioServer.use(packetLogger(logger));
   ioServer.use(errorHandler(logger));
 
   // Client connection over socket
