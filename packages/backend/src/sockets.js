@@ -1,12 +1,7 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { errorHandler } from './middlewares/events/error-handler.js';
-// import {
-//   messageHandler as workerMessageHandler,
-//   errorHandler as workerErrorHandler,
-//   exitHandler as workerExitHandler,
-// } from './worker/events.js';
+import { errorHandler } from './middlewares/sockets/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
