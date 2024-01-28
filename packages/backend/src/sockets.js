@@ -10,7 +10,7 @@ import { errorHandler } from './middlewares/events/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
-export const startSocketServer = (httpServer, simInstances, serverOptions) => {
+export const startSocketServer = (httpServer, simControllers, serverOptions) => {
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   // Packet middlewares
@@ -33,7 +33,7 @@ export const startSocketServer = (httpServer, simInstances, serverOptions) => {
 
       console.log('foo', simId);
       // const chosenSimInstance = simInstances.find(sim => sim.id === `${simId}`);
-      const chosenSimInstance = simInstances[0];
+      const chosenSimInstance = simControllers[0];
 
       if (!chosenSimInstance) {
         logger.error('Could not find simulation instance with provided ID', { data: simId });

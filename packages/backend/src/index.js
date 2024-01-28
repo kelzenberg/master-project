@@ -14,7 +14,7 @@ const expressPort = process.env.BACKEND_PORT || 3000;
 
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 const simConfigs = await loadSimConfigsFromFile(configFilePath);
-const simInstances = await createSimControllersFromConfigs(simConfigs);
+const simControllers = await createSimControllersFromConfigs(simConfigs);
 
 // DEBUG sim configs and instances output to file
 if (process.env.NODE_ENV === 'development') {
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
     './config-to-sim-model.local.json',
     JSON.stringify({
       simConfigs,
-      simInstances,
+      simControllers,
     }),
     { encoding: 'utf8' }
   );
@@ -36,7 +36,7 @@ const stoppableServer = stoppable(
 
     // Socket.io
     try {
-      await startSocketServer(expressServer, simInstances);
+      await startSocketServer(expressServer, simControllers);
     } catch (error) {
       const message = 'Starting socket server failed';
       logger.error(message, error);
