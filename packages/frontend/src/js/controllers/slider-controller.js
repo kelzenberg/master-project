@@ -32,12 +32,12 @@ export class SliderController {
 
   updateSliderValues(sliderData) {
     sliderData.map(sliderData => {
-      let rangeSlider = this.#findRangeSliderByLabel(sliderData.label);
+      let rangeSlider = this.#findSliderByLabel(sliderData.label);
       rangeSlider.setAttribute('value', sliderData.value);
     });
   }
 
-  #findRangeSliderByLabel(label) {
+  #findSliderByLabel(label) {
     return document.querySelector(`range-slider[label="${label}"]`);
   }
 
