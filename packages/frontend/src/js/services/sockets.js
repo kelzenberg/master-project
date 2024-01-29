@@ -32,7 +32,7 @@ socket.on('connect_error', err => {
   errorContent.innerHTML = `
     <h2>Error:</h2>
     <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
-    <p>${err.message} ${err.data}</p>
+    <p>${err.message || 'Unknown error'} ${err.data || ''}</p>
   `;
 });
 
