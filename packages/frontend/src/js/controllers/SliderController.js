@@ -20,8 +20,8 @@ export class SliderController {
 
       rangeSlider.setAttribute('disabled', !isSuperUser);
 
-      rangeSlider.addEventListener('valueChanged', event => {
-        this.#sendValueChangedEvent(event.detail.label, event.detail.value);
+      rangeSlider.addEventListener('change', event => {
+        this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.target.value);
       });
 
       return rangeSlider;
@@ -41,9 +41,8 @@ export class SliderController {
     return document.querySelector(`range-slider[label="${label}"]`);
   }
 
-  #sendValueChangedEvent(label, value) {
+  #sendChangeEvent(label, value) {
     console.log(label + ' ' + value);
-    //console.log(label + ' new value = ' + value);
     sendSliderEvent({
       label,
       value,
