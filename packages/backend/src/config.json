@@ -2,6 +2,7 @@
   {
     "title": "Methanation",
     "description": "This is the sim for Methanation...",
-    "envKeyForURL": "METHANATION_001"
+    "envKeyForURL": "METHANATION_001",
+    "thumbnail": "placeholder.png"
   }
 ]
