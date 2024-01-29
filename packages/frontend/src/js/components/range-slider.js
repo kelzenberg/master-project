@@ -3,12 +3,16 @@ template.innerHTML = `
     <div class="rangeSliderContainer">
         <span></span>
         <input type="range" min="1" max="100" value="50" id="slider">
+        <div class="rangeSliderModal">
+          <span class="modalContent" id="infoMin"></span>
+          <span class="modalContent" id="infoMax"></span>
+        </div>
     </div>
 `;
 
 class rangeSlider extends HTMLElement {
   static get observedAttributes() {
-    return ['min', 'max', 'value', 'scale', 'disabled'];
+    return ['min', 'max', 'label', 'value', 'scale', 'disabled'];
   }
 
   constructor() {
@@ -47,19 +51,21 @@ class rangeSlider extends HTMLElement {
     if (!this.text) return;
 
     this.text.innerHTML = this.value + ' ';
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    this.modalInfoMin.innerText = 'Minimum: ' + this.min;
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    this.modalInfoMax.innerText = 'Maximum: ' + this.max;
   }
 
-  setInitialAttributeValues() {
+  setAttributeValues() {
     this.input?.setAttribute('min', this.min);
     this.input?.setAttribute('max', this.max);
     this.input?.setAttribute('value', this.value);
-    console.log('disabled', this.disabled, 'input', this.input);
-    this.input?.toggleAttribute('disabled', this.disabled === true);
+    this.input?.toggleAttribute('disabled', this.disabled === true || this.disabled === 'true');
   }
 
   // Life-cycle methods
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log(name, oldValue, String(newValue));
     if (newValue === oldValue) return;
 
     switch (name) {
@@ -82,7 +88,7 @@ class rangeSlider extends HTMLElement {
     }
 
     this.renderValues();
-    this.setInitialAttributeValues();
+    this.setAttributeValues();
   }
 
   connectedCallback() {
@@ -91,9 +97,11 @@ class rangeSlider extends HTMLElement {
     this.querySelector('#slider').addEventListener('input', this.inputHandler);
 
     this.text = this.querySelector('span');
+    this.modalInfoMin = this.querySelector('#infoMin');
+    this.modalInfoMax = this.querySelector('#infoMax');
     this.input = this.querySelector('input');
 
-    this.setInitialAttributeValues();
+    this.setAttributeValues();
 
     this.renderValues();
   }
