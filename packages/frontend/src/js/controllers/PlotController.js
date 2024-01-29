@@ -80,8 +80,8 @@ export class PlotController {
     this.#coverageLabels = this.#getLabels('coverage', 'averageLabel');
 
     // Coverage single
-    this.#coverageSingleColors = this.#getAllSingleColors();
-    this.#coverageSingleLabels = this.#getAllSingleLabels();
+    this.#coverageSingleColors = this.#getAllSingleColorsCoverage();
+    this.#coverageSingleLabels = this.#getAllSingleLabelsCoverage();
     this.#coverageSingleNumGraphs = this.#coverageSingleLabels.length;
 
     this.#newPlotTof();
@@ -98,7 +98,7 @@ export class PlotController {
 
         graphTOF.x.push(plotData.kmcTime);
         const tofValues = plotData.tof[i].values;
-        this.#setYValueForTof(graphTOF, tofValues);
+        graphTOF.y.push(this.#isTofToggled ? tofValues[1] : tofValues[0]);
       }
 
       if (this.#isSingleCoverageActive) {
@@ -248,10 +248,6 @@ export class PlotController {
     }
   }
 
-  #setYValueForTof(graphTOF, values) {
-    graphTOF.y.push(this.#isTofToggled ? values[1] : values[0]);
-  }
-
   #getColors(plotName, key) {
     return this.#plots[plotName].map(object => {
       const rgbColor = object[key];
@@ -264,17 +260,7 @@ export class PlotController {
     return dataValues;
   }
 
-  #getAllSingleLabels() {
-    let allLabels = [];
-
-    for (const item of this.#plots.coverage) {
-      allLabels = [...allLabels, ...item.singleLabels];
-    }
-
-    return allLabels;
-  }
-
-  #getAllSingleColors() {
+  #getAllSingleColorsCoverage() {
     let allColors = [];
 
     for (const item of this.#plots.coverage) {
@@ -282,6 +268,16 @@ export class PlotController {
     }
 
     return allColors;
+  }
+
+  #getAllSingleLabelsCoverage() {
+    let allLabels = [];
+
+    for (const item of this.#plots.coverage) {
+      allLabels = [...allLabels, ...item.singleLabels];
+    }
+
+    return allLabels;
   }
 
   #getAllSingleValuesCoverage() {

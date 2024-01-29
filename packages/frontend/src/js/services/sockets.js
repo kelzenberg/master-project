@@ -1,5 +1,5 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
-import { SimulationViewController } from '../controllers/simulation-view-controller';
+import { SimulationViewController } from '../controllers/SimulationPageController';
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
@@ -35,7 +35,7 @@ socket.on('connect_error', err => {
   errorContent.innerHTML = `
     <h2>Error:</h2>
     <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
-    <p>${err.message} ${err.data}</p>
+    <p>${err.message || 'Unknown error'} ${err.data || ''}</p>
   `;
 });
 

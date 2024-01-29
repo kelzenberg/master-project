@@ -29,10 +29,8 @@ export class VisualizationController {
   #scene;
   #renderer;
   #camera;
-  #controls;
-  #ambientLight;
-  #directionalLight;
   #viewHelper;
+  #controls;
 
   constructor(fixedSpecies, config, sitesGroup, speciesDictionary, typeDefinitions) {
     this.#fixedSpecies = fixedSpecies;
@@ -64,12 +62,12 @@ export class VisualizationController {
     this.#controls.dampingFactor = 0.25;
 
     // Lighting setup
-    this.#ambientLight = new AmbientLight(0xff_ff_ff, 1);
-    this.#directionalLight = new DirectionalLight(0xff_ff_ff, 1);
-    this.#directionalLight.position.set(0, 1, 1).normalize();
+    const ambientLight = new AmbientLight(0xff_ff_ff, 1);
+    const directionalLight = new DirectionalLight(0xff_ff_ff, 1);
+    directionalLight.position.set(0, 1, 1).normalize();
 
-    this.#scene.add(this.#directionalLight);
-    this.#scene.add(this.#ambientLight);
+    this.#scene.add(directionalLight);
+    this.#scene.add(ambientLight);
 
     // gizmo
     this.#viewHelper = new ViewHelper(this.#camera, this.#renderer, 'bottom-left', 64);
@@ -202,20 +200,20 @@ export class VisualizationController {
     return -maxX + centerPoint.x;
   }
 
-  #calculateZOffset() {
-    let boundingBox = new Box3().setFromObject(this.#allGeometriesGroup);
-    let centerPoint = new Vector3();
-    boundingBox.getCenter(centerPoint);
-
-    return -centerPoint.z;
-  }
-
   #calculateYOffset() {
     let boundingBox = new Box3().setFromObject(this.#allGeometriesGroup);
     let centerPoint = new Vector3();
     boundingBox.getCenter(centerPoint);
 
     return -centerPoint.y;
+  }
+
+  #calculateZOffset() {
+    let boundingBox = new Box3().setFromObject(this.#allGeometriesGroup);
+    let centerPoint = new Vector3();
+    boundingBox.getCenter(centerPoint);
+
+    return -centerPoint.z;
   }
 
   #setCameraToFitBoundingBox() {

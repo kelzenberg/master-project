@@ -1,16 +1,16 @@
 import { Vector3, Group, Object3D } from 'three';
 import Molecule from '../models/Molecule';
-import { VisualizationController } from './visualization-controller';
-import { PlotController } from './plot-controller';
-import { LegendController } from './legend-controller';
-import { SliderController } from './slider-controller';
+import { VisualizationController } from './VisualizationController';
+import { PlotController } from './PlotController';
+import { LegendController } from './LegendController';
+import { SliderController } from './SliderController';
 
 export class SimulationViewController {
-  #isPaused = false;
   #visualizationController;
   #plotController;
   #sliderController;
   #legendController;
+  #isPaused = false;
 
   constructor() {
     this.#visualizationController = new VisualizationController();
@@ -70,7 +70,27 @@ export class SimulationViewController {
   }
 
   addEventListeners() {
-    this.#addCheckboxEventlisteners();
+    const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
+    const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
+
+    checkbox1Coverage.addEventListener('change', () => {
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    checkbox2Coverage.addEventListener('change', () => {
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    const checkbox1Tof = document.querySelector('#toggleTofButton1');
+    const checkbox2Tof = document.querySelector('#toggleTofButton2');
+
+    checkbox1Tof.addEventListener('change', () => {
+      this.#toggleTof(checkbox2Tof.checked);
+    });
+
+    checkbox2Tof.addEventListener('change', () => {
+      this.#toggleTof(checkbox2Tof.checked);
+    });
 
     const toggleLegendButton = document.querySelector('#toggleLegendButton');
     toggleLegendButton.addEventListener('click', () => {
@@ -116,30 +136,6 @@ export class SimulationViewController {
       speciesDictionary.push(species);
     }
     return speciesDictionary;
-  }
-
-  #addCheckboxEventlisteners() {
-    const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
-    const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
-
-    checkbox1Coverage.addEventListener('change', () => {
-      this.#toggleCoverage(checkbox2Coverage.checked);
-    });
-
-    checkbox2Coverage.addEventListener('change', () => {
-      this.#toggleCoverage(checkbox2Coverage.checked);
-    });
-
-    const checkbox1Tof = document.querySelector('#toggleTofButton1');
-    const checkbox2Tof = document.querySelector('#toggleTofButton2');
-
-    checkbox1Tof.addEventListener('change', () => {
-      this.#toggleTof(checkbox2Tof.checked);
-    });
-
-    checkbox2Tof.addEventListener('change', () => {
-      this.#toggleTof(checkbox2Tof.checked);
-    });
   }
 
   #toggleLegend() {

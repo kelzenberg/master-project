@@ -9,6 +9,11 @@
   font-weight: 500;
 }
 
+:root {
+  --background-color: #eeeeee;
+  --hightlight-color: #006c66;
+}
+
 * {
   font-family: 'Roboto', sans-serif;
 }
@@ -17,7 +22,7 @@ html,
 body {
   margin: 0;
   max-width: 100%;
-  background-color: #eeeeee;
+  background-color: var(--background-color);
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -26,7 +31,7 @@ h1 {
   margin: 0;
   font-size: 40px;
   font-weight: 500;
-  color: #006c66;
+  color: var(--hightlight-color);
 }
 
 p {
@@ -50,7 +55,7 @@ span {
 
 .titleBar {
   height: 8rem;
-  border-bottom: 0.1rem solid #006c66;
+  border-bottom: 0.1rem solid var(--hightlight-color);
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -79,7 +84,7 @@ span {
 #canvas {
   width: 100% !important;
   height: 100% !important;
-  outline: #006c66 0.5px solid;
+  outline: var(--hightlight-color) 0.5px solid;
 }
 
 .simulationController {
@@ -103,16 +108,16 @@ span {
   top: 1rem;
   padding: 0.75rem 0.75rem;
   color: white;
-  background-color: #006c66;
-  border-color: #006c66;
+  background-color: var(--hightlight-color);
+  border-color: var(--hightlight-color);
   border-radius: 4px;
   text-align: center;
   border-style: none;
 }
 
 #resetViewButton:hover {
-  background-color: #006c66;
-  border-color: #006c66;
+  background-color: var(--hightlight-color);
+  border-color: var(--hightlight-color);
 }
 
 #toggleLegendButton {
@@ -125,7 +130,7 @@ span {
 }
 
 #toggleLegendButtonDescription {
-  color: #006c66;
+  color: var(--hightlight-color);
   font-size: 15px;
 }
 
@@ -137,15 +142,15 @@ span {
   flex-wrap: nowrap;
   align-items: center;
   padding: 0.7rem 0.7rem;
-  background-color: #006c66;
-  border-color: #006c66;
+  background-color: var(--hightlight-color);
+  border-color: var(--hightlight-color);
   border-radius: 4px;
   border-style: none;
 }
 
 #backButton:hover {
-  background-color: #006c66;
-  border-color: #006c66;
+  background-color: var(--hightlight-color);
+  border-color: var(--hightlight-color);
 }
 
 #backButton > img {
@@ -210,13 +215,13 @@ span {
 
 #plotTOF {
   height: 35vh;
-  outline: #006c66 0.5px solid;
+  outline: var(--hightlight-color) 0.5px solid;
   visibility: hidden;
 }
 
 #plotCoverage {
   height: 35vh;
-  outline: #006c66 0.5px solid;
+  outline: var(--hightlight-color) 0.5px solid;
   visibility: hidden;
 }
 
@@ -236,7 +241,7 @@ input[type='radio']:before {
   content: '';
   display: inline-block;
   visibility: visible;
-  border: 1px solid #006c66;
+  border: 1px solid var(--hightlight-color);
 }
 
 input[type='radio']:checked:before {
@@ -247,12 +252,12 @@ input[type='radio']:checked:before {
   left: 1px;
   bottom: -2px;
   position: relative;
-  background-color: #006c66;
+  background-color: var(--hightlight-color);
   content: '';
   display: inline-block;
   visibility: visible;
-  border: 1px solid #006c66;
-  box-shadow: 0 0 5px #006c66;
+  border: 1px solid var(--hightlight-color);
+  box-shadow: 0 0 5px var(--hightlight-color);
   transition: box-shadow 0.3s ease;
 }
 
@@ -289,10 +294,10 @@ input[type='radio']:checked:before {
   margin: auto;
   border: 16px solid black;
   border-radius: 50%;
-  border-top: 10px solid #006c66;
-  border-right: 10px solid white;
-  border-bottom: 10px solid #006c66;
-  border-left: 10px solid white;
+  border-top: 10px solid var(--hightlight-color);
+  border-right: 10px solid var(--background-color);
+  border-bottom: 10px solid var(--hightlight-color);
+  border-left: 10px solid var(--background-color);
   width: 80px;
   height: 80px;
   -webkit-animation: spin 2s linear infinite;

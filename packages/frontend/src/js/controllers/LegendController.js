@@ -1,6 +1,6 @@
 export class LegendController {
-  #isLegendVisible = false;
   #typeDefinitions;
+  #isLegendVisible = false;
 
   constructor(typeDefinitions) {
     this.#typeDefinitions = typeDefinitions;
