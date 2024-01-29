@@ -9,6 +9,7 @@ export class LandingPageController {
       simulationPreview.setAttribute('title', configEntry.title);
       simulationPreview.setAttribute('description', configEntry.description);
       simulationPreview.setAttribute('href', './simulation.html?id=' + configEntry.id);
+      simulationPreview.style.backgroundImage = `url('data:image/png;base64,${configEntry.image}')`;
 
       return simulationPreview;
     });

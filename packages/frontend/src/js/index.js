@@ -8,6 +8,7 @@ const config = [
     id: '9025364f-868f-4a7c-95f6-06357bfc1bab',
     title: 'Methanation',
     description: 'This is the sim for Methanation...',
+    image: '',
   },
 ];
 
