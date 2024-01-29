@@ -361,14 +361,16 @@ if __name__ == "__main__":
             return jsonify(success=False), 400
         settings.parameters[name]['value'] = str(value)
         app.kmc_model.parameter_queue.put(settings.parameters)
-        return jsonify(success=True)
+        return jsonify(success=True), 201
 
     @app.route('/start', methods=['POST'])
     def start_simulation():
         if not app.simulation_running and not app.kmc_model.pid:
             app.start_simulation()
             app._simulation_running = True
-            return jsonify(success=True)
+            return jsonify(success=True), 201
+        if app.simulation_running:
+            return jsonify(success=True), 200
         return jsonify(success=False), 400
 
     @app.route('/reset', methods=['POST'])
@@ -376,7 +378,7 @@ if __name__ == "__main__":
         try:
             app.kmc_model.deallocate()
             app.kmc_model.reset()
-            return jsonify(success=True)
+            return jsonify(success=True), 201
         except:
             return jsonify(success=False), 400
 
@@ -385,7 +387,7 @@ if __name__ == "__main__":
         if app.simulation_running:
             os.kill(app.kmc_model.pid, 19)
             app._simulation_running = False
-            return jsonify(success=True)
+            return jsonify(success=True), 200
         return jsonify(success=False), 400
 
     @app.route('/resume', methods=['PUT'])
@@ -393,12 +395,12 @@ if __name__ == "__main__":
         if not app.simulation_running:
             os.kill(app.kmc_model.pid, 18)
             app._simulation_running = True
-            return jsonify(success=True)
+            return jsonify(success=True), 200
         return jsonify(success=False), 400
 
     @app.route('/health', methods=['GET'])
     def get_server_health():
-        return jsonify(success=True)
+        return jsonify(success=True), 200
 
     try:
         port = int(os.environ.get('SIMULATION_PORT', 3001))

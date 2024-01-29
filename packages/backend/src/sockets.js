@@ -1,45 +1,87 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { packetLogger } from './middlewares/events/packet-logger.js';
-import { errorHandler } from './middlewares/events/error-handler.js';
-import { handler as sliderHandler } from './handlers/events/slider.js';
-import {
-  exitHandler as workerExitHandler,
-  messageHandler as workerMessageHandler,
-  errorHandler as workerErrorHandler,
-} from './handlers/events/worker.js';
+import { errorHandler } from './middlewares/sockets/error-handler.js';
 
 const logger = Logger({ name: 'socket-server' });
 
-export const startSocketServer =
-  (httpServer, { fetchWorker, url, initialData }, serverOptions) =>
-  async () => {
-    const ioServer = new SocketIOServer(httpServer, serverOptions);
+const getFetchWorkerCallbacks = ioServer => ({
+  messageHandler: roomId => value => {
+    logger.info(
+      `Received worker message for room ${roomId}. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`
+    );
+    ioServer.to(roomId).emit(SocketEventTypes.DYNAMIC, value);
+  },
+  errorHandler:
+    (roomId, messageError = false) =>
+    error => {
+      logger.error(
+        `Received worker ${messageError ? 'message ' : ''}error for room ${roomId}. Closing all socket client connections.`,
+        {
+          error,
+        }
+      );
+      ioServer.in(roomId).disconnectSockets();
+    },
 
-    // Packet middlewares
-    ioServer.use(packetLogger(logger));
-    ioServer.use(errorHandler(logger));
+  exitHandler: roomId => exitCode => {
+    if (exitCode !== 0) {
+      const message = `Worker for room ${roomId} stopped with exit code: ${exitCode}. Closing all socket client connections.`;
+      logger.error(message);
+      ioServer.in(roomId).disconnectSockets();
+      throw new Error(message);
+    }
+  },
+});
 
-    // Client connection over Sockets
-    ioServer.on('connection', async socket => {
-      logger.info(`Client connected: ${socket.id}`); // id is not persisting between session, debug only!
+export const startSocketServer = (httpServer, simControllers, serverOptions) => {
+  const ioServer = new SocketIOServer(httpServer, serverOptions);
 
-      // Sending initial data to client
-      logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`);
-      socket.emit(SocketEventTypes.INITIAL, initialData);
+  // Packet middlewares
+  ioServer.use(errorHandler(logger));
 
-      // Client slider event listener
-      socket.on(SocketEventTypes.SLIDER, sliderHandler(logger, url));
+  // Client connection over socket
+  ioServer.on('connection', socket => {
+    logger.info(`Client connected: ${socket.id}`); // Id is not persisting between session, debug only!
 
-      // Client disconnect event listener
-      socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
+    socket.data.client = { currentRoomId: null };
 
-      fetchWorker.on('message', workerMessageHandler(logger, socket));
-      fetchWorker.on('error', workerErrorHandler(logger, socket));
-      fetchWorker.on('messageerror', workerErrorHandler(logger, socket, true));
-      fetchWorker.on('exit', workerExitHandler(logger, socket));
+    // Sending client initial sim data and assigning client to sim room based on received simId
+    socket.on(SocketEventTypes.SIM_ID, async ({ simId }) => {
+      if (!simId || `${!simId}` === '') {
+        logger.error('Received no simulation ID in payload', { data: simId });
+        return;
+      }
+
+      // const chosenSimInstance = simInstances.find(sim => sim.id === `${simId}`);
+      console.log('Fake selecting sim controller, based on fake simId', simId);
+      const chosenSimController = simControllers[0]; // Fake selection
+
+      if (!chosenSimController) {
+        logger.error('Could not find simulation instance with provided ID', { data: simId });
+        return;
+      }
+
+      if (!chosenSimController.isSimRunning) {
+        await chosenSimController.startSim();
+
+        chosenSimController.setWorkerEventHandlers(getFetchWorkerCallbacks(ioServer));
+      }
+
+      logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
+        data: { id: chosenSimController.id, roomId: chosenSimController.roomId, title: chosenSimController.title },
+      });
+      socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
+
+      socket.data.client = { ...socket.data.client, currentRoomId: chosenSimController.roomId };
+      logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
+      socket.join(chosenSimController.roomId);
     });
 
-    return ioServer;
-  };
+    // Updating the simulations parameter via received slider values
+    // socket.on(SocketEventTypes.SLIDER, updateSimParamsHandler(socket));
+
+    // Client disconnected event listener
+    socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
+  });
+};

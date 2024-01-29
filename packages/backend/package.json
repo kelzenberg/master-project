@@ -16,7 +16,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=../../.env -w ./src ./src/index.js",
+    "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*'",
     "start": "node --env-file=../../.env ./src/index.js"
   },
   "devDependencies": {
@@ -31,6 +31,7 @@
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
     "socket.io": "^4.7.2",
-    "stoppable": "^1.1.0"
+    "stoppable": "^1.1.0",
+    "uuid": "^9.0.1"
   }
 }
