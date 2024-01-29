@@ -2,6 +2,7 @@ import path from 'node:path';
 import url from 'node:url';
 import express from 'express';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
 import { authorizer } from './middlewares/authorizer.js';
 import { routes as publicRoutes } from './routes/public.js';
 import { routes as protectedRoutes } from './routes/protected.js';
@@ -11,6 +12,7 @@ import { redirectHandler } from './middlewares/redirect-handler.js';
 export const createApp = logger => {
   const app = express().disable('x-powered-by');
 
+  app.use(helmet());
   app.use(bodyParser.json());
 
   const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
