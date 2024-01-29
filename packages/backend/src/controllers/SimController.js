@@ -1,4 +1,7 @@
 import { v4 as uuid } from 'uuid';
+import path from 'node:path';
+import url from 'node:url';
+import { readFile } from 'node:fs/promises';
 import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
@@ -16,6 +19,7 @@ export class SimController {
   createdAt;
 
   #URL;
+  #thumbnail;
   #isHealthy;
   #data;
   #workerController;
@@ -24,7 +28,7 @@ export class SimController {
   /**
    * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
    */
-  constructor({ title, description, envKeyForURL }) {
+  constructor({ title, description, envKeyForURL, thumbnail }) {
     this.id = uuid();
     this.title = title;
     this.description = description;
@@ -32,10 +36,28 @@ export class SimController {
     this.isSimRunning = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
+    this.#thumbnail = {
+      path: path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), `../images/${thumbnail}`),
+      encoded: null,
+    };
     this.#isHealthy = null;
     this.#data = { initial: null };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
+  }
+
+  async readThumbnailFromFile() {
+    this.#thumbnail.encoded = await readFile(this.#thumbnail.path, { encoding: 'base64' });
+  }
+
+  getThumbnail() {
+    if (!this.#thumbnail.encoded) {
+      const message = `No thumbnail was created from file for ${this.title} sim`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    return this.#thumbnail.encoded;
   }
 
   async #getSimHealth(attempt = 1) {
@@ -208,6 +230,7 @@ export class SimController {
     return {
       ...this,
       URL: this.#URL,
+      thumbnail: this.#thumbnail.path,
       isHealthy: this.#isHealthy,
       data: this.#data,
     };
