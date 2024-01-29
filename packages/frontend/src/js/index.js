@@ -2,14 +2,13 @@ import { LandingPageController } from './controllers/LandingPageController';
 
 const landingPageController = new LandingPageController();
 
-// hier muss stattdessen GET config.json aufgerufen werden:
-const config = [
-  {
-    id: '9025364f-868f-4a7c-95f6-06357bfc1bab',
-    title: 'Methanation',
-    description: 'This is the sim for Methanation...',
-    image: '',
-  },
-];
-
-landingPageController.initializeLandingPage(config);
+// hier muss stattdessen GET /list aufgerufen werden, um die config.json zu getten:
+try {
+  const response = await fetch('./data/config.json');
+  const config = await response.json();
+  console.log('config');
+  landingPageController.initializeLandingPage(config);
+  console.log('finished fetching');
+} catch (error) {
+  console.error(error);
+}

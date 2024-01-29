@@ -2,6 +2,7 @@ export class LandingPageController {
   constructor() {}
 
   initializeLandingPage(config) {
+    console.log(config);
     const previewContainer = document.querySelector('#previewContainer');
 
     const simulationPreviews = config.map(configEntry => {
