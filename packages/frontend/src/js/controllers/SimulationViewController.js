@@ -1,9 +1,9 @@
 import { Vector3, Group, Object3D } from 'three';
 import Molecule from '../models/Molecule';
-import { VisualizationController } from './visualization-controller';
-import { PlotController } from './plot-controller';
-import { LegendController } from './legend-controller';
-import { SliderController } from './slider-controller';
+import { VisualizationController } from './VisualizationController';
+import { PlotController } from './PlotController';
+import { LegendController } from './LegendController';
+import { SliderController } from './SliderController';
 
 export class SimulationViewController {
   #visualizationController;
