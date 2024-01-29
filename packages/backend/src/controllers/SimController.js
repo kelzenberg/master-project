@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import path from 'node:path';
 import url from 'node:url';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
@@ -48,6 +48,11 @@ export class SimController {
 
   async readThumbnailFromFile() {
     this.#thumbnail.encoded = await readFile(this.#thumbnail.path, { encoding: 'base64' });
+
+    // DEBUG sim configs and instances output to file
+    if (process.env.NODE_ENV === 'development') {
+      await writeFile(`./thumbnail.${this.title}.local.json`, this.#thumbnail.encoded, { encoding: 'utf8' });
+    }
   }
 
   getThumbnail() {
