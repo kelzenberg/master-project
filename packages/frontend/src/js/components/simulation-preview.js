@@ -16,7 +16,7 @@ template.innerHTML = `
 
 class SimulationPreview extends HTMLElement {
   static get observedAttributes() {
-    return ['href'];
+    return ['href', 'title', 'description', 'id'];
   }
 
   constructor() {
@@ -33,20 +33,44 @@ class SimulationPreview extends HTMLElement {
     this.link.click();
   }
 
-  updateLink() {
+  setAttributeValues() {
     this.link.href = this.href;
+  }
+
+  renderValues() {
+    if (!this.titleElement) return;
+    this.titleElement.innerHTML = this.title;
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    this.descriptionElement.innerText = this.description;
   }
 
   // Life-cycle methods
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'href' && newValue !== oldValue) {
-      this.href = newValue;
-      this.updateLink();
+    if (newValue === oldValue) return;
+
+    switch (name) {
+      case 'href': {
+        this.href = newValue;
+        this.setAttributeValues();
+        break;
+      }
+      case 'title': {
+        this.title = newValue;
+        this.renderValues();
+        break;
+      }
+      case 'description': {
+        this.description = newValue;
+        this.renderValues();
+        break;
+      }
     }
   }
 
   connectedCallback() {
     this.addEventListener('click', this.clickHandler);
+    this.titleElement = this.querySelector('h3');
+    this.descriptionElement = this.querySelector('p');
   }
 
   disconnectedCallback() {

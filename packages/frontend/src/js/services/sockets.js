@@ -1,6 +1,9 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationViewController } from '../controllers/SimulationPageController';
 
+const urlParams = new URLSearchParams(window.location.search);
+const simId = urlParams.get('id');
+console.log(simId);
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 const simulationViewController = new SimulationViewController();
