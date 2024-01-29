@@ -13,7 +13,7 @@ const expressPort = process.env.BACKEND_PORT || 3000;
 
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 const simConfigs = await loadSimConfigsFromFile(configFilePath);
-const simControllers = await createSimControllersFromConfigs(simConfigs);
+export const simControllers = await createSimControllersFromConfigs(simConfigs);
 
 // DEBUG sim configs and instances output to file
 if (process.env.NODE_ENV === 'development') {
