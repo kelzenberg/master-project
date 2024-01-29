@@ -53,7 +53,6 @@ module.exports = {
           from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
           to: 'js/webcomponents-loader.js',
         },
-        { from: 'src/data)', to: 'data' },
       ],
       options: { concurrency: 100 },
     }),
