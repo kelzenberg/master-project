@@ -15,6 +15,20 @@
       "required": ["config"],
       "additionalProperties": "false"
     },
+    "sliderData": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      }
+    },
     "plots": {
       "type": "object",
       "properties": {
