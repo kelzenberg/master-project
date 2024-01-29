@@ -1,12 +1,17 @@
 const template = document.createElement('template');
 template.innerHTML = `
     <div class="rangeSliderContainer">
-        <span></span>
-        <input type="range" min="1" max="100" value="50" id="slider">
-        <div class="rangeSliderModal">
-          <span class="modalContent" id="infoMin"></span>
-          <span class="modalContent" id="infoMax"></span>
+        <div class="rangeSliderTitleContainer">
+          <span id="rangeSliderLabel"></span>
+          <div id="rangeSliderIcon">
+            <div class="rangeSliderModal">
+              <span class="modalContent" id="infoMin"></span>
+              <span class="modalContent" id="infoMax"></span>
+            </div>
+          </div>
         </div>
+        <input type="range" min="1" max="100" value="50" id="slider">
+        <span id="rangeSliderValue"></span>
     </div>
 `;
 
@@ -18,6 +23,7 @@ class rangeSlider extends HTMLElement {
   constructor() {
     super();
 
+    this.labelText = '';
     this.min = 1;
     this.max = 100;
     this.value = 50;
@@ -50,7 +56,8 @@ class rangeSlider extends HTMLElement {
   renderValues() {
     if (!this.text) return;
 
-    this.text.innerHTML = this.value + ' ';
+    this.label.textContent = this.labelText;
+    this.text.textContent = this.value;
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
     this.modalInfoMin.innerText = 'Minimum: ' + this.min;
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
@@ -69,6 +76,10 @@ class rangeSlider extends HTMLElement {
     if (newValue === oldValue) return;
 
     switch (name) {
+      case 'label': {
+        this.labelText = newValue;
+        break;
+      }
       case 'min': {
         this.min = newValue;
         break;
@@ -96,13 +107,13 @@ class rangeSlider extends HTMLElement {
 
     this.querySelector('#slider').addEventListener('input', this.inputHandler);
 
-    this.text = this.querySelector('span');
+    this.label = this.querySelector('#rangeSliderLabel');
+    this.text = this.querySelector('#rangeSliderValue');
     this.modalInfoMin = this.querySelector('#infoMin');
     this.modalInfoMax = this.querySelector('#infoMax');
     this.input = this.querySelector('input');
 
     this.setAttributeValues();
-
     this.renderValues();
   }
 
