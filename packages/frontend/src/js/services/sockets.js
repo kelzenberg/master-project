@@ -1,29 +1,27 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
-import { SimulationViewController } from '../controllers/SimulationPageController';
+import { SimulationPageController } from '../controllers/SimulationPageController';
 
-const urlParams = new URLSearchParams(window.location.search);
-const simId = urlParams.get('id');
-console.log(simId);
-// eslint-disable-next-line no-undef
-const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
-const simulationViewController = new SimulationViewController();
-simulationViewController.addEventListeners();
+const { title, description } = await fetchTitleAndDescription();
+const simulationPageController = new SimulationPageController(title, description);
+simulationPageController.addEventListeners();
 
 const errorOverlay = document.querySelector('#errorOverlay');
 const errorContent = document.querySelector('#errorContent');
 
+// eslint-disable-next-line no-undef
+const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 console.log('FAKE send 1234 as sim id until id is retrieved from sim selection on index.html');
 socket.emit(SocketEventTypes.SIM_ID, { simId: 1234 });
 
 socket.on(SocketEventTypes.INITIAL, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
-  simulationViewController.renderInitialData(payload);
-  simulationViewController.animate();
+  simulationPageController.renderInitialData(payload);
+  simulationPageController.animate();
 });
 
 socket.on(SocketEventTypes.DYNAMIC, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
-  simulationViewController.renderDynamicData(payload);
+  simulationPageController.renderDynamicData(payload);
 });
 
 socket.on('connect', () => {
@@ -46,3 +44,10 @@ export const sendSliderEvent = payload => {
   console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SLIDER.toUpperCase()} with payload`, payload);
   socket.emit(SocketEventTypes.SLIDER, payload);
 };
+
+async function fetchTitleAndDescription() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const simId = urlParams.get('id');
+  const response = await fetch('/list?id=' + simId, { method: 'GET' });
+  return await response.json();
+}

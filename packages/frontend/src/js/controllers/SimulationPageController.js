@@ -5,20 +5,24 @@ import { PlotController } from './PlotController';
 import { LegendController } from './LegendController';
 import { SliderController } from './SliderController';
 
-export class SimulationViewController {
+export class SimulationPageController {
   #visualizationController;
   #plotController;
   #sliderController;
   #legendController;
+  #title;
+  #description;
   #isPaused = false;
   // #isSuperUser muss später von sockets.js mitgegeben als constructor param!
   #isSuperUser = true;
 
-  constructor() {
+  constructor(title, description) {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
+    this.#title = title;
+    this.#description = description;
   }
 
   renderInitialData(jsonData) {
