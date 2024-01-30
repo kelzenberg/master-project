@@ -4,5 +4,11 @@
     "description": "Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the reaction network includes different classes of surface reactions as well as different types of adsorption sites.",
     "envKeyForURL": "METHANATION_001",
     "thumbnail": "placeholder.png"
+  },
+  {
+    "title": "Methsolution",
+    "description": "Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the reaction network includes different classes of surface reactions as well as different types of adsorption sites.",
+    "envKeyForURL": "METHANATION_001",
+    "thumbnail": "placeholder.png"
   }
 ]
