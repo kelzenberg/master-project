@@ -30,6 +30,10 @@ export class SliderController {
     sliderContainer.replaceChildren(...slider);
   }
 
+  // Funktioniert nicht!
+  // reproduce: in SimulationPageController die if Bedingugn vorm Aufurf von updateSliderValues rausnehmen
+  // dann anwendung starten
+  // slider verschieben -> eigentlich sollte bei nächster dynamic data dann der slider value wieder geupdated werden, passiert aber nicht!
   updateSliderValues(sliderData) {
     sliderData.map(sliderData => {
       let rangeSlider = this.#findSliderByLabel(sliderData.label);

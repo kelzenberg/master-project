@@ -21,12 +21,6 @@ class SimulationPreview extends HTMLElement {
 
   constructor() {
     super();
-
-    this.append(template.content.cloneNode(true));
-
-    this.clickHandler = this.handleClick.bind(this);
-
-    this.link = this.querySelector('a');
   }
 
   handleClick() {
@@ -68,9 +62,15 @@ class SimulationPreview extends HTMLElement {
   }
 
   connectedCallback() {
-    this.addEventListener('click', this.clickHandler);
+    this.append(template.content.cloneNode(true));
+    this.clickHandler = this.handleClick.bind(this);
+    this.link = this.querySelector('a');
     this.titleElement = this.querySelector('h3');
     this.descriptionElement = this.querySelector('p');
+    this.addEventListener('click', this.clickHandler);
+
+    this.setAttributeValues();
+    this.renderValues();
   }
 
   disconnectedCallback() {

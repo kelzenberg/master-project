@@ -1,20 +1,22 @@
 export class LandingPageController {
   constructor() {}
 
-  initializeLandingPage(config) {
-    console.log(config);
+  async initializeLandingPage() {
+    const config = await this.#fetchSimList();
     const previewContainer = document.querySelector('#previewContainer');
 
-    const simulationPreviews = config.map(configEntry => {
+    config.map(configEntry => {
       const simulationPreview = document.createElement('simulation-preview');
+      previewContainer.append(simulationPreview);
       simulationPreview.setAttribute('title', configEntry.title);
       simulationPreview.setAttribute('description', configEntry.description);
       simulationPreview.setAttribute('href', './simulation.html?id=' + configEntry.id);
-      simulationPreview.style.backgroundImage = `url('data:image/png;base64,${configEntry.image}')`;
-
-      return simulationPreview;
+      simulationPreview.style.backgroundImage = `url('data:image/png;base64,${configEntry.thumbnail}')`;
     });
+  }
 
-    previewContainer.replaceChildren(...simulationPreviews);
+  async #fetchSimList() {
+    const response = await fetch('/list', { method: 'GET' });
+    return await response.json();
   }
 }

@@ -11,6 +11,8 @@ export class SimulationViewController {
   #sliderController;
   #legendController;
   #isPaused = false;
+  // #isSuperUser muss später von sockets.js mitgegeben als constructor param!
+  #isSuperUser = true;
 
   constructor() {
     this.#visualizationController = new VisualizationController();
@@ -47,7 +49,7 @@ export class SimulationViewController {
     const slider = jsonData.slider;
     this.#sliderController = new SliderController(slider);
     //pass something to the initializSliders() function that tells if user is super-user or not!
-    this.#sliderController.initializeSlider(true);
+    this.#sliderController.initializeSlider(this.#isSuperUser);
 
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
@@ -61,7 +63,7 @@ export class SimulationViewController {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
       this.#plotController.updatePlots(jsonData.plots);
-      this.#sliderController.updateSliderValues(jsonData.sliderData);
+      if (!this.#isSuperUser) this.#sliderController.updateSliderValues(jsonData.sliderData);
     }
   }
 
