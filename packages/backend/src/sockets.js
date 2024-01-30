@@ -53,9 +53,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
         return;
       }
 
-      // const chosenSimInstance = simInstances.find(sim => sim.id === `${simId}`);
-      console.log('Fake selecting sim controller, based on fake simId', simId);
-      const chosenSimController = simControllers[0]; // Fake selection
+      const chosenSimController = simControllers.find(sim => sim.id === `${simId}`);
 
       if (!chosenSimController) {
         logger.error('Could not find simulation instance with provided ID', { data: simId });

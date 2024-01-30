@@ -26,6 +26,10 @@ export class SimulationPageController {
   }
 
   renderInitialData(jsonData) {
+    // Setting title and description
+    document.querySelector('#simulationTitle').textContent = this.#title;
+    document.querySelector('#simulationDescription').textContent = this.#description;
+
     // Render Initial 3D Visualization Data
     const typeDefinitions = jsonData.visualization.typeDefinitions;
     const fixedSpecies = jsonData.visualization.fixedSpecies;

@@ -1,7 +1,9 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationPageController } from '../controllers/SimulationPageController';
 
-const { title, description } = await fetchTitleAndDescription();
+const urlParams = new URLSearchParams(window.location.search);
+const simId = urlParams.get('id');
+const { title, description } = await fetchTitleAndDescription(simId);
 const simulationPageController = new SimulationPageController(title, description);
 simulationPageController.addEventListeners();
 
@@ -10,8 +12,7 @@ const errorContent = document.querySelector('#errorContent');
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
-console.log('FAKE send 1234 as sim id until id is retrieved from sim selection on index.html');
-socket.emit(SocketEventTypes.SIM_ID, { simId: 1234 });
+socket.emit(SocketEventTypes.SIM_ID, { simId });
 
 socket.on(SocketEventTypes.INITIAL, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
@@ -45,9 +46,7 @@ export const sendSliderEvent = payload => {
   socket.emit(SocketEventTypes.SLIDER, payload);
 };
 
-async function fetchTitleAndDescription() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const simId = urlParams.get('id');
+async function fetchTitleAndDescription(simId) {
   const response = await fetch('/list?id=' + simId, { method: 'GET' });
   return await response.json();
 }
