@@ -9,6 +9,7 @@ services:
         - NODE_ENV=production
     container_name: master-project-app
     environment:
+      USE_HTTPS: ${USE_HTTPS}
       BACKEND_PORT: ${BACKEND_PORT}
       API_KEY_DEV: ${API_KEY_DEV}
       WORKER_ACTIVE: ${WORKER_ACTIVE}
