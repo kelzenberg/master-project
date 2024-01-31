@@ -35,6 +35,7 @@ export class LegendController {
         // Create a table data for the name
         const nameCell = document.createElement('td');
         nameCell.textContent = type.name;
+        nameCell.style.paddingLeft = '0.5rem';
 
         // Create a table data for the type key
         const keyCell = document.createElement('td');

@@ -126,14 +126,15 @@ span {
   background-color: transparent;
   text-align: center;
   border-style: none;
-  width: 2.5rem;
+  width: 2rem;
   height: 2.5rem;
   padding-left: 0;
 }
 
 #toggleLegendButtonDescription {
   color: var(--highlight-color);
-  font-size: 15px;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 #backButton {
@@ -183,6 +184,7 @@ span {
 
 #legendContainer {
   display: none;
+  margin-bottom: 1rem;
 }
 
 .toggleContainer {
