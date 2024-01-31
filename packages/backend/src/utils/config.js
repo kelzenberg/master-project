@@ -31,7 +31,6 @@ export const createSimControllersFromConfigs = async simConfigs =>
   Promise.all(
     Object.values(simConfigs).map(async simConfig => {
       const simController = new SimController({ ...simConfig });
-      await simController.readThumbnailFromFile();
       await simController.waitForSimHealth();
       await simController.fetchInitialSimData();
       return simController;

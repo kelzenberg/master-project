@@ -15,6 +15,7 @@ export const createApp = logger => {
   app.use(helmet());
   app.use(bodyParser.json());
 
+  app.use('/images', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'images')));
   const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
   app.use('/', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), staticPath)));
 
