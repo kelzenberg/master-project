@@ -5,7 +5,7 @@ template.innerHTML = `
           <span id="rangeSliderLabel"></span>
           <div id="rangeSliderIcon">
             <div class="rangeSliderModal">
-              <span class="modalContent" id="rangerSliderLogInfo">logarithmic scale</span>
+              <!-- <span class="modalContent" id="rangerSliderLogInfo">logarithmic scale</span> -->
               <span class="modalContent" id="infoMin"></span>
               <span class="modalContent" id="infoMax"></span>
               <span id="rangeSliderInfo"></span>
