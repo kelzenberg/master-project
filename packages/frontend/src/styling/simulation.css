@@ -188,7 +188,6 @@ span {
 
 #legendContainer {
   display: none;
-  margin-bottom: 1rem;
 }
 
 .toggleContainer {
@@ -200,11 +199,11 @@ span {
 #descriptionContainer {
   display: flex;
   flex-direction: column;
-  margin-top: -2px;
+  margin-top: 1rem;
 }
 
 #descriptionContainer p {
-  font-size: 15px;
+  font-size: 1rem;
 }
 
 #sliderContainer {
