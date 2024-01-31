@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta
 import numpy as np
 import ase
@@ -337,29 +338,31 @@ if __name__ == "__main__":
     @app.route('/slider', methods=['POST'])
     def update_parameter():
         data = request.get_json()
+        if not data:
+          return jsonify(success=False, reason="JSON data cannot be read"), 400
         try:
-            name = data["name"]
+            label = data["label"]
         except:
-            return jsonify(success=False), 400
+            return jsonify(success=False, reason="No label"), 400
         try:
             value = data["value"]
         except:
-            return jsonify(success=False), 400
-        if not name or not value:
-            return jsonify(success=False), 400
+            return jsonify(success=False, reason="No value"), 400
+        if not label or not value:
+            return jsonify(success=False, reason="No label or value"), 400
         try:
             value = float(value)
         except:
-            return jsonify(success=False), 400
-        if name not in settings.parameters.keys():
-            return jsonify(success=False), 400
-        if not settings.parameters[name]["adjustable"]:
-            return jsonify(success=False), 400
-        vmin = float(settings.parameters[name]["min"])
-        vmax = float(settings.parameters[name]["max"])
+            return jsonify(success=False, reason="Value cannot be converted to Float"), 400
+        if label not in settings.parameters.keys():
+            return jsonify(success=False, reason="Label is not a parameter (key)"), 400
+        if not settings.parameters[label]["adjustable"]:
+            return jsonify(success=False, reason="Parameter of label is not adjustable"), 400
+        vmin = float(settings.parameters[label]["min"])
+        vmax = float(settings.parameters[label]["max"])
         if value < vmin or value > vmax:
-            return jsonify(success=False), 400
-        settings.parameters[name]['value'] = str(value)
+            return jsonify(success=False, reason="Value is below min or above max"), 400
+        settings.parameters[label]['value'] = str(value)
         app.kmc_model.parameter_queue.put(settings.parameters)
         return jsonify(success=True), 201
 
