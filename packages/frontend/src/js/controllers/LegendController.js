@@ -29,11 +29,13 @@ export class LegendController {
         circleDiv.style.borderRadius = '50%';
         circleDiv.style.width = `${type.radius * 15}px`; // Adjust the size as needed
         circleDiv.style.height = `${type.radius * 15}px`; // Adjust the size as needed
+        circleDiv.style.margin = 'auto';
         circleCell.append(circleDiv);
 
         // Create a table data for the name
         const nameCell = document.createElement('td');
         nameCell.textContent = type.name;
+        nameCell.style.paddingLeft = '0.5rem';
 
         // Create a table data for the type key
         const keyCell = document.createElement('td');

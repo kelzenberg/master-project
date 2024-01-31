@@ -1,5 +1,5 @@
 range-slider {
-  padding: 0.25rem 0;
+  padding: 0 0 1.5rem 0;
 }
 
 rage-slider span {
@@ -19,7 +19,7 @@ rage-slider span {
 }
 
 #rangeSliderLabel {
-  color: var(--hightlight-color);
+  color: var(--highlight-color);
   font-weight: 500;
 }
 
@@ -29,7 +29,6 @@ rage-slider span {
   background-image: url('../resources/misc/info.svg');
   background-repeat: no-repeat;
   background-size: contain;
-  cursor: pointer;
 }
 
 #rangeSliderIcon .rangeSliderModal {
@@ -43,7 +42,7 @@ rage-slider span {
   width: 80%;
   height: fit-content;
   padding: 1rem;
-  border: 1px solid var(--hightlight-color);
+  border: 1px solid var(--highlight-color);
   border-radius: 4px;
   background-color: white;
   color: black;
@@ -55,6 +54,12 @@ rage-slider span {
 #rangeSliderIcon:hover .rangeSliderModal {
   visibility: visible;
   opacity: 1;
+}
+
+#rangerSliderLogInfo {
+  color: var(--highlight-color);
+  font-weight: 500;
+  padding-bottom: 0.5rem;
 }
 
 input[type='range'] {
@@ -73,22 +78,22 @@ input[type='range']::-webkit-slider-runnable-track {
   height: 0.125rem;
   cursor: pointer;
   animate: 0.2s;
-  background: var(--hightlight-color);
+  background: var(--highlight-color);
 }
 
 input[type='range']::-webkit-slider-thumb {
-  border: 1px solid var(--hightlight-color);
+  border: 1px solid var(--highlight-color);
   height: 18px;
   width: 18px;
   border-radius: 20px;
-  background: var(--hightlight-color);
+  background: var(--highlight-color);
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -8.5px;
 }
 
 input[type='range']:focus::-webkit-slider-runnable-track {
-  background: var(--hightlight-color);
+  background: var(--highlight-color);
 }
 
 input[type='range']::-moz-range-track {
@@ -96,15 +101,15 @@ input[type='range']::-moz-range-track {
   height: 2px;
   cursor: pointer;
   animate: 0.2s;
-  background: var(--hightlight-color);
+  background: var(--highlight-color);
 }
 
 input[type='range']::-moz-range-thumb {
-  border: 1px solid var(--hightlight-color);
+  border: 1px solid var(--highlight-color);
   height: 18px;
   width: 18px;
   border-radius: 20px;
-  background: var(--hightlight-color);
+  background: var(--highlight-color);
   cursor: pointer;
 }
 

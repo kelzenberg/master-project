@@ -11,17 +11,20 @@ export class SliderController {
     const slider = this.#slider.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
 
+      const isLogScale = sliderData.min.toString().includes('e') || sliderData.max.toString().includes('e');
+
+      rangeSlider.setAttribute('islogscale', isLogScale);
       rangeSlider.setAttribute('min', sliderData.min);
       rangeSlider.setAttribute('max', sliderData.max);
       rangeSlider.setAttribute('value', sliderData.default);
       rangeSlider.setAttribute('label', sliderData.label);
-      rangeSlider.setAttribute('scale', sliderData.scale);
       rangeSlider.setAttribute('info', sliderData.info);
 
       rangeSlider.setAttribute('disabled', !isSuperUser);
 
       rangeSlider.addEventListener('change', event => {
-        this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.target.value);
+        this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.currentTarget.value);
+        console.log(event.currentTarget.value);
       });
 
       return rangeSlider;

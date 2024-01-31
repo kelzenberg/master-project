@@ -11,7 +11,7 @@
 
 :root {
   --background-color: #eeeeee;
-  --hightlight-color: #006c66;
+  --highlight-color: #006c66;
 }
 
 * {
@@ -31,7 +31,7 @@ h1 {
   margin: 0;
   font-size: 40px;
   font-weight: 500;
-  color: var(--hightlight-color);
+  color: var(--highlight-color);
 }
 
 p {
@@ -55,7 +55,7 @@ span {
 
 .titleBar {
   height: 8rem;
-  border-bottom: 0.1rem solid var(--hightlight-color);
+  border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -84,7 +84,7 @@ span {
 #canvas {
   width: 100% !important;
   height: 100% !important;
-  outline: var(--hightlight-color) 0.5px solid;
+  outline: var(--highlight-color) 0.5px solid;
 }
 
 .simulationController {
@@ -108,8 +108,8 @@ span {
   top: 1rem;
   padding: 0.75rem 0.75rem;
   color: white;
-  background-color: var(--hightlight-color);
-  border-color: var(--hightlight-color);
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
   border-radius: 4px;
   text-align: center;
   border-style: none;
@@ -117,8 +117,8 @@ span {
 }
 
 #resetViewButton:hover {
-  background-color: var(--hightlight-color);
-  border-color: var(--hightlight-color);
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
 }
 
 #toggleLegendButton {
@@ -126,13 +126,15 @@ span {
   background-color: transparent;
   text-align: center;
   border-style: none;
-  width: 2.5rem;
+  width: 2rem;
   height: 2.5rem;
+  padding-left: 0;
 }
 
 #toggleLegendButtonDescription {
-  color: var(--hightlight-color);
-  font-size: 15px;
+  color: var(--highlight-color);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 #backButton {
@@ -143,15 +145,15 @@ span {
   flex-wrap: nowrap;
   align-items: center;
   padding: 0.7rem 0.7rem;
-  background-color: var(--hightlight-color);
-  border-color: var(--hightlight-color);
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
   border-radius: 4px;
   border-style: none;
 }
 
 #backButton:hover {
-  background-color: var(--hightlight-color);
-  border-color: var(--hightlight-color);
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
 }
 
 #backButton > img {
@@ -166,10 +168,14 @@ span {
 
 #playButtonImage {
   display: none;
+  width: 3.125rem;
+  height: 3.125rem;
 }
 
 #pauseButtonImage {
   display: none;
+  width: 3.125rem;
+  height: 3.125rem;
 }
 
 #legendButtonImage {
@@ -182,7 +188,6 @@ span {
 
 #legendContainer {
   display: none;
-  padding-left: 1rem;
 }
 
 .toggleContainer {
@@ -194,11 +199,11 @@ span {
 #descriptionContainer {
   display: flex;
   flex-direction: column;
-  margin-top: -2px;
+  margin-top: 1rem;
 }
 
 #descriptionContainer p {
-  font-size: 15px;
+  font-size: 1rem;
 }
 
 #sliderContainer {
@@ -216,13 +221,13 @@ span {
 
 #plotTOF {
   height: 35vh;
-  outline: var(--hightlight-color) 0.5px solid;
+  outline: var(--highlight-color) 0.5px solid;
   visibility: hidden;
 }
 
 #plotCoverage {
   height: 35vh;
-  outline: var(--hightlight-color) 0.5px solid;
+  outline: var(--highlight-color) 0.5px solid;
   visibility: hidden;
 }
 
@@ -242,7 +247,7 @@ input[type='radio']:before {
   content: '';
   display: inline-block;
   visibility: visible;
-  border: 1px solid var(--hightlight-color);
+  border: 1px solid var(--highlight-color);
 }
 
 input[type='radio']:checked:before {
@@ -253,12 +258,12 @@ input[type='radio']:checked:before {
   left: 1px;
   bottom: -2px;
   position: relative;
-  background-color: var(--hightlight-color);
+  background-color: var(--highlight-color);
   content: '';
   display: inline-block;
   visibility: visible;
-  border: 1px solid var(--hightlight-color);
-  box-shadow: 0 0 5px var(--hightlight-color);
+  border: 1px solid var(--highlight-color);
+  box-shadow: 0 0 5px var(--highlight-color);
   transition: box-shadow 0.3s ease;
 }
 
@@ -270,20 +275,14 @@ input[type='radio']:checked:before {
   display: flex;
   flex-direction: row;
   display: none;
+  margin: 0.25rem auto 0 auto;
 }
 
 #tofCheckboxContainer {
   display: flex;
   flex-direction: row;
   display: none;
-  margin-bottom: -5px;
-}
-
-#tofCheckboxContainer {
-  display: flex;
-  flex-direction: row;
-  display: none;
-  margin-bottom: -5px;
+  margin: 0.25rem auto 0 auto;
 }
 
 #loader {
@@ -295,9 +294,9 @@ input[type='radio']:checked:before {
   margin: auto;
   border: 16px solid black;
   border-radius: 50%;
-  border-top: 10px solid var(--hightlight-color);
+  border-top: 10px solid var(--highlight-color);
   border-right: 10px solid var(--background-color);
-  border-bottom: 10px solid var(--hightlight-color);
+  border-bottom: 10px solid var(--highlight-color);
   border-left: 10px solid var(--background-color);
   width: 80px;
   height: 80px;

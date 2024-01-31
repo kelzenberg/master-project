@@ -1,6 +1,6 @@
 :root {
   --background-color: #eeeeee;
-  --hightlight-color: #006c66;
+  --highlight-color: #006c66;
 }
 
 * {
@@ -25,7 +25,7 @@ html {
 
 .titleBar {
   height: 8rem;
-  border-bottom: 0.1rem solid var(--hightlight-color);
+  border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -49,7 +49,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  color: var(--hightlight-color);
+  color: var(--highlight-color);
 }
 
 .titleContainer > h1 {
