@@ -272,20 +272,14 @@ input[type='radio']:checked:before {
   display: flex;
   flex-direction: row;
   display: none;
+  margin: 0.25rem auto 0 auto;
 }
 
 #tofCheckboxContainer {
   display: flex;
   flex-direction: row;
   display: none;
-  margin-bottom: -5px;
-}
-
-#tofCheckboxContainer {
-  display: flex;
-  flex-direction: row;
-  display: none;
-  margin-bottom: -5px;
+  margin: 0.25rem auto 0 auto;
 }
 
 #loader {
