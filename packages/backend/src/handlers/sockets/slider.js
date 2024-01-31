@@ -1,18 +1,20 @@
 import { SocketEventTypes } from '../../utils/events.js';
 
-export const handler = (logger, url) => async data => {
-  const payload = { name: `${data.label}`, value: `${data.value}` };
-  logger.info(
-    `Received message on ${SocketEventTypes.SLIDER.toUpperCase()}. Propagating data to simulation server...`,
-    { data: { received: data, payload } }
-  );
+export const handler = (logger, socket, simControllers) => async data => {
+  logger.info(`Received message on ${SocketEventTypes.SLIDER.toUpperCase()}`, { data });
 
-  try {
-    const response = await fetch(url, { method: 'POST', body: JSON.stringify(payload) });
-    const responseData = await response.json();
-    logger.info('Response from simulation server', { data: responseData });
-  } catch (error) {
-    logger.error('Sending updated slider values failed', error, { payload });
-    throw new Error('Sending updated slider values failed', error, { payload });
+  if (!data.label || !data.value) {
+    logger.error('Label or value is missing in payload', { data });
+    return;
   }
+
+  const currentSimId = socket.data.client.currentSimId;
+
+  if (!currentSimId) {
+    logger.error('Current sim ID could not be found', { data: socket.data.client });
+    return;
+  }
+
+  const chosenSimController = simControllers.find(sim => sim.id === currentSimId);
+  await chosenSimController.sendSimParameters(data);
 };
