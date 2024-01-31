@@ -128,6 +128,7 @@ span {
   border-style: none;
   width: 2.5rem;
   height: 2.5rem;
+  padding-left: 0;
 }
 
 #toggleLegendButtonDescription {
@@ -182,7 +183,6 @@ span {
 
 #legendContainer {
   display: none;
-  padding-left: 1rem;
 }
 
 .toggleContainer {

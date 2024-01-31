@@ -29,7 +29,6 @@ rage-slider span {
   background-image: url('../resources/misc/info.svg');
   background-repeat: no-repeat;
   background-size: contain;
-  cursor: pointer;
 }
 
 #rangeSliderIcon .rangeSliderModal {
@@ -55,6 +54,11 @@ rage-slider span {
 #rangeSliderIcon:hover .rangeSliderModal {
   visibility: visible;
   opacity: 1;
+}
+
+#rangerSliderLogInfo {
+  color: red;
+  font-weight: 500;
 }
 
 input[type='range'] {
