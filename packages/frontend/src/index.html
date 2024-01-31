@@ -9,28 +9,34 @@
     />
     <link
       rel="icon"
-      href="ressources/misc/favicon.svg"
+      href="resources/misc/favicon.svg"
     />
     <link
       rel="stylesheet"
-      href="./styling/index.css"
+      href="styling/index.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./styling/simulation-preview.css"
     />
     <script
       defer
-      src="./js/index.js"
+      src="js/webcomponents-loader.js"
     ></script>
-    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
-    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script
       defer
-      src="./js/components/simulation-preview.js"
+      src="js/index.js"
+    ></script>
+    <script
+      defer
+      src="js/components/simulation-preview.js"
     ></script>
   </head>
   <body>
     <div class="pageContent">
       <div class="titleBar">
         <img
-          src="./ressources/misc/fhi_logo.svg"
+          src="resources/misc/fhi_logo.svg"
           alt="FHI Logo"
           id="titleImg"
           width="100"
@@ -38,20 +44,13 @@
         />
       </div>
       <div class="titleContainer">
-        <h1>Simulationen zu Wasserstoff</h1>
-        <h2>Wähle eine Simulation aus</h2>
+        <h1>Simulations</h1>
+        <h2>Choose a simulation to join...</h2>
       </div>
-      <div class="previewContainer">
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-        <simulation-preview></simulation-preview>
-      </div>
+      <div
+        class="previewContainer"
+        id="previewContainer"
+      ></div>
     </div>
   </body>
 </html>

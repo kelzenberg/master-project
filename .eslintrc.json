@@ -43,8 +43,8 @@
   },
   "overrides": [
     {
-      // Overrides for Model files
-      "files": ["**/model/*", "**/models/*", "**/dto/*"],
+      // Overrides for Class files
+      "files": ["**/model/*", "**/models/*", "**/dto/*", "**/controller/*", "**/controllers/*"],
       "rules": {
         "unicorn/filename-case": [
           "error",

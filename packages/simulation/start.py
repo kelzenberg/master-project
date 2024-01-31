@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta
 import numpy as np
 import ase
@@ -76,7 +77,7 @@ class WebGLInterface(KMC_Model):
             self.do_steps(self.steps_per_frame, progress=False)
             if self.dynamic_data.full():
                 self.dynamic_data.get()
-            self.dynamic_data.put(self._get_dynamic_data())
+            self.dynamic_data.put(self._get_dynamic_data(slider=True))
             if not self.parameter_queue.empty():
                 while not self.parameter_queue.empty():
                     parameters = self.parameter_queue.get()
@@ -167,6 +168,19 @@ class WebGLInterface(KMC_Model):
                 )
         return adjustable_params
 
+    def _get_params(self):
+        params = []
+        for param in sorted(self.settings.parameters):
+            if self.settings.parameters[param]['adjustable']:
+                sett = self.settings.parameters[param]
+                params.append(
+                    {
+                        "value": sett['value'],
+                        "label": param,
+                    }
+                )
+        return params
+
     def _get_initial_data(self):
         initial_data_format_json = {
             "visualization": {
@@ -249,8 +263,7 @@ class WebGLInterface(KMC_Model):
             )
         return kmc_time, config, tofs, occs
 
-
-    def _get_dynamic_data(self, history_lenght=30, state=None):
+    def _get_dynamic_data(self, history_lenght=30, state=None, slider=False):
         if not state:
             state = self.get_atoms()
         kmc_time, config, tofs, occs = self._get_single_dynamic_data(state=state)
@@ -269,6 +282,8 @@ class WebGLInterface(KMC_Model):
             self._history.pop(0)
         dynamic_data_format_json["plots"]["plotData"] = \
             self._history
+        if slider:
+            dynamic_data_format_json["sliderData"] = self._get_params()
         return dynamic_data_format_json
 
 class FlaskWrapper(Flask):
@@ -284,6 +299,9 @@ class FlaskWrapper(Flask):
                                         signal_queue=signal_queue,
                                         steps_per_frame=steps_per_frame, banner=False)
         self.kmc_model.daemon = True
+        self._simulation_running = False
+
+    def start_simulation(self):
         self.kmc_model.start()
         self._simulation_running = True
 
@@ -309,56 +327,83 @@ if __name__ == "__main__":
 
     @app.route('/dynamic', methods=['GET'])
     def get_dynamic_data():
-        return json.dumps(app.kmc_model.dynamic_data.get())
+        if app.simulation_running:
+            return json.dumps(app.kmc_model.dynamic_data.get())
+        return jsonify(success=False), 400
 
-    @app.route('/static', methods=['GET'])
-    def get_static_data():
+    @app.route('/initial', methods=['GET'])
+    def get_initial_data():
         return json.dumps(app.kmc_model.initial_data)
 
     @app.route('/slider', methods=['POST'])
     def update_parameter():
         data = request.get_json()
+        if not data:
+          return jsonify(success=False, reason="JSON data cannot be read"), 400
         try:
-            name = data["name"]
-        except KeyError:
-            return jsonify(success=False)
+            label = data["label"]
+        except:
+            return jsonify(success=False, reason="No label"), 400
         try:
             value = data["value"]
-        except KeyError:
-            return jsonify(success=False)
-        if not name or not value:
-            return jsonify(success=False)
+        except:
+            return jsonify(success=False, reason="No value"), 400
+        if not label or not value:
+            return jsonify(success=False, reason="No label or value"), 400
         try:
             value = float(value)
         except:
-            return jsonify(success=False)
-        if name not in settings.parameters.keys():
-            return jsonify(success=False)
-        if not settings.parameters[name]["adjustable"]:
-            return jsonify(success=False)
-        vmin = float(settings.parameters[name]["min"])
-        vmax = float(settings.parameters[name]["max"])
+            return jsonify(success=False, reason="Value cannot be converted to Float"), 400
+        if label not in settings.parameters.keys():
+            return jsonify(success=False, reason="Label is not a parameter (key)"), 400
+        if not settings.parameters[label]["adjustable"]:
+            return jsonify(success=False, reason="Parameter of label is not adjustable"), 400
+        vmin = float(settings.parameters[label]["min"])
+        vmax = float(settings.parameters[label]["max"])
         if value < vmin or value > vmax:
-            return jsonify(success=False)
-        settings.parameters[name]['value'] = str(value)
+            return jsonify(success=False, reason="Value is below min or above max"), 400
+        settings.parameters[label]['value'] = str(value)
         app.kmc_model.parameter_queue.put(settings.parameters)
-        return jsonify(success=True)
+        return jsonify(success=True), 201
+
+    @app.route('/start', methods=['POST'])
+    def start_simulation():
+        if not app.simulation_running and not app.kmc_model.pid:
+            app.start_simulation()
+            app._simulation_running = True
+            return jsonify(success=True), 201
+        if app.simulation_running:
+            return jsonify(success=True), 200
+        return jsonify(success=False), 400
+
+    @app.route('/reset', methods=['POST'])
+    def reset_simulation():
+        try:
+            app.kmc_model.deallocate()
+            app.kmc_model.reset()
+            return jsonify(success=True), 201
+        except:
+            return jsonify(success=False), 400
 
     @app.route('/pause', methods=['PUT'])
     def pause_simulation():
         if app.simulation_running:
             os.kill(app.kmc_model.pid, 19)
             app._simulation_running = False
-            return jsonify(success=True)
-        return jsonify(success=False)
+            return jsonify(success=True), 200
+        return jsonify(success=False), 400
 
     @app.route('/resume', methods=['PUT'])
     def resume_simulation():
         if not app.simulation_running:
             os.kill(app.kmc_model.pid, 18)
             app._simulation_running = True
-            return jsonify(success=True)
-        return jsonify(success=False)
+            return jsonify(success=True), 200
+        return jsonify(success=False), 400
+
+    @app.route('/health', methods=['GET'])
+    def get_server_health():
+        return jsonify(success=True), 200
 
     try:
         port = int(os.environ.get('SIMULATION_PORT', 3001))

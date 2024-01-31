@@ -2,6 +2,7 @@
  * Enum of different types of WebSocket events (aka event names).
  */
 export const SocketEventTypes = Object.freeze({
+  SIM_ID: 'sim-id',
   INITIAL: 'initial',
   DYNAMIC: 'dynamic',
   SLIDER: 'slider',

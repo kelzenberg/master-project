@@ -1,90 +1,81 @@
 const template = document.createElement('template');
 template.innerHTML = `
-    <style>
-      .rangeSliderContainer {
-        position: relative;
-      }
-      span {
-        position: absolute;
-        max-width: 100%;
-      }
-      input[type=range] {
-        height: 25px;
-        -webkit-appearance: none;
-        margin: 10px 0;
-        width: 100%;
-        background: transparent;
-      }
-      input[type=range]:focus {
-        outline: none;
-      }
-      input[type=range]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 2px;
-        cursor: pointer;
-        animate: 0.2s;
-        background: #006c66;
-      }
-      input[type=range]::-webkit-slider-thumb {
-        border: 1px solid #006C66;
-        height: 18px;
-        width: 18px;
-        border-radius: 20px;
-        background: #006C66;
-        cursor: pointer;
-        -webkit-appearance: none;
-        margin-top: -8.5px;
-      }
-      input[type=range]:focus::-webkit-slider-runnable-track {
-        background: #006c66;
-      }
-      input[type=range]::-moz-range-track {
-        width: 100%;
-        height: 2px;
-        cursor: pointer;
-        animate: 0.2s;
-        background: #006c66;
-      }
-      input[type=range]::-moz-range-thumb {
-        border: 1px solid #006C66;
-        height: 18px;
-        width: 18px;
-        border-radius: 20px;
-        background: #006C66;
-        cursor: pointer;
-      }
-
-    </style>
     <div class="rangeSliderContainer">
-        <span></span>
-        <input type="range" min="1" max="100" value="50" id="slider">
+        <div class="rangeSliderTitleContainer">
+          <span id="rangeSliderLabel"></span>
+          <div id="rangeSliderIcon">
+            <div class="rangeSliderModal">
+              <span class="modalContent" id="rangerSliderLogInfo"></span>
+              <span class="modalContent" id="infoMin"></span>
+              <span class="modalContent" id="infoMax"></span>
+              <span id="rangeSliderInfo"></span>
+            </div>
+          </div>
+        </div>
+        <input type="range" min="0" max="100" value="50" step="1" id="slider">
+        <span id="rangeSliderValue"></span>
     </div>
 `;
 
 class rangeSlider extends HTMLElement {
   static get observedAttributes() {
-    return ['min', 'max', 'steps'];
+    return ['min', 'max', 'label', 'value', 'scale', 'disabled', 'info', 'islogscale'];
   }
 
   constructor() {
     super();
 
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.shadow.append(template.content.cloneNode(true));
-
-    this.min = 1;
+    // Attribute values
+    this.labelText = '';
+    this.infoText = '';
+    this.min = 0;
     this.max = 100;
     this.value = 50;
+    this.disabled = false;
+
+    // other variables
+    this.steps = 100;
+    this.stepSize = 1;
+    this.isLogScale = '';
+    this.initialMin = 0;
+    this.initialMax = 0;
 
     this.inputHandler = this.handleInput.bind(this);
+  }
+
+  calculateStepSize() {
+    this.stepSize = (this.max - this.min) / this.steps;
+  }
+
+  calculateSymmetricalLog(value) {
+    // handle 0 directly
+    if (Number(value) === 0) return value;
+
+    const absLogValue = Math.log10(Math.abs(value));
+
+    return value > 0 ? absLogValue : -absLogValue;
+  }
+
+  sliderPositionToValue(position) {
+    if (!this.isLogScale) {
+      return Number(this.min) + this.stepSize * position;
+    }
+
+    const logValue = Number(this.min) + this.stepSize * position;
+
+    return Math.pow(10, logValue);
+  }
+
+  sliderPosition(value) {
+    return (Number(value) - Number(this.min)) / this.stepSize;
   }
 
   handleInput(event) {
     if (!event.target.value) return;
 
-    const value = event.target.value * 1;
+    const value = this.sliderPositionToValue(event.target.value);
 
-    if (value <= this.min || value >= this.max) return;
+    if (value < this.initialMin || value > this.initialMax) return;
 
     this.value = value;
 
@@ -97,16 +88,31 @@ class rangeSlider extends HTMLElement {
 
     this.dispatchEvent(valueChangedEvent);
 
-    this.renderValueText();
+    this.renderValues();
   }
 
-  renderValueText() {
-    const xOff = this.input.offsetWidth / (Number.parseInt(this.max) - Number.parseInt(this.min));
-    const px = (this.input.valueAsNumber - Number.parseInt(this.min)) * xOff - this.text.offsetParent.offsetWidth / 2;
+  renderValues() {
+    if (!this.text) return;
 
-    this.text.style.left = px + 'px';
-    this.text.style.top = this.input.offsetHeight + 'px';
-    this.text.innerHTML = this.input.value + ' ';
+    this.info.textContent = this.infoText;
+    this.label.textContent = this.labelText;
+    this.text.textContent = Number.parseFloat(this.value).toPrecision(3);
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    this.modalInfoMin.innerText = 'Minimum: ' + this.initialMin;
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    this.modalInfoMax.innerText = 'Maximum: ' + this.initialMax;
+    this.modalLogInfo.textContent = `${this.isLogScale ? 'Logarithmic' : 'Linear'} scale`;
+  }
+
+  setAttributeValues() {
+    this.input?.setAttribute('value', this.sliderPosition(this.value));
+    this.input?.toggleAttribute('disabled', this.disabled === true || this.disabled === 'true');
+  }
+
+  convertStringToBool(value) {
+    if (typeof value !== 'string') return value;
+
+    return value === 'true';
   }
 
   // Life-cycle methods
@@ -114,28 +120,64 @@ class rangeSlider extends HTMLElement {
     if (newValue === oldValue) return;
 
     switch (name) {
+      case 'label': {
+        this.labelText = newValue;
+        break;
+      }
       case 'min': {
-        this.min = newValue;
+        this.initialMin = newValue;
+        this.min = this.isLogScale ? this.calculateSymmetricalLog(newValue) : newValue;
+        this.calculateStepSize();
         break;
       }
       case 'max': {
-        this.max = newValue;
+        this.initialMax = newValue;
+        this.max = this.isLogScale ? this.calculateSymmetricalLog(newValue) : newValue;
+        this.calculateStepSize();
+        break;
+      }
+      case 'value': {
+        this.value = newValue;
+        break;
+      }
+      case 'disabled': {
+        this.disabled = newValue;
+        break;
+      }
+      case 'info': {
+        this.info = newValue;
+        break;
+      }
+      case 'islogscale': {
+        this.isLogScale = this.convertStringToBool(newValue);
         break;
       }
     }
+
+    this.renderValues();
+    this.setAttributeValues();
   }
 
   connectedCallback() {
-    this.shadow.querySelector('#slider').addEventListener('input', this.inputHandler);
+    this.append(template.content.cloneNode(true));
 
-    this.text = this.shadow.querySelector('span');
-    this.input = this.shadow.querySelector('input');
+    this.querySelector('#slider').addEventListener('input', this.inputHandler);
 
-    this.renderValueText();
+    this.label = this.querySelector('#rangeSliderLabel');
+    this.info = this.querySelector('#rangeSliderInfo');
+    this.text = this.querySelector('#rangeSliderValue');
+    this.modalLogInfo = this.querySelector('#rangerSliderLogInfo');
+    this.modalInfoMin = this.querySelector('#infoMin');
+    this.modalInfoMax = this.querySelector('#infoMax');
+    this.input = this.querySelector('input');
+
+    this.setAttributeValues();
+    this.renderValues();
   }
 
   disconnectedCallback() {
-    this.shadow.querySelector('#slider').removeEventListener('input', this.inputHandler);
+    this.querySelector('#slider').removeEventListener('input', this.inputHandler);
+    this.innerHTML = '';
   }
 }
 

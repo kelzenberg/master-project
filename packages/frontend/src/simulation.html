@@ -9,35 +9,35 @@
     />
     <link
       rel="icon"
-      href="ressources/misc/favicon.svg"
+      href="resources/misc/favicon.svg"
     />
     <link
       rel="stylesheet"
-      href="./styling/simulation.css"
+      href="styling/simulation.css"
     />
-    <!-- / Socket IO -->
+    <link
+      rel="stylesheet"
+      href="styling/range-slider.css"
+    />
     <script
       defer
-      type="module"
+      src="js/webcomponents-loader.js"
+    ></script>
+    <script
+      defer
+      src="js/plotly.min.js"
+    ></script>
+    <script
+      defer
       src="/socket.io/socket.io.js"
     ></script>
     <script
       defer
-      type="module"
-      src="./js/services/sockets.js"
+      src="js/services/sockets.js"
     ></script>
-    <!-- Socket IO / -->
-    <!-- load the webcomponents loader, which injects the necessary polyfill bundle -->
-    <script src="../../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../../../node_modules/plotly.js-dist-min/plotly.min.js"></script>
     <script
       defer
       src="js/components/range-slider.js"
-    ></script>
-    <script
-      defer
-      type="module"
-      src="./js/simulation.js"
     ></script>
   </head>
   <body>
@@ -50,13 +50,13 @@
             id="backButton"
           >
             <img
-              src="./ressources/misc/left-arrow.png"
+              src="./resources/misc/left-arrow.png"
               alt="Back"
             />
           </button>
         </a>
         <img
-          src="./ressources/misc/fhi_logo.svg"
+          src="./resources/misc/fhi_logo.svg"
           alt="FHI Logo"
           id="titleImg"
           width="100"
@@ -69,18 +69,14 @@
           title="Pause the simulation"
         >
           <img
-            src="./ressources/misc/pause.png"
+            src="./resources/misc/pause.png"
             alt="Pause simulation rendering"
             id="pauseButtonImage"
-            width="70"
-            height="70"
           />
           <img
-            src="./ressources/misc/play.png"
+            src="./resources/misc/play.png"
             alt="Resume simulation rendering"
             id="playButtonImage"
-            width="70"
-            height="70"
           />
         </button>
       </div>
@@ -101,38 +97,74 @@
               title="Show legend"
             >
               <img
-                src="./ressources/misc/up.png"
+                src="./resources/misc/chevron_up_inverse.svg"
                 alt="Show legend"
                 id="legendButtonImage"
                 width="25"
                 height="25"
               />
               <img
-                src="./ressources/misc/down.png"
+                src="./resources/misc/chevron_down_inverse.svg"
                 alt="Close legend"
                 id="openLegendButtonImage"
                 width="25"
                 height="25"
               />
             </button>
-            <span id="toggleButtonDescription">Legend</span>
+            <span id="toggleLegendButtonDescription">Legend</span>
           </div>
           <div id="legendContainer"></div>
           <div id="descriptionContainer">
-            <h1>Methanation</h1>
-            <p>
-              Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles
-              a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the
-              reaction network includes different classes of surface reactions as well as different types of adsorption
-              sites.
-            </p>
+            <h1 id="simulationTitle"></h1>
+            <p id="simulationDescription"></p>
           </div>
         </div>
         <div id="sliderContainer"></div>
         <div class="graphContainer">
           <div id="plotTOF"></div>
+          <div id="tofCheckboxContainer">
+            <input
+              type="radio"
+              id="toggleTofButton1"
+              class="toggleRadio"
+              name="tofOptions"
+              checked
+            />
+            <label for="toggleTofButton1">Formation count</label>
+
+            <input
+              type="radio"
+              id="toggleTofButton2"
+              class="toggleRadio"
+              name="tofOptions"
+            />
+            <label for="toggleTofButton2">Configuration count</label>
+          </div>
           <br />
           <div id="plotCoverage"></div>
+          <!-- Add two radio buttons for Coverage -->
+          <div id="coverageCheckboxContainer">
+            <input
+              type="radio"
+              id="toggleCoverageButton1"
+              class="toggleRadio"
+              name="coverageOptions"
+              checked
+            />
+            <label for="toggleCoverageButton1">Average coverage</label>
+
+            <input
+              type="radio"
+              id="toggleCoverageButton2"
+              class="toggleRadio"
+              name="coverageOptions"
+            />
+            <label for="toggleCoverageButton2">Coverage per site type</label>
+          </div>
+          <!-- Error overlay container -->
+          <div id="errorOverlay">
+            <div id="errorContent"></div>
+          </div>
         </div>
       </div>
     </div>

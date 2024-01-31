@@ -15,8 +15,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "python3 ./src/main.py",
-    "start": "python3 ./src/main.py"
+    "dev": "python3 ./src/main.py"
   },
   "devDependencies": {},
   "dependencies": {}

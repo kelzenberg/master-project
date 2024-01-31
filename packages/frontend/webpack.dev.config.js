@@ -5,7 +5,22 @@ const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
+  devtool: 'eval-source-map',
+  devServer: {
+    static: path.join(__dirname, './dist/'),
+    hot: true,
+    port: 3000,
+    watchFiles: {
+      paths: ['src/**/*.*'],
+      options: {
+        usePolling: true,
+      },
+    },
+  },
+  optimization: {
+    runtimeChunk: 'single',
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
