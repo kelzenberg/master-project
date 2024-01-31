@@ -44,12 +44,14 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
   ioServer.on('connection', socket => {
     logger.info(`Client connected: ${socket.id}`); // Id is not persisting between session, debug only!
 
-    socket.data.client = { currentRoomId: null };
+    socket.data.client = { currentSimId: null, currentRoomId: null };
 
     // Sending client initial sim data and assigning client to sim room based on received simId
     socket.on(SocketEventTypes.SIM_ID, async ({ simId }) => {
+      logger.info(`Received message on ${SocketEventTypes.SIM_ID.toUpperCase()}`, { data: { simId } });
+
       if (!simId || `${!simId}` === '') {
-        logger.error('Received no simulation ID in payload', { data: simId });
+        logger.error('Simulation ID is missing in payload', { data: simId });
         return;
       }
 
@@ -62,7 +64,6 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
 
       if (!chosenSimController.isSimRunning) {
         await chosenSimController.startSim();
-
         chosenSimController.setWorkerEventHandlers(getFetchWorkerCallbacks(ioServer));
       }
 
@@ -71,13 +72,35 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
       });
       socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
 
-      socket.data.client = { ...socket.data.client, currentRoomId: chosenSimController.roomId };
+      socket.data.client = {
+        ...socket.data.client,
+        currentSimId: chosenSimController.id,
+        currentRoomId: chosenSimController.roomId,
+      };
+
       logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
       socket.join(chosenSimController.roomId);
     });
 
     // Updating the simulations parameter via received slider values
-    // socket.on(SocketEventTypes.SLIDER, updateSimParamsHandler(socket));
+    socket.on(SocketEventTypes.SLIDER, async data => {
+      logger.info(`Received message on ${SocketEventTypes.SLIDER.toUpperCase()}`, { data });
+
+      if (!data.label || !data.value) {
+        logger.error('Label or value is missing in payload', { data });
+        return;
+      }
+
+      const currentSimId = socket.data.client.currentSimId;
+
+      if (!currentSimId) {
+        logger.error('Current sim ID could not be found', { data: socket.data.client });
+        return;
+      }
+
+      const chosenSimController = simControllers.find(sim => sim.id === currentSimId);
+      await chosenSimController.sendSimParameters(data);
+    });
 
     // Client disconnected event listener
     socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));

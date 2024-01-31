@@ -111,9 +111,9 @@ export class SimController {
   }
 
   async fetchInitialSimData() {
-    try {
-      this.#logger.info(`Fetching initial data for ${this.title} sim...`);
+    this.#logger.info(`Fetching initial data for ${this.title} sim...`);
 
+    try {
       const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
       this.#data = { initial: await response.json() };
 
@@ -127,6 +127,35 @@ export class SimController {
 
   getInitialSimData() {
     return this.#data.initial;
+  }
+
+  async sendSimParameters({ label, value }) {
+    this.#logger.info(`Sending updated sim parameters for ${this.title} sim...`);
+
+    const payload = { label: `${label}`, value: `${value}` };
+    try {
+      const response = await fetch(`${this.#URL}/slider`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const { success: paramsAccepted, reason } = await response.json();
+
+      if (!paramsAccepted) {
+        const message = `Python sim ${this.title} is not accepting sent parameters`;
+        this.#logger.error(message, { payload, reason });
+        throw new Error(message);
+      }
+
+      this.#logger.info(`Updated sim parameters for ${this.title} sim`);
+    } catch (error) {
+      const message = `Sending updated sim parameters for ${this.title} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
   }
 
   #startWorker() {
@@ -175,7 +204,13 @@ export class SimController {
     this.#logger.info(`Requesting to start ${this.title} Python sim...`);
 
     try {
-      const response = await fetch(`${this.#URL}/start`, { method: 'POST' });
+      const response = await fetch(`${this.#URL}/start`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
       const { success: hasStarted } = await response.json();
 
       this.isSimRunning = hasStarted;
@@ -208,7 +243,13 @@ export class SimController {
     this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
 
     try {
-      const response = await fetch(`${this.#URL}/reset`, { method: 'POST' });
+      const response = await fetch(`${this.#URL}/reset`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
       const { success: hasReset } = await response.json();
 
       if (!hasReset) {
