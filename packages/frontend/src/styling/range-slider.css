@@ -57,8 +57,9 @@ rage-slider span {
 }
 
 #rangerSliderLogInfo {
-  color: red;
+  color: var(--hightlight-color);
   font-weight: 500;
+  padding-bottom: 0.5rem;
 }
 
 input[type='range'] {

@@ -5,7 +5,7 @@ template.innerHTML = `
           <span id="rangeSliderLabel"></span>
           <div id="rangeSliderIcon">
             <div class="rangeSliderModal">
-              <!-- <span class="modalContent" id="rangerSliderLogInfo">logarithmic scale</span> -->
+              <span class="modalContent" id="rangerSliderLogInfo"></span>
               <span class="modalContent" id="infoMin"></span>
               <span class="modalContent" id="infoMax"></span>
               <span id="rangeSliderInfo"></span>
@@ -101,6 +101,7 @@ class rangeSlider extends HTMLElement {
     this.modalInfoMin.innerText = 'Minimum: ' + this.initialMin;
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
     this.modalInfoMax.innerText = 'Maximum: ' + this.initialMax;
+    this.modalLogInfo.textContent = `${this.isLogScale ? 'Logarithmic' : 'Linear'} scale`;
   }
 
   setAttributeValues() {
@@ -149,7 +150,6 @@ class rangeSlider extends HTMLElement {
       }
       case 'islogscale': {
         this.isLogScale = this.convertStringToBool(newValue);
-        if (this.modalLogInfo) this.modalLogInfo.style.display = this.isLogScale ? 'block' : 'none';
         break;
       }
     }
