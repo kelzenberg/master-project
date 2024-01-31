@@ -168,10 +168,14 @@ span {
 
 #playButtonImage {
   display: none;
+  width: 3.125rem;
+  height: 3.125rem;
 }
 
 #pauseButtonImage {
   display: none;
+  width: 3.125rem;
+  height: 3.125rem;
 }
 
 #legendButtonImage {
