@@ -1,6 +1,11 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationPageController } from '../controllers/SimulationPageController';
 
+const fetchTitleAndDescription = async simId => {
+  const response = await fetch('/list?id=' + simId, { method: 'GET' });
+  return response.json();
+};
+
 const urlParams = new URLSearchParams(window.location.search);
 const simId = urlParams.get('id');
 const { title, description } = await fetchTitleAndDescription(simId);
@@ -45,8 +50,3 @@ export const sendSliderEvent = payload => {
   console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SLIDER.toUpperCase()} with payload`, payload);
   socket.emit(SocketEventTypes.SLIDER, payload);
 };
-
-async function fetchTitleAndDescription(simId) {
-  const response = await fetch('/list?id=' + simId, { method: 'GET' });
-  return await response.json();
-}
