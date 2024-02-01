@@ -10,6 +10,7 @@ import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
+import { db } from './services/sqlite.js';
 
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
