@@ -15,6 +15,15 @@ simulationPageController.addEventListeners();
 const errorOverlay = document.querySelector('#errorOverlay');
 const errorContent = document.querySelector('#errorContent');
 
+const displayErrorOverlay = error => {
+  errorOverlay.style.display = 'flex';
+  errorContent.innerHTML = `
+    <h2>Error:</h2>
+    <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
+    <p>${error.message || 'Unknown error'} ${error.data || ''}</p>
+  `;
+};
+
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 
@@ -36,14 +45,8 @@ socket.on('connect', () => {
   errorContent.innerHTML = '';
 });
 
-socket.on('connect_error', err => {
-  errorOverlay.style.display = 'flex';
-  errorContent.innerHTML = `
-    <h2>Error:</h2>
-    <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
-    <p>${err.message || 'Unknown error'} ${err.data || ''}</p>
-  `;
-});
+socket.on('connect_error', displayErrorOverlay);
+socket.on('disconnect', displayErrorOverlay);
 
 socket.io.on('reconnect', () => {
   socket.emit(SocketEventTypes.SIM_ID, { simId });
