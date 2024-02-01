@@ -54,7 +54,7 @@ span {
 }
 
 .titleBar {
-  height: 8rem;
+  height: 15vh;
   border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;
@@ -276,6 +276,7 @@ input[type='radio']:checked:before {
   flex-direction: row;
   display: none;
   margin: 0.25rem auto 0 auto;
+  height: 3vh;
 }
 
 #tofCheckboxContainer {
@@ -283,6 +284,7 @@ input[type='radio']:checked:before {
   flex-direction: row;
   display: none;
   margin: 0.25rem auto 0 auto;
+  height: 3vh;
 }
 
 #loader {

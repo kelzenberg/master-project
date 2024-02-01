@@ -71,15 +71,14 @@ export class LegendController {
     const toggleLegendButton = document.querySelector('#toggleLegendButton');
     const legendButtonImage = document.querySelector('#legendButtonImage');
     const openLegendButtonImage = document.querySelector('#openLegendButtonImage');
-    const browserLanguage = navigator.language || navigator.userLanguage;
 
     if (this.#isLegendVisible) {
-      toggleLegendButton.title = browserLanguage.startsWith('de') ? 'Schließe Legende' : 'Close legend';
+      toggleLegendButton.title = 'Close legend';
       legendButtonImage.style.display = 'block';
       openLegendButtonImage.style.display = 'none';
       legend.style.display = 'block';
     } else {
-      openLegendButtonImage.title = browserLanguage.startsWith('de') ? 'Zeige Legende an' : 'Show legend';
+      openLegendButtonImage.title = 'Show legend';
       openLegendButtonImage.style.display = 'block';
       legendButtonImage.style.display = 'none';
       legend.style.display = 'none';

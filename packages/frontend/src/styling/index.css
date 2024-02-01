@@ -24,7 +24,7 @@ html {
 }
 
 .titleBar {
-  height: 8rem;
+  height: 15vh;
   border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;

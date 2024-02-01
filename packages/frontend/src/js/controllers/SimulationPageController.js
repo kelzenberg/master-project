@@ -166,18 +166,13 @@ export class SimulationPageController {
     const pauseButton = document.querySelector('#pauseButton');
     const pauseButtonImage = document.querySelector('#pauseButtonImage');
     const playButtonImage = document.querySelector('#playButtonImage');
-    const browserLanguage = navigator.language || navigator.userLanguage;
 
     if (this.#isPaused) {
-      pauseButton.title = browserLanguage.startsWith('de')
-        ? 'Rendering der Simulationsdaten fortsetzen'
-        : 'Resume simulation rendering';
+      pauseButton.title = 'Resume simulation rendering';
       playButtonImage.style.display = 'block';
       pauseButtonImage.style.display = 'none';
     } else {
-      pauseButton.title = browserLanguage.startsWith('de')
-        ? 'Rendering der Simulationsdaten pausieren'
-        : 'Pause simulation rendering';
+      pauseButton.title = 'Pause simulation rendering';
       pauseButtonImage.style.display = 'block';
       playButtonImage.style.display = 'none';
     }
