@@ -24,7 +24,7 @@ html {
 }
 
 .titleBar {
-  height: 15vh;
+  height: auto;
   border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;
@@ -43,6 +43,7 @@ html {
   background-position: center;
   flex-grow: 1;
   flex-shrink: 0;
+  margin: 10px;
 }
 
 .titleContainer {
