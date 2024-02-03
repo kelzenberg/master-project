@@ -3,60 +3,70 @@
     "title": "Methanation",
     "description": "Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the reaction network includes different classes of surface reactions as well as different types of adsorption sites.",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "1.jpeg"
+    "thumbnail": "1.jpeg",
+    "databaseId": "b45489c1-9286-42cb-8b71-f71e47ee326a"
   },
   {
     "title": "Hydrogen Evolution",
     "description": "Simulating hydrogen evolution on Pt(111) surface. Inspired by Zhang et al. (J. Phys. Chem. C 122, 12345, 2018).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "2.jpeg"
+    "thumbnail": "2.jpeg",
+    "databaseId": "4bb6d4f7-0a27-4823-80d8-dc53421e136a"
   },
   {
     "title": "Propane Dehydrogenation",
     "description": "Investigating propane oxidative dehydrogenation on V2O5(001). Inspired by Li et al. (ACS Catal. 9, 6789, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "3.jpeg"
+    "thumbnail": "3.jpeg",
+    "databaseId": "646f84cf-ec44-4f19-8bce-aefcc9783fd4"
   },
   {
     "title": "Nitrogen Fixation",
     "description": "Modeling nitrogen fixation on MoN clusters. Inspired by recent studies (J. Am. Chem. Soc. 142, 9108, 2020).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "4.jpeg"
+    "thumbnail": "4.jpeg",
+    "databaseId": "b06faaa7-aa1c-40c0-b958-aa5ae421353e"
   },
   {
     "title": "Ethylene Epoxidation",
     "description": "Examining ethylene epoxidation on Ag-doped TiO2(110). Inspired by Wang et al. (J. Catal. 275, 123, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "5.jpeg"
+    "thumbnail": "5.jpeg",
+    "databaseId": "a107c59b-9413-4f8e-bb8b-a8ba78e1b0b0"
   },
   {
     "title": "Water Splitting",
     "description": "Studying water splitting on Fe-modified α-Fe2O3(001). Inspired by Chen et al. (ACS Appl. Mater. Interfaces 11, 12345, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "1.jpeg"
+    "thumbnail": "1.jpeg",
+    "databaseId": "d1992576-7d59-46ed-81ba-42e785bb7f99"
   },
   {
     "title": "Methanol Synthesis",
     "description": "Investigating methanol synthesis on Cu-ZnO(0001) surface. Inspired by Li et al. (J. Phys. Chem. Lett. 8, 1234, 2017).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "2.jpeg"
+    "thumbnail": "2.jpeg",
+    "databaseId": "6a2273ac-098c-484b-a35f-35ecdca92e87"
   },
   {
     "title": "CO2 Reduction",
     "description": "Modeling CO2 reduction on single-atom catalysts. Inspired by recent electrocatalysis advancements (Nat. Catal. 2, 123, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "3.jpeg"
+    "thumbnail": "3.jpeg",
+    "databaseId": "2ace3eef-4df3-4157-bf2b-7758c22cbca6"
   },
   {
     "title": "Proton Transfer",
     "description": "Simulating proton-coupled electron transfer on Ru-doped TiO2 nanotubes. Inspired by Zhang et al. (J. Phys. Chem. C 124, 5678, 2020).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "4.jpeg"
+    "thumbnail": "4.jpeg",
+    "databaseId": "cfab0c4b-072f-4758-be84-88614f2d2451"
   },
   {
     "title": "Methanol Synthesis",
     "description": "Investigating methanol synthesis on Cu-ZnO(0001) surface. Inspired by Li et al. (J. Phys. Chem. Lett. 8, 1234, 2017).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "5.jpeg"
+    "thumbnail": "5.jpeg",
+    "databaseId": "687e183f-3581-40c8-ba59-1e51273780bd"
   }
 ]

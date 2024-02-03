@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
@@ -25,8 +24,8 @@ export class SimController {
   /**
    * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
    */
-  constructor({ title, description, envKeyForURL, thumbnail }) {
-    this.id = uuid();
+  constructor({ databaseId, title, description, envKeyForURL, thumbnail }) {
+    this.id = databaseId;
     this.title = title;
     this.description = description;
     this.roomId = `sim:${this.id}`;
