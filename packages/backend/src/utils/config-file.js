@@ -55,7 +55,13 @@ export const updateSimConfigsFileWithIds = async (filePath, configs) => {
 export const createSimControllersFromConfigs = async simConfigs =>
   Promise.all(
     Object.values(simConfigs).map(async simConfig => {
-      await db.insertSim({ id: simConfig.databaseId, envKeyForURL: simConfig.envKeyForURL });
+      try {
+        await db.insertSim({ id: simConfig.databaseId, envKeyForURL: simConfig.envKeyForURL });
+      } catch (error) {
+        const message = `Updating database with sim config details failed for ${simConfig.databaseId}`;
+        logger.error(message);
+        throw new Error(message, error);
+      }
 
       const simController = new SimController({ ...simConfig });
       await simController.waitForSimHealth();
