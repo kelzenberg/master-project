@@ -14,7 +14,7 @@ import {
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
-// import { db } from './services/sqlite.js';
+import { db } from './services/sqlite.js';
 
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
@@ -70,9 +70,10 @@ const stoppableServer = stoppable(
 const stopServerAsync = bluebird.promisify(stoppableServer.stop.bind(stoppableServer));
 
 const shutdown = async () => {
-  logger.info('Server stopping...');
+  logger.info('Server and services stopping...');
   await stopServerAsync();
-  logger.info('Server stopped.');
+  await db.instance.close();
+  logger.info('Server and services stopped.');
 };
 
 process.once('SIGINT', shutdown);
