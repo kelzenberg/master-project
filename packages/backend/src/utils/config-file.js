@@ -1,13 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { v4 as uuid } from 'uuid';
 import { Logger } from './logger.js';
+import { db } from '../services/sqlite.js';
 import { SimController } from '../controllers/SimController.js';
 
 const logger = Logger({ name: 'simulation-config-loader' });
 
 export const loadSimConfigsFromFile = async filePath => {
   let configs;
-  logger.info(`Loading list of configs from file`, { data: filePath });
+  logger.info(`Loading list of configs from file...`, { data: filePath });
 
   try {
     const file = await readFile(filePath, { encoding: 'utf8' });
@@ -54,6 +55,8 @@ export const updateSimConfigsFileWithIds = async (filePath, configs) => {
 export const createSimControllersFromConfigs = async simConfigs =>
   Promise.all(
     Object.values(simConfigs).map(async simConfig => {
+      await db.insertSim({ id: simConfig.databaseId, envKeyForURL: simConfig.envKeyForURL });
+
       const simController = new SimController({ ...simConfig });
       await simController.waitForSimHealth();
       await simController.fetchInitialSimData();
