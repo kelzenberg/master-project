@@ -6,7 +6,10 @@ import { writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config.js';
+import {
+  loadSimConfigsFromFile,
+  createSimControllersFromConfigs,
+} from './utils/config-file.js';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
