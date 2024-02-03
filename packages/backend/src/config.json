@@ -33,40 +33,5 @@
     "envKeyForURL": "METHANATION_001",
     "thumbnail": "5.jpeg",
     "databaseId": "a107c59b-9413-4f8e-bb8b-a8ba78e1b0b0"
-  },
-  {
-    "title": "Water Splitting",
-    "description": "Studying water splitting on Fe-modified α-Fe2O3(001). Inspired by Chen et al. (ACS Appl. Mater. Interfaces 11, 12345, 2019).",
-    "envKeyForURL": "METHANATION_001",
-    "thumbnail": "1.jpeg",
-    "databaseId": "d1992576-7d59-46ed-81ba-42e785bb7f99"
-  },
-  {
-    "title": "Methanol Synthesis",
-    "description": "Investigating methanol synthesis on Cu-ZnO(0001) surface. Inspired by Li et al. (J. Phys. Chem. Lett. 8, 1234, 2017).",
-    "envKeyForURL": "METHANATION_001",
-    "thumbnail": "2.jpeg",
-    "databaseId": "6a2273ac-098c-484b-a35f-35ecdca92e87"
-  },
-  {
-    "title": "CO2 Reduction",
-    "description": "Modeling CO2 reduction on single-atom catalysts. Inspired by recent electrocatalysis advancements (Nat. Catal. 2, 123, 2019).",
-    "envKeyForURL": "METHANATION_001",
-    "thumbnail": "3.jpeg",
-    "databaseId": "2ace3eef-4df3-4157-bf2b-7758c22cbca6"
-  },
-  {
-    "title": "Proton Transfer",
-    "description": "Simulating proton-coupled electron transfer on Ru-doped TiO2 nanotubes. Inspired by Zhang et al. (J. Phys. Chem. C 124, 5678, 2020).",
-    "envKeyForURL": "METHANATION_001",
-    "thumbnail": "4.jpeg",
-    "databaseId": "cfab0c4b-072f-4758-be84-88614f2d2451"
-  },
-  {
-    "title": "Methanol Synthesis",
-    "description": "Investigating methanol synthesis on Cu-ZnO(0001) surface. Inspired by Li et al. (J. Phys. Chem. Lett. 8, 1234, 2017).",
-    "envKeyForURL": "METHANATION_001",
-    "thumbnail": "5.jpeg",
-    "databaseId": "687e183f-3581-40c8-ba59-1e51273780bd"
   }
 ]
