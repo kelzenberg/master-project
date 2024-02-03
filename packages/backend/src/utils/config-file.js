@@ -41,7 +41,7 @@ export const updateSimConfigsFileWithIds = async (filePath, configs) => {
   });
 
   try {
-    await writeFile(filePath, JSON.stringify(updatedConfigs), { encoding: 'utf8' });
+    await writeFile(filePath, JSON.stringify(updatedConfigs, null, 2), { encoding: 'utf8' });
   } catch (error) {
     const message = 'Writing list of updated configs to file failed';
     logger.error(message, error);
