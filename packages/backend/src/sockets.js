@@ -5,6 +5,7 @@ import { errorHandler } from './middlewares/sockets/error-handler.js';
 import { getFetchWorkerCallbacks } from './utils/worker.js';
 import { handler as sliderHandler } from './handlers/sockets/slider.js';
 import { handler as simIdHandler } from './handlers/sockets/sim-id.js';
+import { handler as disconnectHandler } from './handlers/sockets/disconnect.js';
 
 const logger = Logger({ name: 'socket-server' });
 
@@ -31,6 +32,6 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
     socket.on(SocketEventTypes.SLIDER, sliderHandler(logger, socket, simControllers));
 
     // Client disconnected event listener
-    socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
+    socket.on(SocketEventTypes.DISCONNECT, disconnectHandler(logger, socket, simControllers));
   });
 };

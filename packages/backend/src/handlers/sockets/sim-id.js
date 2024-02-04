@@ -6,32 +6,35 @@ export const handler =
     logger.info(`Received message on ${SocketEventTypes.SIM_ID.toUpperCase()}`, { data: { simId } });
 
     if (!simId || `${!simId}` === '') {
-      logger.error('Simulation ID is missing in payload', { data: simId });
+      logger.error('Simulation ID is missing in payload');
       return;
     }
 
     const chosenSimController = simControllers.find(sim => sim.uuid === `${simId}`);
 
     if (!chosenSimController) {
-      logger.error('Could not find simulation instance with provided ID', { data: simId });
+      logger.error('Could not find simulation with provided ID', { data: simId });
       return;
     }
 
-    if (!chosenSimController.isSimRunning) {
+    if (chosenSimController.isSimPaused) {
+      await chosenSimController.resumeSim();
+    } else if (!chosenSimController.isSimRunning) {
       await chosenSimController.startSim();
-      chosenSimController.setWorkerEventHandlers(fetchWorkerCallbacks);
+      chosenSimController.setWorkerEventHandlers(fetchWorkerCallbacks); // must come after startSim()
     }
 
-    logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
-      data: { uuid: chosenSimController.uuid, roomId: chosenSimController.roomId, title: chosenSimController.title },
-    });
-    socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
-
+    chosenSimController.addClient(socket.id);
     socket.data.client = {
       ...socket.data.client,
       currentSimUUID: chosenSimController.uuid,
       currentRoomId: chosenSimController.roomId,
     };
+
+    logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
+      data: { uuid: chosenSimController.uuid, roomId: chosenSimController.roomId, title: chosenSimController.title },
+    });
+    socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
 
     logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
     socket.join(chosenSimController.roomId);
