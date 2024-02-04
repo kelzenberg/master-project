@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
@@ -8,7 +7,7 @@ import { Logger } from '../utils/logger.js';
  * and manages the attached fetch workers.
  */
 export class SimController {
-  id;
+  uuid;
   title;
   description;
   roomId;
@@ -25,14 +24,14 @@ export class SimController {
   /**
    * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
    */
-  constructor({ title, description, envKeyForURL, thumbnail }) {
-    this.id = uuid();
+  constructor({ uuid, title, description, envKeyForURL, thumbnail }) {
+    this.uuid = uuid;
     this.title = title;
     this.description = description;
-    this.roomId = `sim:${this.id}`;
+    this.roomId = `sim:${this.uuid}`;
     this.isSimRunning = false;
     this.createdAt = new Date().toISOString();
-    this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
+    this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
     this.#thumbnail = `/images/${thumbnail}`;
     this.#isHealthy = null;
     this.#data = { initial: null };

@@ -19,7 +19,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
     logger.info(`Client connected: ${socket.id}`); // Id is not persisting between session, debug only!
 
     // Setting client data structure on socket
-    socket.data.client = { currentSimId: null, currentRoomId: null };
+    socket.data.client = { currentSimUUID: null, currentRoomId: null };
 
     // Assigning client to correct sim room & sending initial sim data
     socket.on(

@@ -16,7 +16,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*'",
+    "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*' --ignore './src/config.json' --ignore './src/database.db'",
     "start": "node --env-file=../../.env ./src/index.js"
   },
   "devDependencies": {
@@ -34,6 +34,7 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "socket.io": "^4.7.2",
+    "sql-template-strings": "^2.2.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "stoppable": "^1.1.0",
