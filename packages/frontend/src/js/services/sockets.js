@@ -29,7 +29,7 @@ simulationPageController.addEventListeners();
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 
-socket.on('connect', () => {
+socket.on(SocketEventTypes.CONNECT, () => {
   console.debug(`[DEBUG]: Connected to sim`, { simId });
   simulationPageController.hideErrorOverlay();
 
@@ -37,12 +37,12 @@ socket.on('connect', () => {
   socket.emit(SocketEventTypes.SIM_ID, { simId });
 });
 
-socket.on('connect_error', error => {
+socket.on(SocketEventTypes.CONNECT_ERROR, error => {
   console.debug(`[DEBUG]: Received connect error`, { error });
   simulationPageController.displayErrorOverlay(error);
 });
 
-socket.on('disconnect', message => {
+socket.on(SocketEventTypes.DISCONNECT, message => {
   console.debug(`[DEBUG]: Client disconnected`);
   simulationPageController.displayErrorOverlay(message);
 });
