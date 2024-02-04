@@ -2,7 +2,7 @@ import { validate as uuidValidate } from 'uuid';
 import { simControllers } from '../../index.js';
 import { Logger } from '../../utils/logger.js';
 
-const logger = Logger({ name: 'socket-server' });
+const logger = Logger({ name: 'get-sim-list' });
 
 export const handler = async (req, res) => {
   const querySimId = req.query.id;
