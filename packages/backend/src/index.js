@@ -6,11 +6,7 @@ import { writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import {
-  loadSimConfigsFromFile,
-  updateSimConfigsFileWithIds,
-  createSimControllersFromConfigs,
-} from './utils/config-file.js';
+import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
 import { Logger } from './utils/logger.js';
@@ -21,8 +17,7 @@ const expressPort = process.env.BACKEND_PORT || 3000;
 
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 const simConfigs = await loadSimConfigsFromFile(configFilePath);
-const updatedSimConfig = await updateSimConfigsFileWithIds(configFilePath, simConfigs);
-export const simControllers = await createSimControllersFromConfigs(updatedSimConfig);
+export const simControllers = await createSimControllersFromConfigs(simConfigs);
 
 const createServer = app => {
   if (process.env.USE_HTTPS === 'true') {

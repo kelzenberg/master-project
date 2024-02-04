@@ -5,7 +5,7 @@ import { open } from 'sqlite';
 import SQL from 'sql-template-strings';
 import { Logger } from '../utils/logger.js';
 
-const logger = Logger({ name: 'simulation-config-loader' });
+const logger = Logger({ name: 'database-sqlite' });
 const filePath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '../database.db');
 
 // Turn on SQLite verbosity output
@@ -20,7 +20,7 @@ const setupDatabase = async () => {
   });
 
   logger.info('Creating database tables...');
-  db.exec('CREATE TABLE IF NOT EXISTS simulation (id TEXT PRIMARY KEY, envKeyForURL TEXT)');
+  db.exec('CREATE TABLE IF NOT EXISTS simulation (envKeyForURL TEXT PRIMARY KEY, uuid TEXT)');
 
   logger.info('Successfully setup database');
   return db;
@@ -28,29 +28,48 @@ const setupDatabase = async () => {
 
 const dbInstance = await setupDatabase();
 
-const insertSim = async ({ id, envKeyForURL }) => {
-  logger.info(`Adding simulation details to simulation table for ID ${id} ...`, { data: { id, envKeyForURL } });
-  const existingRow = await dbInstance.get(SQL`SELECT id FROM simulation WHERE id = ${id}`);
+const getAll = async () => dbInstance.all(SQL`SELECT * FROM simulation`);
+
+const upsertOne = async ({ envKeyForURL, uuid }) => {
+  logger.info(`Adding simulation details to simulation table for envKey ${envKeyForURL} ...`, {
+    data: { uuid, envKeyForURL },
+  });
+
+  const existingRow = await dbInstance.get(
+    SQL`SELECT envKeyForURL FROM simulation WHERE envKeyForURL = ${envKeyForURL}`
+  );
 
   if (existingRow) {
-    logger.warn(`Row for ID ${id} already exists. Updating row instead...`, { data: filePath });
+    logger.warn(`Row for envKey ${envKeyForURL} already exists. Updating row instead...`);
 
     const statement = await dbInstance.prepare(
-      SQL`UPDATE simulation SET id = ${id}, envKeyForURL = ${envKeyForURL} WHERE id = ${id}`
+      SQL`UPDATE simulation SET envKeyForURL = ${envKeyForURL}, uuid = ${uuid} WHERE envKeyForURL = ${envKeyForURL}`
     );
     const result = await statement.run();
 
-    logger.info(`Updated row in simulation table for ID ${id}`);
+    logger.info(`Updated row in simulation table for envKey ${envKeyForURL}`);
     return result;
   }
 
   const statement = await dbInstance.prepare(
-    SQL`INSERT INTO simulation (id, envKeyForURL) VALUES (${id},${envKeyForURL})`
+    SQL`INSERT INTO simulation (envKeyForURL, uuid) VALUES (${envKeyForURL}, ${uuid})`
   );
   const result = await statement.run();
 
-  logger.info(`Inserted new row into simulation table for ID ${id}`, { data: { id, envKeyForURL } });
+  logger.info(`Inserted new row into simulation table for envKey ${envKeyForURL}`);
   return result;
 };
 
-export const db = { instance: dbInstance, insertSim };
+const deleteOne = async ({ envKeyForURL }) => {
+  logger.info(`Deleting simulation details from simulation table for envKey ${envKeyForURL} ...`, {
+    data: { envKeyForURL },
+  });
+
+  const statement = await dbInstance.prepare(SQL`DELETE FROM simulation WHERE envKeyForURL = ${envKeyForURL}`);
+  const result = await statement.run();
+
+  logger.info(`Deleted row from simulation table for envKey ${envKeyForURL}`);
+  return result;
+};
+
+export const db = { instance: dbInstance, getAll, upsertOne, deleteOne };

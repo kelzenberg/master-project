@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { v4 as uuid } from 'uuid';
 import { Logger } from './logger.js';
 import { db } from '../services/sqlite.js';
@@ -29,43 +29,55 @@ export const loadSimConfigsFromFile = async filePath => {
   return configs;
 };
 
-export const updateSimConfigsFileWithIds = async (filePath, configs) => {
-  logger.info(`Writing list of updated configs to file`, { data: filePath });
+const findDuplicatesIn = (...keyArrays) => {
+  const duplicateMap = new Map();
+  const uniqueMap = new Map();
 
-  const updatedConfigs = configs.map(config => {
-    if (!config.databaseId || config.databaseId.trim() === '') {
-      config.databaseId = uuid();
-      logger.info(`Updated config ${config.title} (${config.envKeyForURL})`);
+  for (const keyArray of keyArrays) {
+    for (const key of keyArray) {
+      if (uniqueMap.has(key)) {
+        duplicateMap.set(key, key);
+      } else {
+        uniqueMap.set(key, key);
+      }
     }
-    return config;
-  });
-
-  try {
-    await writeFile(filePath, JSON.stringify(updatedConfigs, null, 2), { encoding: 'utf8' });
-  } catch (error) {
-    const message = 'Writing list of updated configs to file failed';
-    logger.error(message, error);
-    throw new Error(message, error);
   }
 
-  logger.info('Successfully updated list of configs in file');
-  return updatedConfigs;
+  return { duplicates: [...duplicateMap.values()], uniques: [...uniqueMap.values()] };
 };
 
-export const createSimControllersFromConfigs = async simConfigs =>
-  Promise.all(
-    Object.values(simConfigs).map(async simConfig => {
-      try {
-        await db.insertSim({ id: simConfig.databaseId, envKeyForURL: simConfig.envKeyForURL });
-      } catch (error) {
-        const message = `Updating database with sim config details failed for ${simConfig.databaseId}`;
-        logger.error(message);
-        throw new Error(message, error);
-      }
+const syncDatabaseWithConfigs = async simConfigs => {
+  logger.info('Sync database with sim configs...');
 
+  // eslint-disable-next-line unicorn/no-await-expression-member
+  const storedEnvKeys = (await db.getAll()).map(config => config.envKeyForURL);
+  const loadedEnvKeys = simConfigs.map(config => config.envKeyForURL);
+  const { duplicates: noChangeKeys } = findDuplicatesIn(storedEnvKeys, loadedEnvKeys);
+
+  // remove unused stored env keys
+  for (const storedKey of storedEnvKeys) {
+    if (noChangeKeys.includes(storedKey)) continue;
+    await db.deleteOne({ envKeyForURL: storedKey });
+  }
+
+  // add new loaded env keys
+  for (const loadedKey of loadedEnvKeys) {
+    if (noChangeKeys.includes(loadedKey)) continue;
+    await db.upsertOne({ envKeyForURL: loadedKey, uuid: uuid() });
+  }
+
+  logger.info('Successfully synced database with sim configs...');
+};
+
+export const createSimControllersFromConfigs = async simConfigs => {
+  await syncDatabaseWithConfigs(simConfigs);
+
+  return Promise.all(
+    Object.values(simConfigs).map(async simConfig => {
       const simController = new SimController({ ...simConfig });
       await simController.waitForSimHealth();
       await simController.fetchInitialSimData();
       return simController;
     })
   );
+};
