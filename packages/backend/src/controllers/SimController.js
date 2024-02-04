@@ -375,7 +375,7 @@ export class SimController {
   }
 
   getClients() {
-    return this.#connectedClients.values();
+    return [...this.#connectedClients.values()];
   }
 
   toJSON() {
