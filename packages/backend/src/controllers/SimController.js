@@ -31,7 +31,7 @@ export class SimController {
     this.roomId = `sim:${this.id}`;
     this.isSimRunning = false;
     this.createdAt = new Date().toISOString();
-    this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
+    this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
     this.#thumbnail = `/images/${thumbnail}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
