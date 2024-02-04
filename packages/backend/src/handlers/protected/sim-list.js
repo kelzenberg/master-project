@@ -14,7 +14,7 @@ export const handler = async (req, res) => {
       id: simController.uuid, // mapping `uuid` to `id` for response to frontend is correct here
       title: simController.title,
       description: simController.description,
-      thumbnail: simController.getThumbnail(),
+      thumbnail: simController.getThumbnailPath(), // mapping `thumbnailPath` to `thumbnail` for response to frontend is correct here
     }));
 
     res.status(200).send(simIds);

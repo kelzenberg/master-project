@@ -15,7 +15,7 @@ export class SimController {
   createdAt;
 
   #URL;
-  #thumbnail;
+  #thumbnailPath;
   #isHealthy;
   #data;
   #workerController;
@@ -32,15 +32,15 @@ export class SimController {
     this.isSimRunning = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
-    this.#thumbnail = `/images/${thumbnail}`;
+    this.#thumbnailPath = `/images/${thumbnail}`;
     this.#isHealthy = null;
     this.#data = { initial: null };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
 
-  getThumbnail() {
-    return this.#thumbnail;
+  getThumbnailPath() {
+    return this.#thumbnailPath;
   }
 
   async #getSimHealth(attempt = 1) {
@@ -254,7 +254,7 @@ export class SimController {
     return {
       ...this,
       URL: this.#URL,
-      thumbnail: this.#thumbnail,
+      thumbnailPath: this.#thumbnailPath,
       isHealthy: this.#isHealthy,
       data: this.#data,
     };
