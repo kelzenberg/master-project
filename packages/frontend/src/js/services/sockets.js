@@ -7,6 +7,12 @@ const fetchTitleAndDescription = async simId => {
 };
 
 const simId = new URLSearchParams(window.location.search).get('id');
+
+if (!simId || `${simId}`.trim() == '') {
+  console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
+  window.location.href = '/';
+}
+
 const { title, description } = await fetchTitleAndDescription(simId);
 const simulationPageController = new SimulationPageController(title, description);
 simulationPageController.addEventListeners();
