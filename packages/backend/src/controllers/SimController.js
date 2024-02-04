@@ -63,20 +63,25 @@ export class SimController {
           'Content-Type': 'application/json',
         },
       });
-      const { success: hasStarted } = await response.json();
+      const { status: statusCode, ok: requestOk } = response;
 
-      this.isSimRunning = hasStarted;
-
-      if (!hasStarted) {
+      if (!requestOk) {
         const message = `Python sim ${this.title} returned unsuccessfully on START request`;
         this.#logger.error(message);
         throw new Error(message);
       }
 
-      this.#startWorker();
-      const wasRunningBefore = !(response.status === 201);
-      this.#logger[wasRunningBefore ? 'warn' : 'info'](
-        `Python sim ${this.title} ${wasRunningBefore ? 'is already running' : 'has started'}`
+      const { success } = await response.json();
+      const wasNewStart = success && statusCode === 201;
+      const isAlreadyRunning = !success && statusCode === 200;
+      this.isSimRunning = wasNewStart || isAlreadyRunning;
+
+      if (this.isSimRunning) {
+        this.#startWorker();
+      }
+
+      this.#logger[wasNewStart ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewStart ? 'has started' : 'is already running'}`
       );
     } catch (error) {
       const message = `Starting Python sim ${this.title} failed`;
@@ -113,18 +118,26 @@ export class SimController {
           'Content-Type': 'application/json',
         },
       });
-      const { success: isPaused } = await response.json();
+      const { status: statusCode, ok: requestOk } = response;
 
-      this.isSimRunning = isPaused;
-
-      if (!isPaused) {
+      if (!requestOk) {
         const message = `Python sim ${this.title} returned unsuccessfully on PAUSE request`;
         this.#logger.error(message);
         throw new Error(message);
       }
 
-      this.#stopWorker();
-      this.#logger.info(`Python sim ${this.title} was paused`);
+      const { success } = await response.json();
+      const wasNewPaused = success && statusCode === 200;
+      const isAlreadyPaused = !success && statusCode === 200;
+      this.isSimRunning = !(wasNewPaused || isAlreadyPaused);
+
+      if (!this.isSimRunning) {
+        this.#stopWorker();
+      }
+
+      this.#logger[wasNewPaused ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewPaused ? 'was paused' : 'is already paused'}`
+      );
     } catch (error) {
       const message = `Pausing Python sim ${this.title} failed`;
       this.#logger.error(message, error);
@@ -154,18 +167,26 @@ export class SimController {
           'Content-Type': 'application/json',
         },
       });
-      const { success: isResumed } = await response.json();
+      const { status: statusCode, ok: requestOk } = response;
 
-      this.isSimRunning = isResumed;
-
-      if (!isResumed) {
+      if (!requestOk) {
         const message = `Python sim ${this.title} returned unsuccessfully on RESUME request`;
         this.#logger.error(message);
         throw new Error(message);
       }
 
-      this.#startWorker();
-      this.#logger.info(`Python sim ${this.title} was resumed`);
+      const { success } = await response.json();
+      const wasNewResumed = success && statusCode === 200;
+      const isAlreadyRunning = !success && statusCode === 200;
+      this.isSimRunning = wasNewResumed || isAlreadyRunning;
+
+      if (this.isSimRunning) {
+        this.#startWorker();
+      }
+
+      this.#logger[wasNewResumed ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewResumed ? 'was resumed' : 'is already running'}`
+      );
     } catch (error) {
       const message = `Resuming Python sim ${this.title} failed`;
       this.#logger.error(message, error);
@@ -184,9 +205,10 @@ export class SimController {
           'Content-Type': 'application/json',
         },
       });
-      const { success: hasReset } = await response.json();
+      const { ok: requestOk } = response;
+      const { success } = await response.json();
 
-      if (!hasReset) {
+      if (!requestOk || !success) {
         const message = `Python sim ${this.title} returned unsuccessfully on RESET request`;
         this.#logger.error(message);
         throw new Error(message);
@@ -196,12 +218,6 @@ export class SimController {
     } catch (error) {
       const message = `Resetting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
-
-      this.isSimRunning = false;
-      if (this.#workerController.isWorkerRunning) {
-        await this.#stopWorker();
-      }
-
       throw new Error(message, error);
     }
   }

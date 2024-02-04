@@ -336,7 +336,7 @@ if __name__ == "__main__":
             app._simulation_running = True
             return jsonify(success=True), 201
         if app.simulation_running:
-            return jsonify(success=True), 200
+            return jsonify(success=False), 200
         return jsonify(success=False), 400
 
     @app.route('/pause', methods=['PUT'])
@@ -345,6 +345,8 @@ if __name__ == "__main__":
             os.kill(app.kmc_model.pid, 19)
             app._simulation_running = False
             return jsonify(success=True), 200
+        if not app.simulation_running:
+            return jsonify(success=False), 200
         return jsonify(success=False), 400
 
     @app.route('/resume', methods=['PUT'])
@@ -353,6 +355,8 @@ if __name__ == "__main__":
             os.kill(app.kmc_model.pid, 18)
             app._simulation_running = True
             return jsonify(success=True), 200
+        if app.simulation_running:
+            return jsonify(success=False), 200
         return jsonify(success=False), 400
 
     @app.route('/reset', methods=['POST'])
