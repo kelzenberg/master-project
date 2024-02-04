@@ -21,7 +21,7 @@ export const handler = async (req, res) => {
 
   // Send all simulation IDs
   const simIds = simControllers.map(simController => ({
-    id: simController.uuid,
+    id: simController.uuid, // mapping `uuid` to `id` for response to frontend is correct here
     title: simController.title,
     description: simController.description,
     thumbnail: simController.getThumbnail(),

@@ -10,7 +10,7 @@ export const handler =
       return;
     }
 
-    const chosenSimController = simControllers.find(sim => sim.id === `${simId}`);
+    const chosenSimController = simControllers.find(sim => sim.uuid === `${simId}`);
 
     if (!chosenSimController) {
       logger.error('Could not find simulation instance with provided ID', { data: simId });
@@ -23,13 +23,13 @@ export const handler =
     }
 
     logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
-      data: { id: chosenSimController.id, roomId: chosenSimController.roomId, title: chosenSimController.title },
+      data: { uuid: chosenSimController.uuid, roomId: chosenSimController.roomId, title: chosenSimController.title },
     });
     socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
 
     socket.data.client = {
       ...socket.data.client,
-      currentSimId: chosenSimController.id,
+      currentSimUUID: chosenSimController.uuid,
       currentRoomId: chosenSimController.roomId,
     };
 
