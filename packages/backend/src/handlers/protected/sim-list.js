@@ -5,7 +5,7 @@ export const handler = async (req, res) => {
 
   // Get details from one simulation only
   if (querySimId) {
-    const simController = simControllers.find(sim => sim.id === querySimId);
+    const simController = simControllers.find(sim => sim.uuid === querySimId);
 
     if (!simController) {
       res.status(401).send(`Simulation with ID ${querySimId} could not be found`);
@@ -21,7 +21,7 @@ export const handler = async (req, res) => {
 
   // Send all simulation IDs
   const simIds = simControllers.map(simController => ({
-    id: simController.id,
+    id: simController.uuid,
     title: simController.title,
     description: simController.description,
     thumbnail: simController.getThumbnail(),

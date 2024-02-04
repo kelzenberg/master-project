@@ -53,28 +53,43 @@ const syncDatabaseWithConfigs = async simConfigs => {
   const storedEnvKeys = (await db.getAll()).map(config => config.envKeyForURL);
   const loadedEnvKeys = simConfigs.map(config => config.envKeyForURL);
   const { duplicates: noChangeKeys } = findDuplicatesIn(storedEnvKeys, loadedEnvKeys);
+  const stats = { removed: 0, inserted: 0 };
 
   // remove unused stored env keys
   for (const storedKey of storedEnvKeys) {
     if (noChangeKeys.includes(storedKey)) continue;
+    stats.removed++;
     await db.deleteOne({ envKeyForURL: storedKey });
   }
 
   // add new loaded env keys
   for (const loadedKey of loadedEnvKeys) {
     if (noChangeKeys.includes(loadedKey)) continue;
+    stats.inserted++;
     await db.upsertOne({ envKeyForURL: loadedKey, uuid: uuid() });
   }
 
-  logger.info('Successfully synced database with sim configs...');
+  logger.info('Successfully synced database with sim configs', { data: stats });
 };
 
 export const createSimControllersFromConfigs = async simConfigs => {
   await syncDatabaseWithConfigs(simConfigs);
 
+  const storedConfigs = await db.getAll();
+
   return Promise.all(
-    Object.values(simConfigs).map(async simConfig => {
-      const simController = new SimController({ ...simConfig });
+    Object.values(simConfigs).map(async loadedConfig => {
+      const matchingStoredConfig = storedConfigs.find(
+        storedConfig => storedConfig.envKeyForURL == loadedConfig.envKeyForURL
+      );
+
+      if (!matchingStoredConfig) {
+        const message = `Could not find a matching stored sim config for env key ${loadedConfig.envKeyForURL}`;
+        logger.error(message);
+        throw new Error(message);
+      }
+
+      const simController = new SimController({ ...loadedConfig, ...matchingStoredConfig });
       await simController.waitForSimHealth();
       await simController.fetchInitialSimData();
       return simController;

@@ -19,6 +19,22 @@ const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json'
 const simConfigs = await loadSimConfigsFromFile(configFilePath);
 export const simControllers = await createSimControllersFromConfigs(simConfigs);
 
+// DEBUG sim configs and instances output to file
+if (process.env.NODE_ENV === 'development') {
+  await writeFile(
+    './config-to-sim-model.local.json',
+    JSON.stringify(
+      {
+        simConfigs,
+        simControllers,
+      },
+      null,
+      2
+    ),
+    { encoding: 'utf8' }
+  );
+}
+
 const createServer = app => {
   if (process.env.USE_HTTPS === 'true') {
     const certPath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'cert/');
@@ -31,18 +47,6 @@ const createServer = app => {
     return createHttpServer(app);
   }
 };
-
-// DEBUG sim configs and instances output to file
-if (process.env.NODE_ENV === 'development') {
-  await writeFile(
-    './config-to-sim-model.local.json',
-    JSON.stringify({
-      simConfigs,
-      simControllers,
-    }),
-    { encoding: 'utf8' }
-  );
-}
 
 // ExpressJS
 const expressServer = createServer(createApp(logger));
