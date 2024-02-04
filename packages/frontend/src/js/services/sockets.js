@@ -6,8 +6,7 @@ const fetchTitleAndDescription = async simId => {
   return response.json();
 };
 
-const urlParams = new URLSearchParams(window.location.search);
-const simId = urlParams.get('id');
+const simId = new URLSearchParams(window.location.search).get('id');
 const { title, description } = await fetchTitleAndDescription(simId);
 const simulationPageController = new SimulationPageController(title, description);
 simulationPageController.addEventListeners();
