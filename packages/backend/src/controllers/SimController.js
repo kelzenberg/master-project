@@ -41,158 +41,6 @@ export class SimController {
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
 
-  getThumbnailPath() {
-    return this.#thumbnailPath;
-  }
-
-  async #getSimHealth(attempt = 1) {
-    this.#logger.info(`Checking health of ${this.title} Python sim (attempt #${attempt})...`);
-
-    try {
-      const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
-      const { success: isHealthy } = await response.json();
-      this.#isHealthy = isHealthy;
-    } catch (error) {
-      this.#isHealthy = false;
-      const message = `Checking health for ${this.title} sim failed`;
-      this.#logger.error(message, error);
-      throw new Error(message, error);
-    }
-
-    this.#logger[this.#isHealthy ? 'info' : 'warn'](
-      `Python sim ${this.title} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
-    );
-
-    return this.#isHealthy;
-  }
-
-  async waitForSimHealth() {
-    let repeatCounter = 0;
-    const checkHealthDelayed = async () => {
-      if (repeatCounter >= 5) return false;
-
-      const isHealthy = await this.#getSimHealth(repeatCounter + 1);
-      if (isHealthy) return true;
-
-      repeatCounter++;
-      await delayFor(1000, this.#logger);
-
-      return await checkHealthDelayed();
-    };
-
-    this.#logger.info(`Waiting for Python sim ${this.title} to become ready to accept connections...`);
-    const isHealthy = await checkHealthDelayed();
-
-    if (!isHealthy) {
-      const message = `Python sim ${this.title} is responding UNHEALTHY after ${repeatCounter} attempts`;
-      this.#logger.error(message);
-      throw new Error(message);
-    }
-  }
-
-  async fetchInitialSimData() {
-    this.#logger.info(`Fetching initial data for ${this.title} sim...`);
-
-    try {
-      const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
-      this.#data = { initial: await response.json() };
-
-      this.#logger.info(`Stored initial data for ${this.title} sim`);
-    } catch (error) {
-      const message = `Retrieving initial data for ${this.title} sim failed`;
-      this.#logger.error(message, error);
-      throw new Error(message, error);
-    }
-  }
-
-  getInitialSimData() {
-    return this.#data.initial;
-  }
-
-  async sendSimParameters({ label, value }) {
-    this.#logger.info(`Sending updated sim parameters for ${this.title} sim...`);
-
-    const payload = { label: `${label}`, value: `${value}` };
-    try {
-      const response = await fetch(`${this.#URL}/slider`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      const { success: paramsAccepted, reason } = await response.json();
-
-      if (!paramsAccepted) {
-        const message = `Python sim ${this.title} is not accepting sent parameters`;
-        this.#logger.error(message, { payload, reason });
-        throw new Error(message);
-      }
-
-      this.#logger.info(`Updated sim parameters for ${this.title} sim`);
-    } catch (error) {
-      const message = `Sending updated sim parameters for ${this.title} sim failed`;
-      this.#logger.error(message, error);
-      throw new Error(message, error);
-    }
-  }
-
-  addClient(clientId) {
-    if (this.#connectedClients.has(clientId)) {
-      this.#logger.warn(`Client ${clientId} has already been added to connected clients`);
-      return;
-    }
-
-    this.#logger.info(`Adding client ${clientId} to connected clients`);
-    this.#connectedClients.set(clientId, clientId);
-  }
-
-  removeClient(clientId) {
-    if (!this.#connectedClients.has(clientId)) {
-      this.#logger.warn(`Client ${clientId} is not listed in connected clients`);
-      return;
-    }
-
-    this.#logger.info(`Removing client ${clientId} from connected clients`);
-    this.#connectedClients.delete(clientId, clientId);
-  }
-
-  getClients() {
-    return this.#connectedClients.values();
-  }
-
-  #startWorker() {
-    if (this.#workerController.isWorkerRunning) {
-      this.#logger.warn(`Fetch-worker for ${this.title} sim is already running`);
-      return;
-    }
-    this.#workerController.startWorker();
-  }
-
-  async #stopWorker() {
-    if (!this.#workerController.isWorkerRunning) {
-      this.#logger.warn(`Fetch-worker for ${this.title} sim is not running`);
-      return;
-    }
-    await this.#workerController.stopWorker();
-  }
-
-  setWorkerEventHandlers({ messageHandler, errorHandler, exitHandler }) {
-    const workerInstance = this.#workerController.getWorker();
-
-    if (!workerInstance) {
-      const message = `Fetch-worker instance for ${this.title} sim is not available`;
-      this.#logger.error(message);
-      throw new Error(message);
-    }
-
-    workerInstance.on('message', messageHandler(this.roomId));
-    workerInstance.on('error', errorHandler(this.roomId));
-    workerInstance.on('messageerror', errorHandler(this.roomId, true));
-    workerInstance.on('exit', exitHandler(this.roomId));
-  }
-
   async startSim() {
     if (this.isSimRunning) {
       this.#logger.warn(`Python sim ${this.title} is already running`);
@@ -356,6 +204,158 @@ export class SimController {
 
       throw new Error(message, error);
     }
+  }
+
+  #startWorker() {
+    if (this.#workerController.isWorkerRunning) {
+      this.#logger.warn(`Fetch-worker for ${this.title} sim is already running`);
+      return;
+    }
+    this.#workerController.startWorker();
+  }
+
+  async #stopWorker() {
+    if (!this.#workerController.isWorkerRunning) {
+      this.#logger.warn(`Fetch-worker for ${this.title} sim is not running`);
+      return;
+    }
+    await this.#workerController.stopWorker();
+  }
+
+  setWorkerEventHandlers({ messageHandler, errorHandler, exitHandler }) {
+    const workerInstance = this.#workerController.getWorker();
+
+    if (!workerInstance) {
+      const message = `Fetch-worker instance for ${this.title} sim is not available`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    workerInstance.on('message', messageHandler(this.roomId));
+    workerInstance.on('error', errorHandler(this.roomId));
+    workerInstance.on('messageerror', errorHandler(this.roomId, true));
+    workerInstance.on('exit', exitHandler(this.roomId));
+  }
+
+  async #getSimHealth(attempt = 1) {
+    this.#logger.info(`Checking health of ${this.title} Python sim (attempt #${attempt})...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
+      const { success: isHealthy } = await response.json();
+      this.#isHealthy = isHealthy;
+    } catch (error) {
+      this.#isHealthy = false;
+      const message = `Checking health for ${this.title} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+
+    this.#logger[this.#isHealthy ? 'info' : 'warn'](
+      `Python sim ${this.title} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
+    );
+
+    return this.#isHealthy;
+  }
+
+  async waitForSimHealth() {
+    let repeatCounter = 0;
+    const checkHealthDelayed = async () => {
+      if (repeatCounter >= 5) return false;
+
+      const isHealthy = await this.#getSimHealth(repeatCounter + 1);
+      if (isHealthy) return true;
+
+      repeatCounter++;
+      await delayFor(1000, this.#logger);
+
+      return await checkHealthDelayed();
+    };
+
+    this.#logger.info(`Waiting for Python sim ${this.title} to become ready to accept connections...`);
+    const isHealthy = await checkHealthDelayed();
+
+    if (!isHealthy) {
+      const message = `Python sim ${this.title} is responding UNHEALTHY after ${repeatCounter} attempts`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+  }
+
+  async fetchInitialSimData() {
+    this.#logger.info(`Fetching initial data for ${this.title} sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
+      this.#data = { initial: await response.json() };
+
+      this.#logger.info(`Stored initial data for ${this.title} sim`);
+    } catch (error) {
+      const message = `Retrieving initial data for ${this.title} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
+  getInitialSimData() {
+    return this.#data.initial;
+  }
+
+  getThumbnailPath() {
+    return this.#thumbnailPath;
+  }
+
+  async sendSimParameters({ label, value }) {
+    this.#logger.info(`Sending updated sim parameters for ${this.title} sim...`);
+
+    const payload = { label: `${label}`, value: `${value}` };
+    try {
+      const response = await fetch(`${this.#URL}/slider`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const { success: paramsAccepted, reason } = await response.json();
+
+      if (!paramsAccepted) {
+        const message = `Python sim ${this.title} is not accepting sent parameters`;
+        this.#logger.error(message, { payload, reason });
+        throw new Error(message);
+      }
+
+      this.#logger.info(`Updated sim parameters for ${this.title} sim`);
+    } catch (error) {
+      const message = `Sending updated sim parameters for ${this.title} sim failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
+  addClient(clientId) {
+    if (this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} has already been added to connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Adding client ${clientId} to connected clients`);
+    this.#connectedClients.set(clientId, clientId);
+  }
+
+  removeClient(clientId) {
+    if (!this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} is not listed in connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Removing client ${clientId} from connected clients`);
+    this.#connectedClients.delete(clientId, clientId);
+  }
+
+  getClients() {
+    return this.#connectedClients.values();
   }
 
   toJSON() {
