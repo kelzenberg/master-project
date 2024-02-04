@@ -12,22 +12,26 @@ const { title, description } = await fetchTitleAndDescription(simId);
 const simulationPageController = new SimulationPageController(title, description);
 simulationPageController.addEventListeners();
 
-const errorOverlay = document.querySelector('#errorOverlay');
-const errorContent = document.querySelector('#errorContent');
-
-const displayErrorOverlay = error => {
-  errorOverlay.style.display = 'flex';
-  errorContent.innerHTML = `
-    <h2>Error:</h2>
-    <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
-    <p>${error.message || 'Unknown error'} ${error.data || ''}</p>
-  `;
-};
-
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 
-socket.emit(SocketEventTypes.SIM_ID, { simId });
+socket.on('connect', () => {
+  console.debug(`[DEBUG]: Connected to sim`, { simId });
+  simulationPageController.hideErrorOverlay();
+
+  console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SIM_ID.toUpperCase()} with simID`, { simId });
+  socket.emit(SocketEventTypes.SIM_ID, { simId });
+});
+
+socket.on('connect_error', error => {
+  console.debug(`[DEBUG]: Received connect error`, { error });
+  simulationPageController.displayErrorOverlay(error);
+});
+
+socket.on('disconnect', message => {
+  console.debug(`[DEBUG]: Client disconnected`);
+  simulationPageController.displayErrorOverlay(message);
+});
 
 socket.on(SocketEventTypes.INITIAL, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
@@ -38,18 +42,6 @@ socket.on(SocketEventTypes.INITIAL, payload => {
 socket.on(SocketEventTypes.DYNAMIC, payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
   simulationPageController.renderDynamicData(payload);
-});
-
-socket.on('connect', () => {
-  errorOverlay.style.display = 'none';
-  errorContent.innerHTML = '';
-});
-
-socket.on('connect_error', displayErrorOverlay);
-socket.on('disconnect', displayErrorOverlay);
-
-socket.io.on('reconnect', () => {
-  socket.emit(SocketEventTypes.SIM_ID, { simId });
 });
 
 export const sendSliderEvent = payload => {
