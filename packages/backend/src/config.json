@@ -3,35 +3,30 @@
     "title": "Methanation",
     "description": "Carbon monoxide (CO) methanation on the stepped fcc(211) Rhodium (Rh) surface facet. This model resembles a simplified version of the model presented by Mie Andersen in J. Chem. Phys. 147, 152705 (2017) and the reaction network includes different classes of surface reactions as well as different types of adsorption sites.",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "1.jpeg",
-    "databaseId": "b45489c1-9286-42cb-8b71-f71e47ee326a"
+    "thumbnail": "1.jpeg"
   },
   {
     "title": "Hydrogen Evolution",
     "description": "Simulating hydrogen evolution on Pt(111) surface. Inspired by Zhang et al. (J. Phys. Chem. C 122, 12345, 2018).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "2.jpeg",
-    "databaseId": "4bb6d4f7-0a27-4823-80d8-dc53421e136a"
+    "thumbnail": "2.jpeg"
   },
   {
     "title": "Propane Dehydrogenation",
     "description": "Investigating propane oxidative dehydrogenation on V2O5(001). Inspired by Li et al. (ACS Catal. 9, 6789, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "3.jpeg",
-    "databaseId": "646f84cf-ec44-4f19-8bce-aefcc9783fd4"
+    "thumbnail": "3.jpeg"
   },
   {
     "title": "Nitrogen Fixation",
     "description": "Modeling nitrogen fixation on MoN clusters. Inspired by recent studies (J. Am. Chem. Soc. 142, 9108, 2020).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "4.jpeg",
-    "databaseId": "b06faaa7-aa1c-40c0-b958-aa5ae421353e"
+    "thumbnail": "4.jpeg"
   },
   {
     "title": "Ethylene Epoxidation",
     "description": "Examining ethylene epoxidation on Ag-doped TiO2(110). Inspired by Wang et al. (J. Catal. 275, 123, 2019).",
     "envKeyForURL": "METHANATION_001",
-    "thumbnail": "5.jpeg",
-    "databaseId": "a107c59b-9413-4f8e-bb8b-a8ba78e1b0b0"
+    "thumbnail": "5.jpeg"
   }
 ]
