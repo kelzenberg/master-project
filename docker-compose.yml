@@ -21,6 +21,10 @@ services:
       SIMULATION_URL: sim_001
       SIMULATION_PORT: ${SIMULATION_PORT}
       METHANATION_001_URL: sim_001
+      METHANATION_002_URL: sim_001
+      METHANATION_003_URL: sim_001
+      METHANATION_004_URL: sim_001
+      METHANATION_005_URL: sim_001
     networks:
       - backend
     ports:
