@@ -217,6 +217,88 @@ export class SimController {
     }
   }
 
+  async pauseSim() {
+    if (!this.isSimRunning) {
+      this.#logger.warn(`Python sim ${this.title} is not running`);
+
+      if (this.#workerController.isWorkerRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is already running. Stopping now...`);
+        this.#stopWorker();
+      }
+
+      return;
+    }
+
+    this.#logger.info(`Requesting to pause ${this.title} Python sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/pause`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const { success: isPaused } = await response.json();
+
+      this.isSimRunning = isPaused;
+
+      if (!isPaused) {
+        const message = `Python sim ${this.title} returned unsuccessfully on PAUSE request`;
+        this.#logger.error(message);
+        throw new Error(message);
+      }
+
+      this.#stopWorker();
+      this.#logger.info(`Python sim ${this.title} was paused`);
+    } catch (error) {
+      const message = `Pausing Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
+  async resumeSim() {
+    if (this.isSimRunning) {
+      this.#logger.warn(`Python sim ${this.title} is already running`);
+
+      if (!this.#workerController.isWorkerRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is not running. Starting now...`);
+        this.#startWorker();
+      }
+
+      return;
+    }
+
+    this.#logger.info(`Requesting to resume ${this.title} Python sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/resume`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const { success: isResumed } = await response.json();
+
+      this.isSimRunning = isResumed;
+
+      if (!isResumed) {
+        const message = `Python sim ${this.title} returned unsuccessfully on RESUME request`;
+        this.#logger.error(message);
+        throw new Error(message);
+      }
+
+      this.#startWorker();
+      this.#logger.info(`Python sim ${this.title} was resumed`);
+    } catch (error) {
+      const message = `Resuming Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
   async resetSim() {
     this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
 
