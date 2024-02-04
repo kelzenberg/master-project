@@ -12,6 +12,7 @@ export class SimController {
   description;
   roomId;
   isSimRunning;
+  isSimPaused;
   createdAt;
 
   #URL;
@@ -31,6 +32,7 @@ export class SimController {
     this.description = description;
     this.roomId = `sim:${this.uuid}`;
     this.isSimRunning = false;
+    this.isSimPaused = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
     this.#thumbnailPath = `/images/${thumbnail}`;
@@ -130,6 +132,7 @@ export class SimController {
       const wasNewPaused = success && statusCode === 200;
       const isAlreadyPaused = !success && statusCode === 200;
       this.isSimRunning = !(wasNewPaused || isAlreadyPaused);
+      this.isSimPaused = wasNewPaused || isAlreadyPaused;
 
       if (!this.isSimRunning) {
         this.#stopWorker();
@@ -179,6 +182,7 @@ export class SimController {
       const wasNewResumed = success && statusCode === 200;
       const isAlreadyRunning = !success && statusCode === 200;
       this.isSimRunning = wasNewResumed || isAlreadyRunning;
+      this.isSimPaused = !(wasNewResumed || isAlreadyRunning);
 
       if (this.isSimRunning) {
         this.#startWorker();
