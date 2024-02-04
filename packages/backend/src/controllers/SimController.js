@@ -17,6 +17,7 @@ export class SimController {
   #URL;
   #thumbnailPath;
   #isHealthy;
+  #connectedClients;
   #data;
   #workerController;
   #logger;
@@ -34,6 +35,7 @@ export class SimController {
     this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
     this.#thumbnailPath = `/images/${thumbnail}`;
     this.#isHealthy = null;
+    this.#connectedClients = new Map();
     this.#data = { initial: null };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
@@ -134,6 +136,30 @@ export class SimController {
       this.#logger.error(message, error);
       throw new Error(message, error);
     }
+  }
+
+  addClient(clientId) {
+    if (this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} has already been added to connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Adding client ${clientId} to connected clients`);
+    this.#connectedClients.set(clientId, clientId);
+  }
+
+  removeClient(clientId) {
+    if (!this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} is not listed in connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Removing client ${clientId} from connected clients`);
+    this.#connectedClients.delete(clientId, clientId);
+  }
+
+  getClients() {
+    return this.#connectedClients.values();
   }
 
   #startWorker() {
