@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-jest.mock('./packages/frontend/src/js/services/sockets.js');
+jest.mock('<rootDir>/packages/frontend/src/js/services/sockets');
 
 beforeEach(() => {
   jest.clearAllMocks();
