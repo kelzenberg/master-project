@@ -14,7 +14,6 @@
   },
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "webpack serve --config ./webpack.dev.config.js",
     "build": "webpack --config ./webpack.config.js",
