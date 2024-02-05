@@ -6,7 +6,6 @@ import { LegendController } from './LegendController';
 import { SliderController } from './SliderController';
 
 export class SimulationPageController {
-  simId;
   #visualizationController;
   #plotController;
   #sliderController;
@@ -24,24 +23,12 @@ export class SimulationPageController {
     this.#legendController = new LegendController();
   }
 
-  async init() {
-    this.#getSimId();
+  async init(simId) {
     this.#addEventListeners();
 
-    const { title, description } = await this.#fetchTitleAndDescription();
+    const { title, description } = await this.#fetchTitleAndDescription(simId);
     this.#title = title;
     this.#description = description;
-  }
-
-  #getSimId() {
-    const simId = new URLSearchParams(window.location.search).get('id');
-
-    if (!simId || `${simId}`.trim() == '') {
-      console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
-      window.location.href = '/';
-    }
-
-    this.simId = simId;
   }
 
   #addEventListeners() {
@@ -85,8 +72,20 @@ export class SimulationPageController {
     }
   }
 
-  async #fetchTitleAndDescription() {
-    const response = await fetch(`/list?id=${this.simId}`, { method: 'GET' });
+  getSimId() {
+    const simId = new URLSearchParams(window.location.search).get('id');
+
+    if (!simId || `${simId}`.trim() == '') {
+      console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
+      window.location.href = '/';
+      return;
+    }
+
+    return simId;
+  }
+
+  async #fetchTitleAndDescription(simId) {
+    const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
 
     if (response.status !== 200) {
       console.debug(`[DEBUG]: SimId is misformatted or cannot be found. Redirecting...`, {
@@ -97,7 +96,7 @@ export class SimulationPageController {
       return;
     }
 
-    return await response.json();
+    return response.json();
   }
 
   async renderInitialData(jsonData) {

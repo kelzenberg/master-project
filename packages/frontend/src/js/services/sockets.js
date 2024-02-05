@@ -2,14 +2,15 @@ import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationPageController } from '../controllers/SimulationPageController';
 
 const simulationPageController = new SimulationPageController();
-await simulationPageController.init();
-const simId = simulationPageController.simId;
+const simId = simulationPageController.getSimId();
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 
-socket.on(SocketEventTypes.CONNECT, () => {
+socket.on(SocketEventTypes.CONNECT, async () => {
   console.debug(`[DEBUG]: Connected to sim`, { simId });
+
+  await simulationPageController.init(simId);
   simulationPageController.hideErrorOverlay();
 
   console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SIM_ID.toUpperCase()} with simID`, { simId });
