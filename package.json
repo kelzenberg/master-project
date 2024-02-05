@@ -40,8 +40,7 @@
     "L": "npm run --workspace @master-project/libs",
     "install:L": "npm install --workspace @master-project/libs",
     "remove:L": "npm remove --workspace @master-project/libs",
-    "S": "npm run --workspace @master-project/simulation",
-    "test": "jest"
+    "S": "npm run --workspace @master-project/simulation"
   },
   "devDependencies": {
     "eslint": "^8.53.0",

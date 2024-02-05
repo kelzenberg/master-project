@@ -16,7 +16,8 @@
   "private": true,
   "scripts": {
     "dev": "webpack serve --config ./webpack.dev.config.js",
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "test": "jest --runInBand --testMatch '**/*.test.*'"
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
