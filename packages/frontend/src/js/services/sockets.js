@@ -1,30 +1,9 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationPageController } from '../controllers/SimulationPageController';
 
-const fetchTitleAndDescription = async simId => {
-  const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
-
-  if (response.status !== 200) {
-    console.debug(`[DEBUG]: SimId is misformatted or cannot be found. Redirecting...`, {
-      status: response.status,
-      url: response.url,
-    });
-    window.location.href = '/';
-    return;
-  }
-
-  return response.json();
-};
-
-const simId = new URLSearchParams(window.location.search).get('id');
-if (!simId || `${simId}`.trim() == '') {
-  console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
-  window.location.href = '/';
-}
-
-const { title, description } = await fetchTitleAndDescription(simId);
-const simulationPageController = new SimulationPageController(title, description);
-simulationPageController.addEventListeners();
+const simulationPageController = new SimulationPageController();
+await simulationPageController.init();
+const simId = simulationPageController.simId;
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
@@ -47,9 +26,9 @@ socket.on(SocketEventTypes.DISCONNECT, message => {
   simulationPageController.displayErrorOverlay(message);
 });
 
-socket.on(SocketEventTypes.INITIAL, payload => {
+socket.on(SocketEventTypes.INITIAL, async payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
-  simulationPageController.renderInitialData(payload);
+  await simulationPageController.renderInitialData(payload);
   simulationPageController.animate();
 });
 

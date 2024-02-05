@@ -1,4 +1,4 @@
-import { LandingPageController } from '../js/controllers/LandingPageController';
+import { LandingPageController } from './LandingPageController';
 
 // Mock the fetch function
 global.fetch = jest.fn(() =>
@@ -8,16 +8,15 @@ global.fetch = jest.fn(() =>
   })
 );
 
-// Create a mock for document.querySelector
-document.querySelector = jest.fn(() => ({
-  append: jest.fn(),
-  setAttribute: jest.fn(),
-  style: {},
-}));
-
 describe('LandingPageController', () => {
   describe('initializeLandingPage', () => {
     test('should call fetchSimList and update the previewContainer', async () => {
+      document.body.innerHTML = `
+          <div
+          class="previewContainer"
+          id="previewContainer"
+        ></div>
+      `;
       const controller = new LandingPageController();
       await controller.initializeLandingPage();
 

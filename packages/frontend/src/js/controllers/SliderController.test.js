@@ -1,15 +1,6 @@
-// Import the SliderController class
 import { SliderController } from './SliderController';
 
-// Mock document functions for testing
-jest.mock('document', () => ({
-  querySelector: jest.fn(),
-}));
-
-// Mock the sendSliderEvent function
-jest.mock('../services/sockets', () => ({
-  sendSliderEvent: jest.fn(),
-}));
+jest.mock('../services/sockets');
 
 describe('SliderController', () => {
   let sliderController;
@@ -27,17 +18,9 @@ describe('SliderController', () => {
 
   describe('initializeSlider', () => {
     test('should initialize slider with correct attributes', () => {
-      // Mock the document.querySelector function and container element
-      const mockSliderContainer = document.querySelector.mockReturnValueOnce({
-        replaceChildren: jest.fn(),
-      });
-
-      // Mock createElement to return an object with required functions
-      document.createElement = jest.fn(tagName => ({
-        setAttribute: jest.fn(),
-        addEventListener: jest.fn(),
-        tagName,
-      }));
+      document.body.innerHTML = `
+        <div id="sliderContainer"></div>
+      `;
 
       try {
         // Call the initializeSlider method
