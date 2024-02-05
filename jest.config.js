@@ -1,7 +1,7 @@
 const esModules = ['plotly.js-dist-min'].join('|');
 
 /** @type {import('jest').Config} */
-const config = {
+export default {
   rootDir: '.',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
   clearMocks: true,
@@ -11,6 +11,3 @@ const config = {
   transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   verbose: true,
 };
-
-// eslint-disable-next-line unicorn/prefer-module, no-undef
-module.exports = config;

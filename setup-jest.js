@@ -1,6 +1,4 @@
-import { jest, beforeEach, afterAll } from '@jest/globals';
-
-jest.mock('<rootDir>/packages/frontend/src/js/services/sockets');
+jest.mock('./packages/frontend/src/js/services/sockets.js');
 
 beforeEach(() => {
   jest.clearAllMocks();

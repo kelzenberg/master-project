@@ -1,5 +1,4 @@
-// eslint-disable-next-line unicorn/prefer-module, no-undef
-module.exports = {
+export default {
   presets: [
     [
       '@babel/preset-env',
