@@ -29,6 +29,7 @@ export class SimulationPageController {
     const { title, description } = await this.#fetchTitleAndDescription(simId);
     this.#title = title;
     this.#description = description;
+    this.simId = simId;
   }
 
   #addEventListeners() {
@@ -62,6 +63,23 @@ export class SimulationPageController {
     const pauseButton = document.querySelector('#pauseButton');
     pauseButton.addEventListener('click', () => {
       this.#togglePause();
+    });
+
+    document.querySelector('#resetButton').addEventListener('click', async event => {
+      event.currentTarget.disabled = true;
+
+      try {
+        const response = await fetch(`/reset?id=${this.simId}`, { method: 'POST' });
+        const { ok: requestOk } = response;
+
+        if (!requestOk) {
+          const message = `Python sim ${this.simId} returned unsuccessfully on RESET request`;
+          throw new Error(message);
+        }
+      } catch (error) {
+        console.debug(error);
+        event.currentTarget.disabled = true;
+      }
     });
 
     const browserLanguage = navigator.language || navigator.userLanguage;
@@ -222,6 +240,8 @@ export class SimulationPageController {
     } else {
       document.querySelector('#pauseButtonImage').style.display = 'block';
     }
+
+    if (this.#isSuperUser) document.querySelector('#resetButtonImage').style.display = 'block';
 
     document.querySelector('#coverageCheckboxContainer').style.display = 'block';
     document.querySelector('#tofCheckboxContainer').style.display = 'block';

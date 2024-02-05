@@ -62,23 +62,35 @@
           width="80"
           height="70"
         />
-        <button
-          type="button"
-          id="pauseButton"
-          class="btn"
-          title="Pause the simulation"
-        >
-          <img
-            src="./resources/misc/pause.png"
-            alt="Pause simulation rendering"
-            id="pauseButtonImage"
-          />
-          <img
-            src="./resources/misc/play.png"
-            alt="Resume simulation rendering"
-            id="playButtonImage"
-          />
-        </button>
+        <div id="controlButtonsContainer">
+          <button
+            type="button"
+            id="pauseButton"
+            title="Pause the simulation"
+          >
+            <img
+              src="./resources/misc/pause.png"
+              alt="Pause simulation rendering"
+              id="pauseButtonImage"
+            />
+            <img
+              src="./resources/misc/play.png"
+              alt="Resume simulation rendering"
+              id="playButtonImage"
+            />
+          </button>
+          <button
+            type="button"
+            id="resetButton"
+            title="Reset the simulation"
+          >
+            <img
+              id="resetButtonImage"
+              src="./resources/misc/reset-button.png"
+              alt="Reset the simulation"
+            />
+          </button>
+        </div>
       </div>
       <div class="simulationController">
         <div id="canvasContainer">
