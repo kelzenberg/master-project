@@ -43,6 +43,18 @@
   },
   "overrides": [
     {
+      // Overrides for Class files
+      "files": ["**/model/*", "**/models/*", "**/dto/*", "**/controller/*", "**/controllers/*"],
+      "rules": {
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "pascalCase"
+          }
+        ]
+      }
+    },
+    {
       "files": ["**/*.test.*", "**/setup-jest.*"],
       "plugins": ["jest"],
       "extends": [
@@ -55,24 +67,7 @@
         "jest/globals": true
       },
       "rules": {
-        "unicorn/filename-case": [
-          "error",
-          {
-            "case": "off"
-          }
-        ]
-      }
-    },
-    {
-      // Overrides for Class files
-      "files": ["**/model/*", "**/models/*", "**/dto/*", "**/controller/*", "**/controllers/*"],
-      "rules": {
-        "unicorn/filename-case": [
-          "error",
-          {
-            "case": "pascalCase"
-          }
-        ]
+        "unicorn/filename-case": ["off"]
       }
     }
   ]
