@@ -1,7 +1,4 @@
-jest.mock('./packages/frontend/src/js/services/sockets.js');
-
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
+beforeEach(() => {});
 afterAll(() => {});
+
+jest.mock('./packages/frontend/src/js/services/sockets');
