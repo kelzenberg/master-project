@@ -9,6 +9,19 @@ simulation-preview > * {
   cursor: pointer;
 }
 
+.simulationPreview__innerContainer > h3 {
+  font-weight: 600;
+  margin-bottom: .5rem;
+}
+
+.simulationPreview__innerContainer > p {
+  overflow-y: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.2em;
+}
+
 .simulationPreview__container {
   position: relative;
   display: flex;
@@ -19,7 +32,7 @@ simulation-preview > * {
 
 .simulationPreview__innerContainer {
   max-width: 100%;
-  max-height: 45%;
+  height: 20%;
   padding: 1rem;
   background-color: hsla(0, 0%, 93%, 0.7);
   align-self: flex-end;

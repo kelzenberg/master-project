@@ -73,9 +73,10 @@ class rangeSlider extends HTMLElement {
   handleInput(event) {
     if (!event.target.value) return;
 
-    const value = this.sliderPositionToValue(event.target.value);
+    let value = this.sliderPositionToValue(event.target.value);
 
-    if (value < this.initialMin || value > this.initialMax) return;
+    if (value > this.initialMax) value = this.initialMax;
+    if (value < this.initialMin) value = this.initialMin;
 
     this.value = value;
 
