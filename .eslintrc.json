@@ -53,6 +53,14 @@
       ],
       "env": {
         "jest/globals": true
+      },
+      "rules": {
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "off"
+          }
+        ]
       }
     },
     {
