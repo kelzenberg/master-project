@@ -1,36 +1,16 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
 import { SimulationPageController } from '../controllers/SimulationPageController';
 
-const fetchTitleAndDescription = async simId => {
-  const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
-
-  if (response.status !== 200) {
-    console.debug(`[DEBUG]: SimId is misformatted or cannot be found. Redirecting...`, {
-      status: response.status,
-      url: response.url,
-    });
-    window.location.href = '/';
-    return;
-  }
-
-  return response.json();
-};
-
-const simId = new URLSearchParams(window.location.search).get('id');
-if (!simId || `${simId}`.trim() == '') {
-  console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
-  window.location.href = '/';
-}
-
-const { title, description } = await fetchTitleAndDescription(simId);
-const simulationPageController = new SimulationPageController(title, description);
-simulationPageController.addEventListeners();
+const simulationPageController = new SimulationPageController();
+const simId = simulationPageController.getSimId();
 
 // eslint-disable-next-line no-undef
 const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
 
-socket.on(SocketEventTypes.CONNECT, () => {
+socket.on(SocketEventTypes.CONNECT, async () => {
   console.debug(`[DEBUG]: Connected to sim`, { simId });
+
+  await simulationPageController.init(simId);
   simulationPageController.hideErrorOverlay();
 
   console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SIM_ID.toUpperCase()} with simID`, { simId });
@@ -47,9 +27,9 @@ socket.on(SocketEventTypes.DISCONNECT, message => {
   simulationPageController.displayErrorOverlay(message);
 });
 
-socket.on(SocketEventTypes.INITIAL, payload => {
+socket.on(SocketEventTypes.INITIAL, async payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
-  simulationPageController.renderInitialData(payload);
+  await simulationPageController.renderInitialData(payload);
   simulationPageController.animate();
 });
 

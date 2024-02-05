@@ -1,4 +1,5 @@
 import { sendSliderEvent } from '../services/sockets';
+
 export class SliderController {
   #slider;
 
@@ -24,7 +25,6 @@ export class SliderController {
 
       rangeSlider.addEventListener('change', event => {
         this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.currentTarget.value);
-        console.log(event.currentTarget.value);
       });
 
       return rangeSlider;

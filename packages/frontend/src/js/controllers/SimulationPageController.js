@@ -16,16 +16,90 @@ export class SimulationPageController {
   // #isSuperUser muss später von sockets.js mitgegeben als constructor param!
   #isSuperUser = true;
 
-  constructor(title, description) {
+  constructor() {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
+  }
+
+  async init(simId) {
+    this.#addEventListeners();
+
+    const { title, description } = await this.#fetchTitleAndDescription(simId);
     this.#title = title;
     this.#description = description;
   }
 
-  renderInitialData(jsonData) {
+  #addEventListeners() {
+    const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
+    const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
+
+    checkbox1Coverage.addEventListener('change', () => {
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    checkbox2Coverage.addEventListener('change', () => {
+      this.#toggleCoverage(checkbox2Coverage.checked);
+    });
+
+    const checkbox1Tof = document.querySelector('#toggleTofButton1');
+    const checkbox2Tof = document.querySelector('#toggleTofButton2');
+
+    checkbox1Tof.addEventListener('change', () => {
+      this.#toggleTof(checkbox2Tof.checked);
+    });
+
+    checkbox2Tof.addEventListener('change', () => {
+      this.#toggleTof(checkbox2Tof.checked);
+    });
+
+    const toggleLegendButton = document.querySelector('#toggleLegendButton');
+    toggleLegendButton.addEventListener('click', () => {
+      this.#toggleLegend();
+    });
+
+    const pauseButton = document.querySelector('#pauseButton');
+    pauseButton.addEventListener('click', () => {
+      this.#togglePause();
+    });
+
+    const browserLanguage = navigator.language || navigator.userLanguage;
+    const germanTooltip = 'Rendering der Simulationsdaten pausieren';
+
+    if (browserLanguage.startsWith('de')) {
+      pauseButton.title = germanTooltip;
+    }
+  }
+
+  getSimId() {
+    const simId = new URLSearchParams(window.location.search).get('id');
+
+    if (!simId || `${simId}`.trim() == '') {
+      console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
+      window.location.href = '/';
+      return;
+    }
+
+    return simId;
+  }
+
+  async #fetchTitleAndDescription(simId) {
+    const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
+
+    if (response.status !== 200) {
+      console.debug(`[DEBUG]: SimId is misformatted or cannot be found. Redirecting...`, {
+        status: response.status,
+        url: response.url,
+      });
+      window.location.href = '/';
+      return;
+    }
+
+    return response.json();
+  }
+
+  async renderInitialData(jsonData) {
     // Setting title and description
     document.querySelector('#simulationTitle').textContent = this.#title;
     document.querySelector('#simulationDescription').textContent = this.#description;
@@ -77,47 +151,6 @@ export class SimulationPageController {
 
   animate() {
     this.#visualizationController.animate();
-  }
-
-  addEventListeners() {
-    const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
-    const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
-
-    checkbox1Coverage.addEventListener('change', () => {
-      this.#toggleCoverage(checkbox2Coverage.checked);
-    });
-
-    checkbox2Coverage.addEventListener('change', () => {
-      this.#toggleCoverage(checkbox2Coverage.checked);
-    });
-
-    const checkbox1Tof = document.querySelector('#toggleTofButton1');
-    const checkbox2Tof = document.querySelector('#toggleTofButton2');
-
-    checkbox1Tof.addEventListener('change', () => {
-      this.#toggleTof(checkbox2Tof.checked);
-    });
-
-    checkbox2Tof.addEventListener('change', () => {
-      this.#toggleTof(checkbox2Tof.checked);
-    });
-
-    const toggleLegendButton = document.querySelector('#toggleLegendButton');
-    toggleLegendButton.addEventListener('click', () => {
-      this.#toggleLegend();
-    });
-
-    const pauseButton = document.querySelector('#pauseButton');
-    pauseButton.addEventListener('click', () => {
-      this.#togglePause();
-    });
-
-    const browserLanguage = navigator.language || navigator.userLanguage;
-    const germanTooltip = 'Rendering der Simulationsdaten pausieren';
-
-    if (browserLanguage.startsWith('de')) {
-      pauseButton.title = germanTooltip;
-    }
   }
 
   #initializeSites(sites) {

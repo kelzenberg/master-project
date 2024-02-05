@@ -1,3 +1,11 @@
 {
-  "presets": ["@babel/preset-env"]
+  "extends": "../../babel.config.json",
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": "defaults"
+      }
+    ]
+  ]
 }
