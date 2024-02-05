@@ -2,29 +2,29 @@ export class PlotController {
   #plots;
   #graphsTof;
   #graphsCoverage;
-  #tofNumGraphs;
-  #coverageNumGraphs;
-  #coverageSingleNumGraphs;
+  #totalNumberOfTofGraphs;
+  #totalNumberOfCoverageGraphs;
+  #totalNumberOfCoveragePerSiteTypeGraphs;
   #tofLayout;
   #coverageLayout;
   #lineWidth = 1;
   #markerSize = 4;
   #isTofToggled = false;
-  #isSingleCoverageActive = false;
+  #isCoveragePerSiteTypeActive = false;
 
   #tofColors;
   #tofLabels;
   #coverageColors;
   #coverageLabels;
-  #coverageSingleColors;
-  #coverageSingleLabels;
+  #coveragePerSiteTypeColors;
+  #coveragePerSiteTypeLabels;
 
   constructor(plots) {
     this.#plots = plots;
     this.#graphsTof = [];
     this.#graphsCoverage = [];
-    this.#tofNumGraphs = 0;
-    this.#coverageNumGraphs = 0;
+    this.#totalNumberOfTofGraphs = 0;
+    this.#totalNumberOfCoverageGraphs = 0;
     this.#tofLayout = {
       font: {
         family: 'Roboto, sans-serif',
@@ -70,19 +70,19 @@ export class PlotController {
   renderInitialData() {
     // Set up initial data for each graph:
     // TOF
-    this.#tofNumGraphs = this.#plots.tof.length;
+    this.#totalNumberOfTofGraphs = this.#plots.tof.length;
     this.#tofColors = this.#getColors('tof', 'color');
     this.#tofLabels = this.#getLabels('tof', 'label');
 
     // Coverage average
-    this.#coverageNumGraphs = this.#plots.coverage.length;
+    this.#totalNumberOfCoverageGraphs = this.#plots.coverage.length;
     this.#coverageColors = this.#getColors('coverage', 'averageColor');
     this.#coverageLabels = this.#getLabels('coverage', 'averageLabel');
 
     // Coverage single
-    this.#coverageSingleColors = this.#getAllSingleColorsCoverage();
-    this.#coverageSingleLabels = this.#getAllSingleLabelsCoverage();
-    this.#coverageSingleNumGraphs = this.#coverageSingleLabels.length;
+    this.#coveragePerSiteTypeColors = this.#getColorsForCoveragePerSiteType();
+    this.#coveragePerSiteTypeLabels = this.#getLabelsForCoveragePerSiteType();
+    this.#totalNumberOfCoveragePerSiteTypeGraphs = this.#coveragePerSiteTypeLabels.length;
 
     this.#newPlotTof();
     this.#newPlotCoverage();
@@ -93,7 +93,7 @@ export class PlotController {
     this.#clearPlots();
     for (const plotData of this.#plots.plotData) {
       // Update each TOF graph with new data
-      for (let i = 0; i < this.#tofNumGraphs; i++) {
+      for (let i = 0; i < this.#totalNumberOfTofGraphs; i++) {
         const graphTOF = this.#graphsTof[i];
 
         graphTOF.x.push(plotData.kmcTime);
@@ -101,18 +101,18 @@ export class PlotController {
         graphTOF.y.push(this.#isTofToggled ? tofValues[1] : tofValues[0]);
       }
 
-      if (this.#isSingleCoverageActive) {
+      if (this.#isCoveragePerSiteTypeActive) {
         // Update each Coverage single graph with new data
-        let coverageSingleValues = this.#getAllSingleValuesCoverage(plotData);
-        for (let k = 0; k < this.#coverageSingleNumGraphs; k++) {
-          const graphCoverageSingle = this.#graphsCoverage[k];
+        let coveragePerSiteTypeValues = this.#getValuesForCoveragePerSiteType(plotData);
+        for (let k = 0; k < this.#totalNumberOfCoveragePerSiteTypeGraphs; k++) {
+          const graphCoveragePerSiteType = this.#graphsCoverage[k];
 
-          graphCoverageSingle.x.push(plotData.kmcTime);
-          graphCoverageSingle.y.push(coverageSingleValues[k]);
+          graphCoveragePerSiteType.x.push(plotData.kmcTime);
+          graphCoveragePerSiteType.y.push(coveragePerSiteTypeValues[k]);
         }
       } else {
         // Update each Coverage graph with new data
-        for (let j = 0; j < this.#coverageNumGraphs; j++) {
+        for (let j = 0; j < this.#totalNumberOfCoverageGraphs; j++) {
           const graphCoverage = this.#graphsCoverage[j];
 
           graphCoverage.x.push(plotData.kmcTime);
@@ -130,11 +130,11 @@ export class PlotController {
   }
 
   toggleCoverage(singleCoverageActive) {
-    let initialState = this.#isSingleCoverageActive;
-    this.#isSingleCoverageActive = singleCoverageActive;
-    if (initialState !== this.#isSingleCoverageActive) {
-      if (this.#isSingleCoverageActive) {
-        this.#newPlotCoverageSingle();
+    let initialState = this.#isCoveragePerSiteTypeActive;
+    this.#isCoveragePerSiteTypeActive = singleCoverageActive;
+    if (initialState !== this.#isCoveragePerSiteTypeActive) {
+      if (this.#isCoveragePerSiteTypeActive) {
+        this.#newPlotCoveragePerSiteType();
       } else {
         this.#newPlotCoverage();
       }
@@ -142,7 +142,7 @@ export class PlotController {
   }
 
   #newPlotTof() {
-    let initialData = Array.from({ length: this.#tofNumGraphs }, (_, index) => ({
+    let initialData = Array.from({ length: this.#totalNumberOfTofGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
       y: [this.#plots.plotData[0].tof[index].values[0]],
       mode: 'lines+markers',
@@ -173,7 +173,7 @@ export class PlotController {
   }
 
   #newPlotCoverage() {
-    let initialData = Array.from({ length: this.#coverageNumGraphs }, (_, index) => ({
+    let initialData = Array.from({ length: this.#totalNumberOfCoverageGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
       y: [this.#calculateAverage(this.#plots.plotData[0].coverage[index].values)],
       mode: 'lines+markers',
@@ -203,21 +203,21 @@ export class PlotController {
     });
   }
 
-  #newPlotCoverageSingle() {
-    let values = this.#getAllSingleValuesCoverage();
+  #newPlotCoveragePerSiteType() {
+    let values = this.#getValuesForCoveragePerSiteType();
 
-    let initialData = Array.from({ length: this.#coverageSingleNumGraphs }, (_, index) => ({
+    let initialData = Array.from({ length: this.#totalNumberOfCoveragePerSiteTypeGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
       y: [values[index]],
       mode: 'lines+markers',
-      color: this.#coverageSingleColors[index],
+      color: this.#coveragePerSiteTypeColors[index],
       line: {
         width: this.#lineWidth,
       },
       marker: {
         size: this.#markerSize,
       },
-      name: this.#coverageSingleLabels[index],
+      name: this.#coveragePerSiteTypeLabels[index],
     }));
 
     Plotly.newPlot(
@@ -260,7 +260,7 @@ export class PlotController {
     return dataValues;
   }
 
-  #getAllSingleColorsCoverage() {
+  #getColorsForCoveragePerSiteType() {
     let allColors = [];
 
     for (const item of this.#plots.coverage) {
@@ -270,7 +270,7 @@ export class PlotController {
     return allColors;
   }
 
-  #getAllSingleLabelsCoverage() {
+  #getLabelsForCoveragePerSiteType() {
     let allLabels = [];
 
     for (const item of this.#plots.coverage) {
@@ -280,7 +280,7 @@ export class PlotController {
     return allLabels;
   }
 
-  #getAllSingleValuesCoverage() {
+  #getValuesForCoveragePerSiteType() {
     const coverage = this.#plots.plotData[0].coverage;
     const result = [];
 

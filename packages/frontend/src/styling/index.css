@@ -17,6 +17,7 @@ html {
 .pageContent {
   max-width: 90vw;
   margin: auto;
+  padding-bottom: 1rem;
 }
 
 .titleBar, .titleContainer {

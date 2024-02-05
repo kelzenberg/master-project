@@ -73,9 +73,10 @@ class rangeSlider extends HTMLElement {
   handleInput(event) {
     if (!event.target.value) return;
 
-    const value = this.sliderPositionToValue(event.target.value);
+    let value = this.sliderPositionToValue(event.target.value);
 
-    if (value < this.initialMin || value > this.initialMax) return;
+    if (value > this.initialMax) value = this.initialMax;
+    if (value < this.initialMin) value = this.initialMin;
 
     this.value = value;
 
@@ -101,7 +102,13 @@ class rangeSlider extends HTMLElement {
     this.modalInfoMin.innerText = 'Minimum: ' + this.initialMin;
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
     this.modalInfoMax.innerText = 'Maximum: ' + this.initialMax;
-    this.modalLogInfo.textContent = `${this.isLogScale ? 'Logarithmic' : 'Linear'} scale`;
+    // Set text content and color based on isLogScale
+    if (this.isLogScale) {
+      this.modalLogInfo.textContent = 'Logarithmic scale';
+      this.modalLogInfo.style.color = '#6C0006';
+    } else {
+      this.modalLogInfo.textContent = 'Linear scale';
+    }
   }
 
   setAttributeValues() {
