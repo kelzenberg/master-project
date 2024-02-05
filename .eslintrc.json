@@ -7,7 +7,7 @@
   "env": {
     "es2021": true
   },
-  "plugins": ["prettier", "unicorn", "import", "jest"],
+  "plugins": ["prettier", "unicorn", "import"],
   "extends": [
     "eslint:recommended",
     "plugin:import/recommended",
@@ -43,9 +43,14 @@
   },
   "overrides": [
     {
-      "files": ["**/*.test.*"],
+      "files": ["**/*.test.*", "**/setup-jest.*"],
       "plugins": ["jest"],
-      "extends": ["plugin:jest/recommended"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:jest/recommended",
+        // always make sure the prettier/recommended rules come last in array
+        "plugin:prettier/recommended"
+      ],
       "env": {
         "jest/globals": true
       }
