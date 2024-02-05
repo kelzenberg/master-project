@@ -6,7 +6,7 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
   clearMocks: true,
   transform: {
-    '^.+\\.(m?js|ts)$': 'babel-jest', // transpile mjs, mts, js, ts files
+    '^.+\\.(m?js|ts)$': ['babel-jest', { rootMode: 'upward' }], // transpile mjs, mts, js, ts files
   },
   transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   verbose: true,
