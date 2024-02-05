@@ -31,7 +31,7 @@ export const handler = (logger, socket, simControllers) => async () => {
     });
 
     if (currentSimController.isSimRunning && !currentSimController.isSimPaused) {
-      // await currentSimController.pauseSim(); // WIP !
+      await currentSimController.pauseSim();
     }
   }
 

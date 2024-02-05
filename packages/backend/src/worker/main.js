@@ -14,6 +14,13 @@ const main = async () => {
 
   logger.info(`Starting ${workerName} worker loop to fetch URL '${URL}' every ${fetchDelay} milliseconds...`);
 
+  parentPort.on('message', value => {
+    if (value === 'shutdown') {
+      logger.info(`Received shutdown message from main thread. Shutting down ${workerName} worker...`);
+      process.exit(0);
+    }
+  });
+
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
