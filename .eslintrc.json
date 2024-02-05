@@ -7,7 +7,7 @@
   "env": {
     "es2021": true
   },
-  "plugins": ["prettier", "unicorn", "import"],
+  "plugins": ["prettier", "unicorn", "import", "jest"],
   "extends": [
     "eslint:recommended",
     "plugin:import/recommended",
@@ -43,6 +43,14 @@
   },
   "overrides": [
     {
+      "files": ["**/*.test.*"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended"],
+      "env": {
+        "jest/globals": true
+      }
+    },
+    {
       // Overrides for Class files
       "files": ["**/model/*", "**/models/*", "**/dto/*", "**/controller/*", "**/controllers/*"],
       "rules": {
@@ -52,13 +60,6 @@
             "case": "pascalCase"
           }
         ]
-      }
-    },
-    {
-      "files": ["tests/**/*"],
-      "plugins": ["jest"],
-      "env": {
-        "jest/globals": true
       }
     }
   ]
