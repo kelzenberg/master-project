@@ -20,7 +20,7 @@ export const createApp = logger => {
 
   const currentFilePath = path.dirname(url.fileURLToPath(import.meta.url));
   app.use(favicon(path.join(currentFilePath, './images/favicon.svg')));
-  app.use('/images', express.static(path.join(currentFilePath, 'images')));
+  app.use('/img', express.static(path.join(currentFilePath, 'images')));
   const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
   app.use('/', express.static(path.join(currentFilePath, staticPath)));
 

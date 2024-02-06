@@ -35,7 +35,7 @@ export class SimController {
     this.isSimPaused = false;
     this.createdAt = new Date().toISOString();
     this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
-    this.#thumbnailPath = `/images/${thumbnail}`;
+    this.#thumbnailPath = `/img/${thumbnail}`;
     this.#isHealthy = null;
     this.#connectedClients = new Map();
     this.#data = { initial: null };
