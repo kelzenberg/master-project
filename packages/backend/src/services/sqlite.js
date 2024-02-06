@@ -28,6 +28,8 @@ const setupDatabase = async () => {
 
 const dbInstance = await setupDatabase();
 
+const checkReadiness = async () => dbInstance.exec(SQL`SELECT 1`);
+
 const getAll = async () => dbInstance.all(SQL`SELECT * FROM simulation`);
 
 const upsertOne = async ({ envKeyForURL, uuid }) => {
@@ -72,4 +74,4 @@ const deleteOne = async ({ envKeyForURL }) => {
   return result;
 };
 
-export const db = { instance: dbInstance, getAll, upsertOne, deleteOne };
+export const db = { instance: dbInstance, checkReadiness, getAll, upsertOne, deleteOne };
