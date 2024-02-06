@@ -22,11 +22,11 @@ export const simControllers = await createSimControllersFromConfigs(simConfigs);
 // DEBUG sim configs and instances output to file
 if (process.env.NODE_ENV === 'development') {
   await writeFile(
-    './config-to-sim-model.local.json',
+    './config-to-sim-controller.local.json',
     JSON.stringify(
       {
-        simConfigs,
-        simControllers,
+        input: simConfigs,
+        output: simControllers,
       },
       null,
       2
