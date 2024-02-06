@@ -17,7 +17,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*' --ignore './src/config.json' --ignore './src/database.db'",
-    "start": "node --env-file=../../.env ./src/index.js"
+    "start": "node --env-file=../../.env ./src/index.js",
+    "generate-cert": "sh ./generate-local-cert.sh"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

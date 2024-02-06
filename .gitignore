@@ -11,4 +11,4 @@
 **/*.local
 **/*.local.*
 **/*.env
-**/cert
+**/cert*
