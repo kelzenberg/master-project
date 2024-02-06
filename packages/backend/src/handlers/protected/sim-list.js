@@ -5,7 +5,7 @@ import { Logger } from '../../utils/logger.js';
 const logger = Logger({ name: 'get-sim-list' });
 
 export const handler = async (req, res) => {
-  const querySimId = req.query.id;
+  const querySimId = `${req.query.id}`.trim();
 
   if (!querySimId) {
     logger.info(`Retrieving all available simulation IDs...`);
