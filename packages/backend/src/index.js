@@ -14,11 +14,12 @@ import { db } from './services/sqlite.js';
 const logger = Logger({ name: 'server' });
 const expressPort = process.env.BACKEND_PORT || 3000;
 
+// Reading simulation configs file & initiating SimController for them
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
 const simConfigs = await loadSimConfigsFromFile(configFilePath);
 export const simControllers = await createSimControllersFromConfigs(simConfigs);
 
-// DEBUG sim configs and instances output to file
+// [DEBUG] sim configs and instances are outputted to file
 if (process.env.NODE_ENV === 'development') {
   await writeFile(
     './config-to-sim-controller.local.json',
@@ -77,6 +78,7 @@ const stoppableServer = stoppable(
 
 const stopServerAsync = bluebird.promisify(stoppableServer.stop.bind(stoppableServer));
 
+// Graceful shutdown --> Add server components to shutdown here
 const shutdown = async () => {
   logger.info('Server and services stopping...');
   await Promise.resolve(simControllers.map(async controller => controller.pauseSim()));
