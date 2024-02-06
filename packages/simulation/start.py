@@ -254,8 +254,14 @@ class WebGLInterface(KMC_Model):
                             self.lattice.get_species(
                                 [x_coord, y_coord, z_coord, sites_per_unit_cell]))
         for tof in zip(self.tof_data.tolist(), self.tof_integ.tolist()):
+            _tof = []
+            for t in tof:
+                if np.isnan(t):
+                    _tof.append(0.0)
+                else:
+                    _tof.append(float(t))
             tofs.append(
-                {"values": list(tof)}
+                {"values": _tof}
             )
         for occ in state.occupation.tolist():
             occs.append(
