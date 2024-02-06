@@ -5,9 +5,7 @@ import { Logger } from '../../utils/logger.js';
 const logger = Logger({ name: 'get-sim-list' });
 
 export const handler = async (req, res) => {
-  const querySimId = `${req.query.id}`.trim();
-
-  if (!querySimId) {
+  if (!req.query.id || req.query.id.length === 0) {
     logger.info(`Retrieving all available simulation IDs...`);
 
     const simIds = simControllers.map(simController => ({
@@ -21,6 +19,7 @@ export const handler = async (req, res) => {
     return;
   }
 
+  const querySimId = `${req.query.id}`.trim();
   logger.info(`Retrieving details for simulation with simId ${querySimId}...`);
 
   if (!uuidValidate(querySimId)) {
