@@ -35,7 +35,7 @@ export const handler = async (req, res) => {
   if (!simController) {
     const message = `Simulation with ID ${querySimId} could not be found`;
     logger.error(message);
-    res.status(400).send(message);
+    res.status(404).send(message);
     return;
   }
 
