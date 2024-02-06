@@ -3,9 +3,8 @@ simulation-preview {
   background-repeat: no-repeat;
   border-radius: 0.25rem;
   box-shadow: 2px 7px 15px -4px #00000026;
-  max-width: 500px;
-  height: 300px;
-  flex: 1 1 400px;
+  height: 22.5rem;
+  width: 100%;
 }
 
 simulation-preview > * {

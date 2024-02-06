@@ -59,8 +59,7 @@ html {
 }
 
 .previewContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,   minmax(27,5rem, 1fr));
   gap: 1.5rem;
 }
