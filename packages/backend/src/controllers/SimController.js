@@ -262,8 +262,10 @@ export class SimController {
 
     try {
       const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
-      const { success: isHealthy } = await response.json();
+      const { success: isHealthy, hasStarted, isPaused } = await response.json();
       this.#isHealthy = isHealthy;
+      this.isSimRunning = hasStarted;
+      this.isSimPaused = isPaused;
     } catch (error) {
       this.#isHealthy = false;
       const message = `Checking health for ${this.title} sim failed`;
@@ -272,7 +274,10 @@ export class SimController {
     }
 
     this.#logger[this.#isHealthy ? 'info' : 'warn'](
-      `Python sim ${this.title} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
+      `Python sim ${this.title} is ` +
+        `[${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}], ` +
+        `[${this.isSimRunning ? 'running' : 'NOT running'}] ` +
+        `[${this.isSimPaused ? 'but paused' : 'and NOT paused'}].`
     );
 
     return this.#isHealthy;
