@@ -68,7 +68,7 @@ export class SimController {
       const { status: statusCode, ok: requestOk } = response;
 
       if (!requestOk) {
-        const message = `Python sim ${this.title} returned unsuccessfully on START request`;
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on START request`;
         this.#logger.error(message);
         throw new Error(message);
       }
@@ -123,7 +123,7 @@ export class SimController {
       const { status: statusCode, ok: requestOk } = response;
 
       if (!requestOk) {
-        const message = `Python sim ${this.title} returned unsuccessfully on PAUSE request`;
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on PAUSE request`;
         this.#logger.error(message);
         throw new Error(message);
       }
@@ -173,7 +173,7 @@ export class SimController {
       const { status: statusCode, ok: requestOk } = response;
 
       if (!requestOk) {
-        const message = `Python sim ${this.title} returned unsuccessfully on RESUME request`;
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on RESUME request`;
         this.#logger.error(message);
         throw new Error(message);
       }
@@ -209,11 +209,11 @@ export class SimController {
           'Content-Type': 'application/json',
         },
       });
-      const { ok: requestOk } = response;
+      const { status: statusCode, ok: requestOk } = response;
       const { success } = await response.json();
 
       if (!requestOk || !success) {
-        const message = `Python sim ${this.title} returned unsuccessfully on RESET request`;
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on RESET request`;
         this.#logger.error(message);
         throw new Error(message);
       }

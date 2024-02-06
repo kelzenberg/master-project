@@ -70,10 +70,10 @@ export class SimulationPageController {
 
       try {
         const response = await fetch(`/reset?id=${this.simId}`, { method: 'POST' });
-        const { ok: requestOk } = response;
+        const { status: statusCode, ok: requestOk } = response;
 
         if (!requestOk) {
-          const message = `Python sim ${this.simId} returned unsuccessfully on RESET request`;
+          const message = `Python sim ${this.simId} returned unsuccessfully (code: ${statusCode}) on RESET request`;
           throw new Error(message);
         }
       } catch (error) {
