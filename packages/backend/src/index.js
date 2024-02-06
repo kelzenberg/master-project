@@ -2,8 +2,7 @@ import bluebird from 'bluebird';
 import stoppable from 'stoppable';
 import path from 'node:path';
 import url from 'node:url';
-import { writeFile } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
+import { writeFile, readFile } from 'node:fs/promises';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
 import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
@@ -35,21 +34,31 @@ if (process.env.NODE_ENV === 'development') {
   );
 }
 
-const createServer = app => {
+// check HTTP(S) mode & create matching HTTP(S) server
+const createServer = async app => {
   if (process.env.USE_HTTPS === 'true') {
-    const certPath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'cert/');
-    const options = {
-      key: readFileSync(path.resolve(certPath, 'file.pem')),
-      cert: readFileSync(path.resolve(certPath, 'file.crt')),
-    };
-    return createHttpsServer(options, app);
+    const certPath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), './cert/');
+    logger.info(`Server running in HTTPS mode, reading certificate files from '${certPath}'`);
+
+    try {
+      const options = {
+        key: await readFile(path.resolve(certPath, 'file.pem')),
+        cert: await readFile(path.resolve(certPath, 'file.crt')),
+      };
+
+      return createHttpsServer(options, app);
+    } catch (error) {
+      const message = 'Could not read certificate files or create HTTPS server';
+      logger.error(message, error);
+      throw new Error(message, error);
+    }
   } else {
     return createHttpServer(app);
   }
 };
 
 // ExpressJS
-const expressServer = createServer(createApp(logger));
+const expressServer = await createServer(createApp(logger));
 const stoppableServer = stoppable(
   expressServer.listen(expressPort, async () => {
     logger.info(`Server started on port ${expressPort}.`);
