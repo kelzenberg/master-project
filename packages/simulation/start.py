@@ -333,7 +333,14 @@ if __name__ == "__main__":
 
     @app.route('/health', methods=['GET'])
     def get_server_health():
-        return jsonify(success=True), 200
+        return (
+            jsonify(
+                success=True,
+                hasStarted=app.kmc_model.pid and app.simulation_running,
+                isPaused=app.kmc_model.pid and not app.simulation_running,
+            ),
+            200,
+        )
 
     @app.route('/start', methods=['POST'])
     def start_simulation():
