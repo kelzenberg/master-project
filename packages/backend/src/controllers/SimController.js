@@ -103,7 +103,7 @@ export class SimController {
       this.#logger.warn(`Python sim ${this.title} is not running`);
 
       if (this.#workerController.isWorkerRunning) {
-        this.#logger.warn(`Fetch-worker for ${this.title} sim is already running. Stopping now...`);
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is still running. Stopping now...`);
         this.#stopWorker();
       }
 
