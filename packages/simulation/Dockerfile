@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1-experimental
 
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as build-simulation
 
 ENV TERM "xterm"
 ARG DEBIAN_FRONTEND=noninteractive

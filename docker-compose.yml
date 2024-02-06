@@ -8,6 +8,7 @@ services:
       args:
         - NODE_ENV=production
     container_name: master-project-app
+    restart: on-failure:3
     environment:
       USE_HTTPS: ${USE_HTTPS}
       NO_CONSOLE_LOGGING: ${NO_CONSOLE_LOGGING}
@@ -28,6 +29,13 @@ services:
       - backend
     ports:
       - 8080:${BACKEND_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://app:${BACKEND_PORT}/readiness"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10s
+      start_interval: 5s
+      retries: 5
     command: node ./src/index.js
     depends_on:
       - sim_001
@@ -46,6 +54,13 @@ services:
       - backend
     ports:
       - 3001:${SIMULATION_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://sim_001:${SIMULATION_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10s
+      start_interval: 5s
+      retries: 5
     command: python3 /app/simulations/methanation/Methanation_local_smart/start.py
 
 networks:
