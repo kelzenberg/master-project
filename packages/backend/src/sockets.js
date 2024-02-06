@@ -2,7 +2,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
 import { errorHandler } from './middlewares/sockets/error-handler.js';
-import { getFetchWorkerCallbacks } from './utils/worker.js';
+import { getWorkerEventHandlers } from './utils/worker.js';
 import { handler as sliderHandler } from './handlers/sockets/slider.js';
 import { handler as simIdHandler } from './handlers/sockets/sim-id.js';
 import { handler as disconnectHandler } from './handlers/sockets/disconnect.js';
@@ -25,7 +25,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
     // Assigning client to correct sim room & sending initial sim data
     socket.on(
       SocketEventTypes.SIM_ID,
-      simIdHandler(logger, socket, simControllers, getFetchWorkerCallbacks(logger, ioServer))
+      simIdHandler(logger, socket, simControllers, getWorkerEventHandlers(logger, ioServer))
     );
 
     // Updating Python sim parameters based on client input

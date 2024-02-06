@@ -1,7 +1,7 @@
 import { SocketEventTypes } from '../../utils/events.js';
 
 export const handler =
-  (logger, socket, simControllers, fetchWorkerCallbacks) =>
+  (logger, socket, simControllers, workerEventHandlers) =>
   async ({ simId }) => {
     logger.info(`Received message on ${SocketEventTypes.SIM_ID.toUpperCase()}`, { data: { simId } });
 
@@ -21,9 +21,9 @@ export const handler =
       await chosenSimController.resumeSim();
     } else if (!chosenSimController.isSimRunning) {
       await chosenSimController.startSim();
-      chosenSimController.setWorkerEventHandlers(fetchWorkerCallbacks); // must come after startSim()
     }
 
+    chosenSimController.setWorkerEventHandlers(workerEventHandlers); // must come after startSim()
     chosenSimController.addClient(socket.id);
     socket.data.client = {
       ...socket.data.client,

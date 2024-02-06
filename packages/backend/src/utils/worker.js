@@ -1,6 +1,6 @@
 import { SocketEventTypes } from './events.js';
 
-export const getFetchWorkerCallbacks = (logger, ioServer) => ({
+export const getWorkerEventHandlers = (logger, ioServer) => ({
   messageHandler: roomId => value => {
     logger.info(
       `Received worker message for room ${roomId}. Emitting message on ${SocketEventTypes.DYNAMIC.toUpperCase()}`
