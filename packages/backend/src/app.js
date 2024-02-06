@@ -2,8 +2,9 @@ import path from 'node:path';
 import url from 'node:url';
 import express from 'express';
 import bodyParser from 'body-parser';
-import helmet from 'helmet';
 import compression from 'compression';
+import helmet from 'helmet';
+import favicon from 'serve-favicon';
 import { authorizer } from './middlewares/authorizer.js';
 import { routes as publicRoutes } from './routes/public.js';
 import { routes as protectedRoutes } from './routes/protected.js';
@@ -17,11 +18,11 @@ export const createApp = logger => {
   app.use(helmet());
   app.use(bodyParser.json());
 
-  app.use('/images', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'images')));
+  const currentFilePath = path.dirname(url.fileURLToPath(import.meta.url));
+  app.use(favicon(path.join(currentFilePath, './images/favicon.svg')));
+  app.use('/images', express.static(path.join(currentFilePath, 'images')));
   const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
-  app.use('/', express.static(path.join(path.dirname(url.fileURLToPath(import.meta.url)), staticPath)));
-
-  app.get('/favicon.ico', (req, res) => res.status(204).end()); // temporarily until favicon is available
+  app.use('/', express.static(path.join(currentFilePath, staticPath)));
 
   app.use(publicRoutes);
   app.use(authorizer);
