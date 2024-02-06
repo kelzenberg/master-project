@@ -80,7 +80,7 @@ export const createSimControllersFromConfigs = async simConfigs => {
   return Promise.all(
     Object.values(simConfigs).map(async loadedConfig => {
       const matchingStoredConfig = storedConfigs.find(
-        storedConfig => storedConfig.envKeyForURL == loadedConfig.envKeyForURL
+        storedConfig => storedConfig.envKeyForURL === loadedConfig.envKeyForURL
       );
 
       if (!matchingStoredConfig) {

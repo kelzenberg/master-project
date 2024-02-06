@@ -93,7 +93,7 @@ export class SimulationPageController {
   getSimId() {
     const simId = new URLSearchParams(window.location.search).get('id');
 
-    if (!simId || `${simId}`.trim() == '') {
+    if (!simId || `${simId}`.trim() === '') {
       console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
       window.location.href = '/';
       return;

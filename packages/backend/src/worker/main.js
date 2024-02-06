@@ -6,7 +6,7 @@ const { workerName, URL, fetchDelay } = workerData;
 const logger = Logger({ name: workerName });
 
 const main = async () => {
-  if (!URL || `${URL}` == '') {
+  if (!URL || `${URL}` === '') {
     const message = `Target URL is missing`;
     logger.error(message);
     throw new Error(message, { url: URL });
