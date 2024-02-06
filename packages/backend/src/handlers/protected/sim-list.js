@@ -8,7 +8,7 @@ export const handler = async (req, res) => {
   const querySimId = req.query.id;
 
   if (!querySimId) {
-    logger.info(`Retrieving all available simulation IDs`);
+    logger.info(`Retrieving all available simulation IDs...`);
 
     const simIds = simControllers.map(simController => ({
       id: simController.uuid, // mapping `uuid` to `id` for response to frontend is correct here
@@ -21,7 +21,7 @@ export const handler = async (req, res) => {
     return;
   }
 
-  logger.info(`Retrieving details for simulation with simId ${querySimId}`);
+  logger.info(`Retrieving details for simulation with simId ${querySimId}...`);
 
   if (!uuidValidate(querySimId)) {
     const message = `ID ${querySimId} has an incorrect format or length`;
