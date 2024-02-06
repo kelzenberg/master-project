@@ -5,14 +5,15 @@ import url from 'node:url';
 import { writeFile, readFile } from 'node:fs/promises';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
-import { Logger } from './utils/logger.js';
 import { db } from './services/sqlite.js';
+import { Logger } from './utils/logger.js';
+import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
+import { checkIfEnvValuesExist } from './utils/env-values.js';
 
 const logger = Logger({ name: 'server' });
-const expressPort = process.env.BACKEND_PORT || 3000;
+checkIfEnvValuesExist(logger);
 
 // Reading simulation configs file & initiating SimController for them
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
@@ -59,6 +60,7 @@ const createServer = async app => {
 };
 
 // ExpressJS
+const expressPort = process.env.BACKEND_PORT || 3000;
 const expressServer = await createServer(createApp(logger));
 const stoppableServer = stoppable(
   expressServer.listen(expressPort, async () => {
