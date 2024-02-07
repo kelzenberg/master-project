@@ -4,6 +4,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import helmet from 'helmet';
+import basicAuth from 'express-basic-auth';
 import favicon from 'serve-favicon';
 import { authorizer } from './middlewares/authorizer.js';
 import { routes as publicRoutes } from './routes/public.js';
@@ -18,15 +19,23 @@ export const createApp = logger => {
   app.use(helmet());
   app.use(bodyParser.json());
 
-  const currentFilePath = path.dirname(url.fileURLToPath(import.meta.url));
-  app.use(favicon(path.join(currentFilePath, './images/favicon.svg')));
-  app.use('/img', express.static(path.join(currentFilePath, 'images')));
-  const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
-  app.use('/', express.static(path.join(currentFilePath, staticPath)));
-
   app.use(publicRoutes);
-  app.use(authorizer);
+
+  app.use((req, res, next) =>
+    basicAuth({
+      authorizer: authorizer(res),
+      challenge: true,
+      realm: 'FritzHaberInstituteOfTheMaxPlanckSociety',
+    })(req, res, next)
+  );
+
   app.use(protectedRoutes);
+
+  const currentPath = path.dirname(url.fileURLToPath(import.meta.url));
+  const staticPath = process.env.NODE_ENV === 'development' ? `../../frontend/dist` : 'static';
+  app.use(favicon(path.join(currentPath, './images/favicon.svg')));
+  app.use('/img', express.static(path.join(currentPath, 'images')));
+  app.use('/', express.static(path.join(currentPath, staticPath)));
 
   app.use(redirectHandler);
   app.use(createErrorHandler(logger));
