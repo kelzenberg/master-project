@@ -17,10 +17,10 @@ export class SliderController {
 
   /**
    * Initializes the sliders.
-   * @param {boolean} isSuperUser - Indicates whether the user is a super user and should be able to interact with the sliders or not.
+   * @param {boolean} isModerator - Indicates whether the user is a moderator user and should be able to interact with the sliders or not.
    * @public
    */
-  initializeSlider(isSuperUser) {
+  initializeSlider(isModerator) {
     const sliderContainer = document.querySelector('#sliderContainer');
     const slider = this.#slider.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
@@ -34,7 +34,7 @@ export class SliderController {
       rangeSlider.setAttribute('label', sliderData.label);
       rangeSlider.setAttribute('info', sliderData.info);
 
-      rangeSlider.setAttribute('disabled', !isSuperUser);
+      rangeSlider.setAttribute('disabled', !isModerator);
 
       rangeSlider.addEventListener('change', event => {
         this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.currentTarget.value);

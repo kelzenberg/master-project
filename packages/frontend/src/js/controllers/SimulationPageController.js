@@ -17,8 +17,7 @@ export class SimulationPageController {
   #title;
   #description;
   #isPaused = false;
-  // #isSuperUser muss später von sockets.js mitgegeben als constructor param!
-  #isSuperUser = true;
+  #isModerator = true;
 
   /**
    * Creates a SimulationPageController instance.
@@ -174,14 +173,12 @@ export class SimulationPageController {
     // Initialize sliders
     const slider = jsonData.slider;
     this.#sliderController = new SliderController(slider);
-    //pass something to the initializSliders() function that tells if user is super-user or not!
-    this.#sliderController.initializeSlider(this.#isSuperUser);
+    this.#sliderController.initializeSlider(this.#isModerator);
 
     // Initialize legend
     this.#legendController = new LegendController(typeDefinitions);
     this.#legendController.initializeLegend();
 
-    // disable loading spinner!
     this.#disableLoadingSpinner();
   }
 
@@ -194,7 +191,7 @@ export class SimulationPageController {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
       this.#plotController.updatePlots(jsonData.plots);
-      if (!this.#isSuperUser) this.#sliderController.updateSliderValues(jsonData.sliderData);
+      if (!this.#isModerator) this.#sliderController.updateSliderValues(jsonData.sliderData);
     }
   }
 
@@ -311,7 +308,7 @@ export class SimulationPageController {
       document.querySelector('#pauseButtonImage').style.display = 'block';
     }
 
-    if (this.#isSuperUser) document.querySelector('#resetButtonImage').style.display = 'block';
+    if (this.#isModerator) document.querySelector('#resetButtonImage').style.display = 'block';
 
     document.querySelector('#coverageCheckboxContainer').style.display = 'block';
     document.querySelector('#tofCheckboxContainer').style.display = 'block';
