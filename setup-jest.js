@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
 
 beforeAll(() => {
+  jest.mock('./packages/frontend/src/js/services/sockets');
   global.Plotly = {
-    newPlot: jest.fn(() => ({ data: [] })),
+    newPlot: jest.fn(() => Promise.resolve({ data: [] })),
     update: jest.fn(),
   };
 });
@@ -10,5 +11,3 @@ beforeAll(() => {
 afterAll(() => {
   global.Plotly = undefined;
 });
-
-jest.mock('./packages/frontend/src/js/services/sockets');
