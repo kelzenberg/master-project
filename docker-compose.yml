@@ -14,7 +14,6 @@ services:
       NO_CONSOLE_LOGGING: ${NO_CONSOLE_LOGGING}
       NO_FILE_LOGGING: ${NO_FILE_LOGGING}
       BACKEND_PORT: ${BACKEND_PORT}
-      API_KEY_DEV: ${API_KEY_DEV}
       WORKER_ACTIVE: ${WORKER_ACTIVE}
       WORKER_DELAY: ${WORKER_DELAY}
       WORKER_RUN_FILE_PATH: ${WORKER_RUN_FILE_PATH}
@@ -25,12 +24,16 @@ services:
       URL_METHANATION_003: sim_001
       URL_METHANATION_004: sim_001
       URL_METHANATION_005: sim_001
+      MODERATOR_USERNAME: ${MODERATOR_USERNAME}
+      MODERATOR_PASSWORD: ${MODERATOR_PASSWORD}
+      STUDENT_USERNAME: ${STUDENT_USERNAME}
+      STUDENT_PASSWORD: ${STUDENT_PASSWORD}
     networks:
       - backend
     ports:
       - 8080:${BACKEND_PORT}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://app:${BACKEND_PORT}/readiness"]
+      test: ['CMD', 'curl', '-f', 'http://app:${BACKEND_PORT}/readiness']
       interval: 30s
       timeout: 10s
       start_period: 10s
@@ -55,7 +58,7 @@ services:
     ports:
       - 3001:${SIMULATION_PORT}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://sim_001:${SIMULATION_PORT}/health"]
+      test: ['CMD', 'curl', '-f', 'http://sim_001:${SIMULATION_PORT}/health']
       interval: 30s
       timeout: 10s
       start_period: 10s
