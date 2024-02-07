@@ -1,35 +1,48 @@
+/* eslint-disable no-undef */
 import { LandingPageController } from './LandingPageController';
 
-// Mock the fetch function
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () =>
-      Promise.resolve([{ id: 1, title: 'Simulation 1', description: 'Description 1', thumbnail: 'thumbnail1.jpg' }]),
-  })
-);
-
 describe('LandingPageController', () => {
-  describe('initializeLandingPage', () => {
-    test('should call fetchSimList and update the previewContainer', async () => {
-      document.body.innerHTML = `
-          <div
-          class="previewContainer"
-          id="previewContainer"
-        ></div>
-      `;
-      const controller = new LandingPageController();
-      await controller.initializeLandingPage();
+  let mockElement;
+  let documentQuerySelectorSpy;
 
-      // Check if fetchSimList is called
-      expect(global.fetch).toHaveBeenCalledWith('/list', { method: 'GET' });
+  beforeEach(() => {
+    mockElement = {
+      append: jest.fn(),
+      style: {},
+    };
 
-      // Check if document.querySelector and related methods are called
-      expect(document.querySelector).toHaveBeenCalledWith('#previewContainer');
-      expect(document.querySelector().append).toHaveBeenCalled();
-      expect(document.querySelector().setAttribute).toHaveBeenCalledWith('title', 'Simulation 1');
-      expect(document.querySelector().setAttribute).toHaveBeenCalledWith('description', 'Description 1');
-      expect(document.querySelector().setAttribute).toHaveBeenCalledWith('href', './simulation.html?id=1');
-      expect(document.querySelector().style.backgroundImage).toBe(`url("thumbnail1.jpg")`);
-    });
+    documentQuerySelectorSpy = jest.spyOn(document, 'querySelector');
+    documentQuerySelectorSpy.mockImplementation(() => mockElement);
+  });
+
+  afterEach(() => {
+    documentQuerySelectorSpy.mockRestore();
+  });
+
+  it('should initialize landing page', async () => {
+    const config = [
+      {
+        id: 1,
+        title: 'Test',
+        description: 'Test Description',
+        thumbnail: 'test.jpg',
+      },
+    ];
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(config),
+      })
+    );
+
+    const controller = new LandingPageController();
+    await controller.initializeLandingPage();
+
+    expect(mockElement.append).toHaveBeenCalled();
+    const simulationPreview = mockElement.append.mock.calls[0][0];
+    expect(simulationPreview.getAttribute('title')).toBe('Test');
+    expect(simulationPreview.getAttribute('description')).toBe('Test Description');
+    expect(simulationPreview.getAttribute('href')).toBe('./simulation.html?id=1');
+    expect(simulationPreview.style.backgroundImage).toBe('url(test.jpg)');
   });
 });

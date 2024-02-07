@@ -81,13 +81,6 @@ export class SimulationPageController {
         event.currentTarget.disabled = true;
       }
     });
-
-    const browserLanguage = navigator.language || navigator.userLanguage;
-    const germanTooltip = 'Rendering der Simulationsdaten pausieren';
-
-    if (browserLanguage.startsWith('de')) {
-      pauseButton.title = germanTooltip;
-    }
   }
 
   getSimId() {
@@ -117,7 +110,7 @@ export class SimulationPageController {
     return response.json();
   }
 
-  async renderInitialData(jsonData) {
+  renderInitialData(jsonData) {
     // Setting title and description
     document.querySelector('#simulationTitle').textContent = this.#title;
     document.querySelector('#simulationDescription').textContent = this.#description;

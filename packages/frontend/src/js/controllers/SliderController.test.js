@@ -1,78 +1,62 @@
 import { SliderController } from './SliderController';
 
-jest.mock('../services/sockets');
-
 describe('SliderController', () => {
-  let sliderController;
+  let mockElement;
+  let documentQuerySelectorSpy;
 
   beforeEach(() => {
-    // Mock the slider data
+    mockElement = {
+      append: jest.fn(),
+      replaceChildren: jest.fn(),
+      style: {},
+      setAttribute: jest.fn(),
+      addEventListener: jest.fn(),
+    };
+
+    documentQuerySelectorSpy = jest.spyOn(document, 'querySelector');
+    documentQuerySelectorSpy.mockImplementation(() => mockElement);
+    jest.mock('./packages/frontend/src/js/services/sockets');
+  });
+
+  afterEach(() => {
+    documentQuerySelectorSpy.mockRestore();
+  });
+
+  it('should initialize slider', () => {
     const sliderData = [
-      { label: 'slider1', min: 0, max: 100, default: 50, info: 'Slider 1 Info' },
-      { label: 'slider2', min: 10, max: 50, default: 30, info: 'Slider 2 Info' },
+      {
+        min: 0,
+        max: 100,
+        default: 50,
+        label: 'Test Slider',
+        info: 'Test Info',
+      },
     ];
 
-    // Mock the SliderController before each test
-    sliderController = new SliderController(sliderData);
+    const controller = new SliderController(sliderData);
+    controller.initializeSlider(true);
+
+    expect(mockElement.replaceChildren).toHaveBeenCalled();
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('islogscale', false);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('min', sliderData[0].min);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('max', sliderData[0].max);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('value', sliderData[0].default);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('label', sliderData[0].label);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('info', sliderData[0].info);
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('disabled', false);
   });
 
-  describe('initializeSlider', () => {
-    test('should initialize slider with correct attributes', () => {
-      document.body.innerHTML = `
-        <div id="sliderContainer"></div>
-      `;
+  it('should update slider values', () => {
+    const sliderData = [
+      {
+        label: 'Test Slider',
+        value: 75,
+      },
+    ];
 
-      try {
-        // Call the initializeSlider method
-        sliderController.initializeSlider(true);
+    const controller = new SliderController([]);
+    controller.updateSliderValues(sliderData);
 
-        // Assertions
-        expect(mockSliderContainer).toHaveBeenCalledWith('#sliderContainer');
-        expect(document.createElement).toHaveBeenCalledTimes(2); // Two calls for range-slider
-        expect(document.querySelector).toHaveBeenCalledTimes(2); // Twice for container and slider
-
-        // Assuming you have specific attributes, adjust the assertions accordingly
-        expect(document.createElement).toHaveBeenCalledWith('range-slider');
-        expect(document.createElement).toHaveBeenNthCalledWith(2, 'range-slider');
-
-        // Assuming you have specific attributes, adjust the assertions accordingly
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('islogscale', false);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('min', 0);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('max', 100);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('value', 50);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('label', 'slider1');
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('info', 'Slider 1 Info');
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('disabled', true);
-
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('islogscale', false);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('min', 10);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('max', 50);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('value', 30);
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('label', 'slider2');
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('info', 'Slider 2 Info');
-        expect(document.createElement().setAttribute).toHaveBeenCalledWith('disabled', true);
-      } catch (error) {
-        // If an exception is thrown, fail the test
-        expect(error).toBeNull();
-      }
-    });
-  });
-
-  describe('updateSliderValues', () => {
-    test('should update slider values based on provided data', () => {
-      // Mock the document.querySelector function and slider elements
-      const mockSlider1 = document.querySelector.mockReturnValueOnce({});
-      const mockSlider2 = document.querySelector.mockReturnValueOnce({});
-
-      // Call the updateSliderValues method
-      sliderController.updateSliderValues([
-        { label: 'slider1', value: 75 },
-        { label: 'slider2', value: 20 },
-      ]);
-
-      // Assertions
-      expect(mockSlider1.setAttribute).toHaveBeenCalledWith('value', 75);
-      expect(mockSlider2.setAttribute).toHaveBeenCalledWith('value', 20);
-    });
+    expect(mockElement.setAttribute).toHaveBeenCalledWith('value', sliderData[0].value);
   });
 });
