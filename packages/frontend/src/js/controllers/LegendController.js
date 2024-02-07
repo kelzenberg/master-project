@@ -1,11 +1,23 @@
+/**
+ * The LegendController class is responsible for managing and displaying a legend for visualizations.
+ */
 export class LegendController {
   #typeDefinitions;
   #isLegendVisible = false;
 
+  /**
+   * Create a LegendController instance.
+   * @param {Object} typeDefinitions - An object containing definitions for different types in the legend.
+   * @public
+   */
   constructor(typeDefinitions) {
     this.#typeDefinitions = typeDefinitions;
   }
 
+  /**
+   * Initializes the legend by creating and populating the legend table.
+   * @public
+   */
   initializeLegend() {
     const legendContainer = document.querySelector('#legendContainer');
 
@@ -64,6 +76,10 @@ export class LegendController {
     legendContainer.replaceChildren(legendTable);
   }
 
+  /**
+   * Toggles the visibility state of the legend.
+   * @public
+   */
   toggleLegend() {
     this.#isLegendVisible = !this.#isLegendVisible;
 

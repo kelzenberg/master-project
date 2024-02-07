@@ -1,3 +1,6 @@
+/**
+ * Controls the rendering and updating of plots for the simulation.
+ */
 export class PlotController {
   #plots;
   #graphsTof;
@@ -19,6 +22,11 @@ export class PlotController {
   #coveragePerSiteTypeColors;
   #coveragePerSiteTypeLabels;
 
+  /**
+   * Creates a PlotController instance.
+   * @param {Object} plots - The initial data for plots.
+   * @public
+   */
   constructor(plots) {
     this.#plots = plots;
     this.#graphsTof = [];
@@ -67,6 +75,10 @@ export class PlotController {
     };
   }
 
+  /**
+   * Renders the initial data for plots.
+   * @public
+   */
   renderInitialData() {
     // Set up initial data for each graph:
     // TOF
@@ -88,6 +100,11 @@ export class PlotController {
     this.#newPlotCoverage();
   }
 
+  /**
+   * Updates the plots with new data.
+   * @param {Object} plots - The updated data for plots.
+   * @public
+   */
   updatePlots(plots) {
     this.#plots = plots;
     this.#clearPlots();
@@ -125,10 +142,20 @@ export class PlotController {
     Plotly.update('plotCoverage', this.#graphsCoverage, this.#coverageLayout);
   }
 
+  /**
+   * Toggles the TOF graphs.
+   * @param {boolean} [configurationCountActive] - Indicates whether configuration count is active.
+   * @public
+   */
   toggleTof(configurationCountActive) {
     this.#isTofToggled = configurationCountActive ?? !configurationCountActive;
   }
 
+  /**
+   * Toggles the Coverage graphs.
+   * @param {boolean} [singleCoverageActive] - Indicates whether single coverage is active.
+   * @public
+   */
   toggleCoverage(singleCoverageActive) {
     let initialState = this.#isCoveragePerSiteTypeActive;
     this.#isCoveragePerSiteTypeActive = singleCoverageActive;
@@ -141,6 +168,10 @@ export class PlotController {
     }
   }
 
+  /**
+   * Creates a new TOF plot using plotly.
+   * @private
+   */
   #newPlotTof() {
     let initialData = Array.from({ length: this.#totalNumberOfTofGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
@@ -172,6 +203,10 @@ export class PlotController {
     });
   }
 
+  /**
+   * Creates a new avergae coverage plot using plotly.
+   * @private
+   */
   #newPlotCoverage() {
     let initialData = Array.from({ length: this.#totalNumberOfCoverageGraphs }, (_, index) => ({
       x: [this.#plots.plotData[0].kmcTime],
@@ -203,6 +238,10 @@ export class PlotController {
     });
   }
 
+  /**
+   * Creates a new coverage per site type plot using plotly.
+   * @private
+   */
   #newPlotCoveragePerSiteType() {
     let values = this.#getValuesForCoveragePerSiteType();
 
@@ -236,6 +275,10 @@ export class PlotController {
     });
   }
 
+  /**
+   * Clears all plots and their graph data.
+   * @private
+   */
   #clearPlots() {
     for (let i = 0; i < this.#graphsTof.length; i++) {
       this.#graphsTof[i].x = [];
@@ -248,6 +291,12 @@ export class PlotController {
     }
   }
 
+  /**
+   * Gets the colors for the specified plot.
+   * @param plotName The plot name (tof or coverage)
+   * @param key The key for the color (color, averageColor).
+   * @private
+   */
   #getColors(plotName, key) {
     return this.#plots[plotName].map(object => {
       const rgbColor = object[key];
@@ -255,11 +304,21 @@ export class PlotController {
     });
   }
 
+  /**
+   * Gets the labels for the specified plot.
+   * @param plotName The plot name (tof or coverage)
+   * @param key The key for the color (label, averageLabel).
+   * @private
+   */
   #getLabels(plotName, key) {
     const dataValues = this.#plots[plotName].map(entry => entry[key]);
     return dataValues;
   }
 
+  /**
+   * Gets the colors for the coverage per site type plot.
+   * @private
+   */
   #getColorsForCoveragePerSiteType() {
     let allColors = [];
 
@@ -270,6 +329,10 @@ export class PlotController {
     return allColors;
   }
 
+  /**
+   * Gets the labels for the coverage per site type plot.
+   * @private
+   */
   #getLabelsForCoveragePerSiteType() {
     let allLabels = [];
 
@@ -280,6 +343,10 @@ export class PlotController {
     return allLabels;
   }
 
+  /**
+   * Gets the values for the coverage per site type plot.
+   * @private
+   */
   #getValuesForCoveragePerSiteType() {
     const coverage = this.#plots.plotData[0].coverage;
     const result = [];
@@ -292,6 +359,10 @@ export class PlotController {
     return result;
   }
 
+  /**
+   * Converts rgb colors into hex strings that represent the same color.
+   * @private
+   */
   #rgbToHex(red, green, blue) {
     red = Math.min(1, Math.max(0, red));
     green = Math.min(1, Math.max(0, green));
@@ -312,6 +383,11 @@ export class PlotController {
     return hexCode;
   }
 
+  /**
+   * Calculates the average value of an array of numbers.
+   * @param array The number array
+   * @private
+   */
   #calculateAverage(array) {
     var sum = array.reduce(function (accumulator, currentValue) {
       return accumulator + currentValue;

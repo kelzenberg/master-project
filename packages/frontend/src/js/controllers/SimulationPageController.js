@@ -5,6 +5,10 @@ import { PlotController } from './PlotController';
 import { LegendController } from './LegendController';
 import { SliderController } from './SliderController';
 
+/**
+ * The SimulationPageController class manages the data for the simulation page, including 3D visualization, plots, sliders, and other controls.
+ * It provides an API to render the data and passes it on to the VisualizationController, PlotController, SliderController and LegendController.
+ */
 export class SimulationPageController {
   #visualizationController;
   #plotController;
@@ -16,6 +20,10 @@ export class SimulationPageController {
   // #isSuperUser muss später von sockets.js mitgegeben als constructor param!
   #isSuperUser = true;
 
+  /**
+   * Creates a SimulationPageController instance.
+   * @public
+   */
   constructor() {
     this.#visualizationController = new VisualizationController();
     this.#plotController = new PlotController();
@@ -23,6 +31,11 @@ export class SimulationPageController {
     this.#legendController = new LegendController();
   }
 
+  /**
+   * Initializes the simulation page with the title and description of the simulation with ID: simId.
+   * @param {string} simId - The ID of the simulation.
+   * @public
+   */
   async init(simId) {
     this.#addEventListeners();
 
@@ -32,6 +45,10 @@ export class SimulationPageController {
     this.simId = simId;
   }
 
+  /**
+   * Adds event listeners for the UI controls of the simulation page.
+   * @private
+   */
   #addEventListeners() {
     const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
     const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
@@ -83,6 +100,11 @@ export class SimulationPageController {
     });
   }
 
+  /**
+   * Retrieves the simulation ID from the URL parameters.
+   * @returns {string} The simulation ID.
+   * @public
+   */
   getSimId() {
     const simId = new URLSearchParams(window.location.search).get('id');
 
@@ -95,6 +117,12 @@ export class SimulationPageController {
     return simId;
   }
 
+  /**
+   * Fetches the title and description of the simulation from the server.
+   * @param {string} simId - The ID of the simulation.
+   * @returns {Promise<{ title: string, description: string }>} The title and description of the simulation.
+   * @private
+   */
   async #fetchTitleAndDescription(simId) {
     const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
 
@@ -110,6 +138,11 @@ export class SimulationPageController {
     return response.json();
   }
 
+  /**
+   * Passes the initial data for visualization, plots, sliders, and legend to the specific controllers.
+   * @param {Object} jsonData - The JSON data containing initial simulation data.
+   * @public
+   */
   renderInitialData(jsonData) {
     // Setting title and description
     document.querySelector('#simulationTitle').textContent = this.#title;
@@ -152,6 +185,11 @@ export class SimulationPageController {
     this.#disableLoadingSpinner();
   }
 
+  /**
+   * Passes the dynamic data updates for visualization and plots to the specific controllers.
+   * @param {Object} jsonData - The JSON data containing dynamic simulation updates.
+   * @public
+   */
   renderDynamicData(jsonData) {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
@@ -160,10 +198,20 @@ export class SimulationPageController {
     }
   }
 
+  /**
+   * Initiates animation for the visualization.
+   * @public
+   */
   animate() {
     this.#visualizationController.animate();
   }
 
+  /**
+   * Initializes site objects for the 3D scene.
+   * @param {Object[]} sites - The array of site data.
+   * @returns {Group} - The group containing site objects.
+   * @private
+   */
   #initializeSites(sites) {
     let sitesGroup = new Group();
     for (const data of sites) {
@@ -175,6 +223,13 @@ export class SimulationPageController {
     return sitesGroup;
   }
 
+  /**
+   * Initializes species dictionary for the simulation.
+   * @param {Object[]} species - The array of species data.
+   * @param {Object} typeDefinitions - Definitions for different types of species.
+   * @returns {Object[]} - The initialized species dictionary.
+   * @private
+   */
   #initializeSpeciesDictionary(species, typeDefinitions) {
     let speciesDictionary = [];
     for (const data of species) {
@@ -192,18 +247,36 @@ export class SimulationPageController {
     return speciesDictionary;
   }
 
+  /**
+   * Toggles the visibility of the legend.
+   * @private
+   */
   #toggleLegend() {
     this.#legendController.toggleLegend();
   }
 
+  /**
+   * Toggles the TOF plot.
+   * @param {boolean} configurationCountActive - Flag indicating whether configuration count is active.
+   * @private
+   */
   #toggleTof(configurationCountActive) {
     this.#plotController.toggleTof(configurationCountActive);
   }
 
-  #toggleCoverage(singleCoverageActive) {
-    this.#plotController.toggleCoverage(singleCoverageActive);
+  /**
+   * Toggles the coverage plot.
+   * @param {boolean} singleCoverageActive - Flag indicating whether coverage per site type is active.
+   * @private
+   */
+  #toggleCoverage(coveragePerSiteTypeActive) {
+    this.#plotController.toggleCoverage(coveragePerSiteTypeActive);
   }
 
+  /**
+   * Toggles the pause/play state of the simulation rendering.
+   * @private
+   */
   #togglePause() {
     this.#isPaused = !this.#isPaused;
 
@@ -222,6 +295,10 @@ export class SimulationPageController {
     }
   }
 
+  /**
+   * Disables the loading spinner and displays simulation components.
+   * @private
+   */
   #disableLoadingSpinner() {
     document.querySelector('#canvasContainer').style.visibility = 'visible';
     document.querySelector('#plotTOF').style.visibility = 'visible';
