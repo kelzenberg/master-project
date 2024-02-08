@@ -1,7 +1,7 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
-import { clientDataHandler } from './middlewares/sockets/client-data-handler.js';
+import { clientSetupHandler } from './middlewares/sockets/client-setup-handler.js';
 import { roleHandler } from './middlewares/sockets/role-handler.js';
 import { errorHandler } from './middlewares/sockets/error-handler.js';
 import { getWorkerEventHandlers } from './utils/worker.js';
@@ -15,7 +15,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   // Packet middlewares
-  ioServer.use(clientDataHandler(logger));
+  ioServer.use(clientSetupHandler(logger));
   ioServer.use(roleHandler(logger));
   ioServer.use(errorHandler(logger));
 
