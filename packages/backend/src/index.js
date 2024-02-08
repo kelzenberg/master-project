@@ -14,6 +14,7 @@ import { checkIfEnvValuesExist } from './utils/env-values.js';
 
 const logger = Logger({ name: 'server' });
 checkIfEnvValuesExist(logger);
+db.initialize();
 
 // Reading simulation configs file & initiating SimController for them
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
@@ -85,7 +86,7 @@ const shutdown = async () => {
   logger.info('Server and services stopping...');
   await Promise.resolve(simControllers.map(async controller => controller.pauseSim()));
   await stopServerAsync();
-  await db.instance.close();
+  await db.close();
   logger.info('Server and services stopped.');
 };
 

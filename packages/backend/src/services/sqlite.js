@@ -11,22 +11,32 @@ const filePath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 
 // Turn on SQLite verbosity output
 // sqlite3.verbose();
 
-const setupDatabase = async () => {
-  logger.info('Loading/Creating database from file...', { data: filePath });
+let dbInstance;
 
-  const db = await open({
+const initialize = () => {
+  logger.info('Initializing database from file...', { data: filePath });
+
+  open({
     filename: `${(path.dirname(url.fileURLToPath(import.meta.url)), filePath)}`,
     driver: sqlite3.cached.Database,
-  });
-
-  logger.info('Creating database tables...');
-  db.exec('CREATE TABLE IF NOT EXISTS simulation (envKeyForURL TEXT PRIMARY KEY, uuid TEXT)');
-
-  logger.info('Successfully setup database');
-  return db;
+  })
+    .then(db => {
+      logger.info('Creating database tables...');
+      db.exec('CREATE TABLE IF NOT EXISTS simulation (envKeyForURL TEXT PRIMARY KEY, uuid TEXT)');
+      return db;
+    })
+    .then(db => {
+      dbInstance = db;
+      logger.info('Successfully initialized database');
+    })
+    .catch(error => {
+      const message = 'Initializing database failed';
+      logger.error(message, error);
+      throw new Error(message, error);
+    });
 };
 
-const dbInstance = await setupDatabase();
+const close = async () => dbInstance.close();
 
 const checkReadiness = async () => dbInstance.exec(SQL`SELECT 1`);
 
@@ -74,4 +84,4 @@ const deleteOne = async ({ envKeyForURL }) => {
   return result;
 };
 
-export const db = { instance: dbInstance, checkReadiness, getAll, upsertOne, deleteOne };
+export const db = { initialize, close, checkReadiness, getAll, upsertOne, deleteOne };
