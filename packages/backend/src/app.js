@@ -1,10 +1,10 @@
 import path from 'node:path';
 import url from 'node:url';
 import express from 'express';
-import bodyParser from 'body-parser';
 import compression from 'compression';
 import helmet from 'helmet';
-import basicAuth from 'express-basic-auth';
+import bodyParser from 'body-parser';
+import expressBasicAuth from 'express-basic-auth';
 import favicon from 'serve-favicon';
 import { authorizer } from './middlewares/authorizer.js';
 import { redirectHandler } from './middlewares/redirect-handler.js';
@@ -22,7 +22,7 @@ export const createApp = logger => {
   app.use(publicRoutes);
 
   app.use((req, res, next) =>
-    basicAuth({
+    expressBasicAuth({
       authorizer: authorizer(key => (res.locals.role = key)),
       challenge: true,
       realm: 'FritzHaberInstituteOfTheMaxPlanckSociety',
