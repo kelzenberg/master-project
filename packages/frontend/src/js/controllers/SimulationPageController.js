@@ -344,24 +344,6 @@ export class SimulationPageController {
     document.querySelector('#loader').style.display = 'none';
   }
 
-  hideErrorOverlay() {
-    const errorOverlay = document.querySelector('#errorOverlay');
-    const errorContent = document.querySelector('#errorContent');
-    errorOverlay.style.display = 'none';
-    errorContent.innerHTML = '';
-  }
-
-  displayErrorOverlay(error) {
-    const errorOverlay = document.querySelector('#errorOverlay');
-    const errorContent = document.querySelector('#errorContent');
-    errorOverlay.style.display = 'flex';
-    errorContent.innerHTML = `
-      <h3>Connection Error</h3>
-      <span>Wait for automatic reconnect or reload the page.</span>
-      <p><small>Details: ${error.message || 'Unknown error'} ${error.data || ''}</small></p>
-    `;
-  }
-
   setIsModerator(isModerator) {
     this.#isModerator = isModerator;
     if (Object.keys(this.#initialData).length > 0) this.renderInitialData(this.#initialData, false);
@@ -385,5 +367,23 @@ export class SimulationPageController {
 
     if (hasChanges) this.#sliderController.updateSliderValues(sliderData);
     this.#isModeratorUpdated = true;
+  }
+
+  hideErrorOverlay() {
+    const errorOverlay = document.querySelector('#errorOverlay');
+    const errorContent = document.querySelector('#errorContent');
+    errorOverlay.style.display = 'none';
+    errorContent.innerHTML = '';
+  }
+
+  displayErrorOverlay(error) {
+    const errorOverlay = document.querySelector('#errorOverlay');
+    const errorContent = document.querySelector('#errorContent');
+    errorOverlay.style.display = 'flex';
+    errorContent.innerHTML = `
+      <h3>Connection Error</h3>
+      <span>Wait for automatic reconnect or reload the page.</span>
+      <p><small>Details: ${error.message || 'Unknown error'} ${error.data || ''}</small></p>
+    `;
   }
 }
