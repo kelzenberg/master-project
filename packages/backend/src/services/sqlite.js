@@ -13,7 +13,7 @@ const filePath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 
 
 let dbInstance;
 
-const initialize = () => {
+export const initializeDatabase = () => {
   logger.info('Initializing database from file...', { data: filePath });
 
   open({
@@ -36,7 +36,7 @@ const initialize = () => {
     });
 };
 
-const close = async () => dbInstance.close();
+export const closeDatabase = async () => dbInstance.close();
 
 const checkReadiness = async () => dbInstance.exec(SQL`SELECT 1`);
 
@@ -84,4 +84,4 @@ const deleteOne = async ({ envKeyForURL }) => {
   return result;
 };
 
-export const db = { initialize, close, checkReadiness, getAll, upsertOne, deleteOne };
+export const db = { checkReadiness, getAll, upsertOne, deleteOne };

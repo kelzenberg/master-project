@@ -7,14 +7,14 @@ import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
 import { createApp } from './app.js';
 import { startSocketServer } from './sockets.js';
-import { db } from './services/sqlite.js';
+import { initializeDatabase, closeDatabase } from './services/sqlite.js';
 import { Logger } from './utils/logger.js';
 import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
 import { checkIfEnvValuesExist } from './utils/env-values.js';
 
 const logger = Logger({ name: 'server' });
 checkIfEnvValuesExist(logger);
-db.initialize();
+initializeDatabase();
 
 // Reading simulation configs file & initiating SimController for them
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
@@ -86,7 +86,7 @@ const shutdown = async () => {
   logger.info('Server and services stopping...');
   await Promise.resolve(simControllers.map(async controller => controller.pauseSim()));
   await stopServerAsync();
-  await db.close();
+  await closeDatabase();
   logger.info('Server and services stopped.');
 };
 
