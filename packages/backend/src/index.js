@@ -1,29 +1,34 @@
-import bluebird from 'bluebird';
-import stoppable from 'stoppable';
-import path from 'node:path';
-import url from 'node:url';
-import { writeFile, readFile } from 'node:fs/promises';
-import { createServer as createHttpServer } from 'node:http';
-import { createServer as createHttpsServer } from 'node:https';
-import { createApp } from './app.js';
-import { startSocketServer } from './sockets.js';
-import { db } from './services/sqlite.js';
-import { Logger } from './utils/logger.js';
-import { loadSimConfigsFromFile, createSimControllersFromConfigs } from './utils/config-file.js';
-import { checkIfEnvValuesExist } from './utils/env-values.js';
+const bluebird = require('bluebird');
+const stoppable = require('stoppable');
+const path = require('node:path');
+const url = require('node:url');
+const { writeFileSync, readFileSync } = require('node:fs');
+const { createServer: createHttpServer } = require('node:http');
+const { createServer: createHttpsServer } = require('node:https');
+const { createApp } = require('./app.js');
+const { startSocketServer } = require('./sockets.js');
+const { db } = require('./services/sqlite.js');
+const { Logger } = require('./utils/logger.js');
+const { loadSimConfigsFromFile, createSimControllersFromConfigs } = require('./utils/config-file.js');
+const { checkIfEnvValuesExist } = require('./utils/env-values.js');
 
 const logger = Logger({ name: 'server' });
 checkIfEnvValuesExist(logger);
 db.initialize();
 
 // Reading simulation configs file & initiating SimController for them
+let simConfigs;
+let simControllers;
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
-const simConfigs = await loadSimConfigsFromFile(configFilePath);
-export const simControllers = await createSimControllersFromConfigs(simConfigs);
+// eslint-disable-next-line unicorn/prefer-top-level-await
+loadSimConfigsFromFile(configFilePath).then(simConfigList => {
+  simConfigs = simConfigList;
+  simControllers = createSimControllersFromConfigs(simConfigList);
+});
 
 // [DEBUG] sim configs and instances are outputted to file
 if (process.env.NODE_ENV === 'development') {
-  await writeFile(
+  writeFileSync(
     './config-to-sim-controller.local.json',
     JSON.stringify(
       {
@@ -45,8 +50,8 @@ const createServer = async app => {
 
     try {
       const options = {
-        key: await readFile(path.resolve(certPath, 'file.pem')),
-        cert: await readFile(path.resolve(certPath, 'file.crt')),
+        key: readFileSync(path.resolve(certPath, 'file.pem')),
+        cert: readFileSync(path.resolve(certPath, 'file.crt')),
       };
 
       return createHttpsServer(options, app);
@@ -92,3 +97,5 @@ const shutdown = async () => {
 
 process.once('SIGINT', shutdown);
 process.once('SIGTERM', shutdown);
+
+module.exports = { simControllers };
