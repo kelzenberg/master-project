@@ -6,6 +6,7 @@ export const SocketEventTypes = Object.freeze({
   DISCONNECT: 'disconnect',
   CONNECT_ERROR: 'connect_error',
   SIM_ID: 'sim-id',
+  USER_ROLE: 'user-role',
   INITIAL: 'initial',
   DYNAMIC: 'dynamic',
   SLIDER: 'slider',

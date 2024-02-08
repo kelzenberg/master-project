@@ -27,6 +27,12 @@ socket.on(SocketEventTypes.DISCONNECT, message => {
   simulationPageController.displayErrorOverlay(message);
 });
 
+socket.on(SocketEventTypes.USER_ROLE, async payload => {
+  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.USER_ROLE.toUpperCase()} arrived with payload`, payload);
+
+  // ToDo: update user role from payload
+});
+
 socket.on(SocketEventTypes.INITIAL, async payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
   await simulationPageController.renderInitialData(payload);

@@ -36,6 +36,9 @@ export const handler =
     });
     socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
 
+    // ToDo
+    socket.emit(SocketEventTypes.USER_ROLE, 'moderator');
+
     logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
     socket.join(chosenSimController.roomId);
   };
