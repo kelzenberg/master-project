@@ -1,5 +1,5 @@
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-folder_path="$script_dir/src/cert2"
+folder_path="$script_dir/src/cert"
 
 generate_local_certs() {
   echo "Generating local self-signed certificate files in '$folder_path'.\nPlease follow instructions.\n"
