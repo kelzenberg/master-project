@@ -10,6 +10,7 @@ import logging
 import os
 import time
 import sys
+import copy
 from datetime import datetime, timedelta
 import numpy as np
 import ase
@@ -64,6 +65,13 @@ class WebGLInterface(KMC_Model):
         self._history = []
         self.dynamic_data = image_queue
         self.initial_data = self._get_initial_data()
+        self.default_params = copy.deepcopy(settings.parameters)
+
+    def reset_simulation(self):
+        while not self.parameter_queue.empty():
+            self.parameter_queue.get()
+        settings.parameters.update(self.default_params)
+        set_rate_constants(self.default_params, False, self.can_accelerate)
 
     def run(self):
         """Runs the model indefinitely. To control the
@@ -378,6 +386,7 @@ if __name__ == "__main__":
             app.kmc_model._history = []
             while not app.kmc_model.dynamic_data.empty():
                 app.kmc_model.dynamic_data.get()
+            app.kmc_model.reset_simulation()
             app.kmc_model.deallocate()
             app.kmc_model.reset()
             return jsonify(success=True), 201
