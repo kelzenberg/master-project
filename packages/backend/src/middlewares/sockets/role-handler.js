@@ -10,7 +10,10 @@ export const roleHandler = logger => (socket, next) => {
   })(authorization.name, authorization.pass);
 
   if (!isAuthorized) {
-    next(new Error('Not authorized!'));
+    const messsage = `Client ${socket.id} could not be authorized`;
+    logger.error(messsage, { data: socket.handshake.headers });
+    next(new Error(messsage));
+    return;
   }
 
   next();
