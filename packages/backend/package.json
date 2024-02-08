@@ -14,10 +14,10 @@
   },
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=../../.env --watch ./src ./src/index.js --ignore '**/*.local.*' --ignore './src/config.json' --ignore './src/database.db'",
     "start": "node --env-file=../../.env ./src/index.js",
+    "test": "jest",
     "generate-cert": "sh ./generate-local-cert.sh"
   },
   "devDependencies": {
