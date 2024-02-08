@@ -1,4 +1,4 @@
-import { createApp } from './app';
+import { createApp } from './app.js';
 
 describe('createApp', () => {
   it('returns an ExpressJS app', () => {
