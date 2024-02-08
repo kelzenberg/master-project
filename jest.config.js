@@ -1,7 +1,9 @@
-/* eslint-disable no-undef */
-/* eslint-disable unicorn/prefer-module */
 /** @type {import('jest').Config} */
-module.exports = {
+export default {
   rootDir: './',
   projects: ['<rootDir>/packages/backend/jest.config.js'],
+  moduleNameMapper: {
+    '@master-project/libs/src/(.*)$': '<rootDir>/packages/libs/src/',
+  },
+  transform: {},
 };
