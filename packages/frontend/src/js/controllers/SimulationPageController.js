@@ -28,6 +28,7 @@ export class SimulationPageController {
     this.#plotController = new PlotController();
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
+    this.initialPageData = '';
   }
 
   /**
@@ -51,6 +52,8 @@ export class SimulationPageController {
   #addEventListeners() {
     const checkbox1Coverage = document.querySelector('#toggleCoverageButton1');
     const checkbox2Coverage = document.querySelector('#toggleCoverageButton2');
+    const confirmationOverlay = document.querySelector('#overlay');
+    const resetButton = document.querySelector('#resetButton');
 
     checkbox1Coverage.addEventListener('change', () => {
       this.#toggleCoverage(checkbox2Coverage.checked);
@@ -81,21 +84,35 @@ export class SimulationPageController {
       this.#togglePause();
     });
 
-    document.querySelector('#resetButton').addEventListener('click', async event => {
-      event.currentTarget.disabled = true;
+    document.querySelector('#resetButton').addEventListener('click', () => {
+      resetButton.disabled = true;
+      confirmationOverlay.style.display = 'block';
+    });
 
+    document.querySelector('#confirmationButton').addEventListener('click', async () => {
       try {
-        const response = await fetch(`/reset?id=${this.simId}`, { method: 'POST' });
+        const simId = this.getSimId();
+        const response = await fetch(`/reset?id=${simId}`, { method: 'POST' });
         const { status: statusCode, ok: requestOk } = response;
 
-        if (!requestOk) {
+        if (requestOk) {
+          this.renderInitialData(this.initialPageData);
+          confirmationOverlay.style.display = 'none';
+          resetButton.disabled = false;
+        } else {
           const message = `Python sim ${this.simId} returned unsuccessfully (code: ${statusCode}) on RESET request`;
           throw new Error(message);
         }
       } catch (error) {
         console.debug(error);
-        event.currentTarget.disabled = true;
+        confirmationOverlay.style.display = 'none';
+        resetButton.disabled = false;
       }
+    });
+
+    document.querySelector('#cancelButton').addEventListener('click', () => {
+      confirmationOverlay.style.display = 'none';
+      resetButton.disabled = false;
     });
   }
 
@@ -143,6 +160,7 @@ export class SimulationPageController {
    * @public
    */
   renderInitialData(jsonData) {
+    this.initialPageData = jsonData;
     // Setting title and description
     document.querySelector('#simulationTitle').textContent = this.#title;
     document.querySelector('#simulationDescription').textContent = this.#description;
