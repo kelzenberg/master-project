@@ -70,8 +70,9 @@ class WebGLInterface(KMC_Model):
     def reset_simulation(self):
         while not self.parameter_queue.empty():
             self.parameter_queue.get()
-        settings.parameters.update(self.default_params)
-        set_rate_constants(self.default_params, False, self.can_accelerate)
+        for param in self.default_params.keys():
+            settings.parameters[param]['value'] = self.default_params[param]['value']
+        set_rate_constants(settings.parameters, False, self.can_accelerate)
 
     def run(self):
         """Runs the model indefinitely. To control the
