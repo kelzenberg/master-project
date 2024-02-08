@@ -1,4 +1,3 @@
 {
-  "extends": "../../babel.config.json",
-  "plugins": ["babel-plugin-transform-import-meta"]
+  "extends": "../../babel.config.json"
 }

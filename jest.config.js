@@ -4,4 +4,7 @@
 module.exports = {
   rootDir: './',
   projects: ['<rootDir>/packages/backend/jest.config.js'],
+  moduleNameMapper: {
+    '@master-project/libs/src/(.*)$': 'packages/libs/src/',
+  },
 };
