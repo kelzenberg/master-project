@@ -50,7 +50,7 @@ const createServer = async app => {
 
       return createHttpsServer(options, app);
     } catch (error) {
-      const message = 'Could not read certificate files or create HTTPS server';
+      const message = `Could not create HTTPS server with certificates from '${certPath}'`;
       logger.error(message, error);
       throw new Error(message, error);
     }
