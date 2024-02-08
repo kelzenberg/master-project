@@ -14,7 +14,7 @@ import { checkIfEnvValuesExist } from './utils/env-values.js';
 
 const logger = Logger({ name: 'server' });
 checkIfEnvValuesExist(logger);
-initializeDatabase();
+await initializeDatabase();
 
 // Reading simulation configs file & initiating SimController for them
 const configFilePath = path.resolve(process.env.CONFIG_PATH || 'src/config.json');
