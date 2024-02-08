@@ -74,7 +74,6 @@ export class SliderController {
    * @public
    */
   #sendChangeEvent(label, value) {
-    console.log(label + ' ' + value);
     sendSliderEvent({
       label,
       value,

@@ -32,13 +32,13 @@ socket.on(SocketEventTypes.DISCONNECT, message => {
 
 socket.on(SocketEventTypes.USER_ROLE, async payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.USER_ROLE.toUpperCase()} arrived with payload`, payload);
-
-  // ToDo: update user role from payload
+  const isModerator = payload === 'moderator';
+  simulationPageController.setIsModerator(isModerator);
 });
 
 socket.on(SocketEventTypes.INITIAL, async payload => {
   console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
-  await simulationPageController.renderInitialData(payload);
+  simulationPageController.renderInitialData(payload, true);
   simulationPageController.animate();
 });
 

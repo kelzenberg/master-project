@@ -18,7 +18,8 @@ export class SimulationPageController {
   #title;
   #description;
   #isPaused = false;
-  #isModerator = true;
+  #isModerator = false;
+  #isModeratorUpdated = false;
 
   /**
    * Creates a SimulationPageController instance.
@@ -97,7 +98,7 @@ export class SimulationPageController {
         const { status: statusCode, ok: requestOk } = response;
 
         if (requestOk) {
-          this.renderInitialData(this.#initialData);
+          this.renderInitialData(this.#initialData, false);
           confirmationOverlay.style.display = 'none';
           resetButton.disabled = false;
         } else {
@@ -160,45 +161,47 @@ export class SimulationPageController {
    * @param {Object} jsonData - The JSON data containing initial simulation data.
    * @public
    */
-  renderInitialData(jsonData) {
-    this.#initialData = jsonData;
-    // Setting title and description
-    document.querySelector('#simulationTitle').textContent = this.#title;
-    document.querySelector('#simulationDescription').textContent = this.#description;
+  renderInitialData(jsonData, isInitialCall) {
+    if (isInitialCall) {
+      this.#initialData = jsonData;
+      // Setting title and description
+      document.querySelector('#simulationTitle').textContent = this.#title;
+      document.querySelector('#simulationDescription').textContent = this.#description;
 
-    // Render Initial 3D Visualization Data
-    const typeDefinitions = jsonData.visualization.typeDefinitions;
-    const fixedSpecies = jsonData.visualization.fixedSpecies;
-    const config = jsonData.visualization.config;
-    const sites = jsonData.visualization.sites;
-    const species = jsonData.visualization.species;
+      // Render Initial 3D Visualization Data
+      const typeDefinitions = jsonData.visualization.typeDefinitions;
+      const fixedSpecies = jsonData.visualization.fixedSpecies;
+      const config = jsonData.visualization.config;
+      const sites = jsonData.visualization.sites;
+      const species = jsonData.visualization.species;
 
-    const sitesGroup = this.#initializeSites(sites);
-    const speciesDictionary = this.#initializeSpeciesDictionary(species, typeDefinitions);
+      const sitesGroup = this.#initializeSites(sites);
+      const speciesDictionary = this.#initializeSpeciesDictionary(species, typeDefinitions);
 
-    this.#visualizationController = new VisualizationController(
-      fixedSpecies,
-      config,
-      sitesGroup,
-      speciesDictionary,
-      typeDefinitions
-    );
-    this.#visualizationController.renderInitialData();
+      this.#visualizationController = new VisualizationController(
+        fixedSpecies,
+        config,
+        sitesGroup,
+        speciesDictionary,
+        typeDefinitions
+      );
+      this.#visualizationController.renderInitialData();
 
-    // Render Initial Plot Data
-    this.#plotController = new PlotController(jsonData.plots);
-    this.#plotController.renderInitialData();
+      // Render Initial Plot Data
+      this.#plotController = new PlotController(jsonData.plots);
+      this.#plotController.renderInitialData();
 
-    // Initialize sliders
-    const slider = jsonData.slider;
-    this.#sliderController = new SliderController(slider);
+      // Initialize legend
+      this.#legendController = new LegendController(typeDefinitions);
+      this.#legendController.initializeLegend();
+
+      // Initialize sliders
+      const slider = jsonData.slider;
+      this.#sliderController = new SliderController(slider);
+    }
+
     this.#sliderController.initializeSlider(this.#isModerator);
-
-    // Initialize legend
-    this.#legendController = new LegendController(typeDefinitions);
-    this.#legendController.initializeLegend();
-
-    this.#disableLoadingSpinner();
+    this.#disableLoadingSpinner(isInitialCall);
   }
 
   /**
@@ -210,6 +213,7 @@ export class SimulationPageController {
     if (!this.#isPaused) {
       this.#visualizationController.renderDynamicData(jsonData.visualization.config);
       this.#plotController.updatePlots(jsonData.plots);
+      if (!this.#isModeratorUpdated) this.#updateModSlider(jsonData.sliderData);
       if (!this.#isModerator) this.#sliderController.updateSliderValues(jsonData.sliderData);
     }
   }
@@ -315,7 +319,13 @@ export class SimulationPageController {
    * Disables the loading spinner and displays simulation components.
    * @private
    */
-  #disableLoadingSpinner() {
+  #disableLoadingSpinner(isInitialCall) {
+    if (isInitialCall) {
+      document.querySelector('#toggleCoverageButton1').checked = true;
+      document.querySelector('#toggleCoverageButton2').checked = false;
+      document.querySelector('#toggleTofButton1').checked = true;
+      document.querySelector('#toggleTofButton2').checked = false;
+    }
     document.querySelector('#canvasContainer').style.visibility = 'visible';
     document.querySelector('#plotTOF').style.visibility = 'visible';
     document.querySelector('#plotCoverage').style.visibility = 'visible';
@@ -331,10 +341,6 @@ export class SimulationPageController {
 
     document.querySelector('#coverageCheckboxContainer').style.display = 'block';
     document.querySelector('#tofCheckboxContainer').style.display = 'block';
-    document.querySelector('#toggleCoverageButton1').checked = true;
-    document.querySelector('#toggleCoverageButton2').checked = false;
-    document.querySelector('#toggleTofButton1').checked = true;
-    document.querySelector('#toggleTofButton2').checked = false;
     document.querySelector('#loader').style.display = 'none';
   }
 
@@ -354,5 +360,30 @@ export class SimulationPageController {
       <span>Wait for automatic reconnect or reload the page.</span>
       <p><small>Details: ${error.message || 'Unknown error'} ${error.data || ''}</small></p>
     `;
+  }
+
+  setIsModerator(isModerator) {
+    this.#isModerator = isModerator;
+    if (Object.keys(this.#initialData).length > 0) this.renderInitialData(this.#initialData, false);
+  }
+
+  #updateModSlider(sliderData) {
+    const updatedInitial = this.#initialData.slider.map(slider => {
+      const label = slider.label;
+      const value = slider.default;
+      return { label: label, value: value };
+    });
+
+    let hasChanges = false;
+
+    for (const slider of sliderData) {
+      const correspondingObject = updatedInitial.find(obj => obj.label === slider.label);
+      if (correspondingObject && correspondingObject.value !== slider.value) {
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) this.#sliderController.updateSliderValues(sliderData);
+    this.#isModeratorUpdated = true;
   }
 }

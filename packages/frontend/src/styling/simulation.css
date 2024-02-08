@@ -28,6 +28,10 @@ body {
   position: relative;
 }
 
+button {
+  background-color: unset;
+}
+
 #overlay {
   display: none;
   position: absolute;

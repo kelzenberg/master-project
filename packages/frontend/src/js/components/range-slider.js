@@ -67,6 +67,7 @@ class rangeSlider extends HTMLElement {
   }
 
   sliderPosition(value) {
+    value = this.isLogScale ? this.calculateSymmetricalLog(value) : value;
     return (Number(value) - Number(this.min)) / this.stepSize;
   }
 
