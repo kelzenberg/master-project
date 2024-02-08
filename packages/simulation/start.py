@@ -375,6 +375,7 @@ if __name__ == "__main__":
     @app.route('/reset', methods=['POST'])
     def reset_simulation():
         try:
+            app.kmc_model._history = []
             while not app.kmc_model.dynamic_data.empty():
                 app.kmc_model.dynamic_data.get()
             app.kmc_model.deallocate()
