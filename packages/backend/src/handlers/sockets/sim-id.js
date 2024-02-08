@@ -31,13 +31,15 @@ export const handler =
       currentRoomId: chosenSimController.roomId,
     };
 
+    logger.info(`Emitting message on ${SocketEventTypes.USER_ROLE.toUpperCase()}`, {
+      data: 'moderator',
+    });
+    socket.emit(SocketEventTypes.USER_ROLE, 'moderator');
+
     logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
       data: { uuid: chosenSimController.uuid, roomId: chosenSimController.roomId, title: chosenSimController.title },
     });
     socket.emit(SocketEventTypes.INITIAL, chosenSimController.getInitialSimData());
-
-    // ToDo
-    socket.emit(SocketEventTypes.USER_ROLE, 'moderator');
 
     logger.info(`Assigning ${socket.id} to room ${chosenSimController.roomId}`, { data: chosenSimController.roomId });
     socket.join(chosenSimController.roomId);
