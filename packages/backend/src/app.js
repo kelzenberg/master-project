@@ -23,7 +23,7 @@ export const createApp = logger => {
 
   app.use((req, res, next) =>
     basicAuth({
-      authorizer: authorizer(res),
+      authorizer: authorizer(key => (res.locals.role = key)),
       challenge: true,
       realm: 'FritzHaberInstituteOfTheMaxPlanckSociety',
     })(req, res, next)

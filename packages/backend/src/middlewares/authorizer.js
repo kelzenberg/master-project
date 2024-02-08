@@ -5,13 +5,13 @@ const userCredentials = {
   student: { username: process.env.STUDENT_USERNAME, password: process.env.STUDENT_PASSWORD },
 };
 
-export const authorizer = res => (username, password) => {
+export const authorizer = roleCallback => (username, password) => {
   const isAuthenticatedForAnyRole = Object.entries(userCredentials).map(([key, value]) => {
     const userMatches = basicAuth.safeCompare(username, value.username);
     const passwordMatches = basicAuth.safeCompare(password, value.password);
 
     if (userMatches && passwordMatches) {
-      res.locals.role = key;
+      roleCallback(key);
       return true;
     }
 
