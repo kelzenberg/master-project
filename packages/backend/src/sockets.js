@@ -1,6 +1,8 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Logger } from './utils/logger.js';
 import { SocketEventTypes } from './utils/events.js';
+import { clientDataHandler } from './middlewares/sockets/client-data-handler.js';
+import { roleHandler } from './middlewares/sockets/role-handler.js';
 import { errorHandler } from './middlewares/sockets/error-handler.js';
 import { getWorkerEventHandlers } from './utils/worker.js';
 import { handler as sliderHandler } from './handlers/sockets/slider.js';
@@ -13,6 +15,8 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
   const ioServer = new SocketIOServer(httpServer, serverOptions);
 
   // Packet middlewares
+  ioServer.use(clientDataHandler(logger));
+  ioServer.use(roleHandler(logger));
   ioServer.use(errorHandler(logger));
 
   // Client connection over socket
@@ -20,7 +24,7 @@ export const startSocketServer = (httpServer, simControllers, serverOptions) => 
     logger.info(`Client connected: ${socket.id}`); // Id is not persisting between session, debug only!
 
     // Setting client data structure on socket
-    socket.data.client = { currentSimUUID: null, currentRoomId: null };
+    socket.data.client = { ...socket.data.client, currentSimUUID: null, currentRoomId: null };
 
     // Assigning client to correct sim room & sending initial sim data
     socket.on(

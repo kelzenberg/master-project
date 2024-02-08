@@ -34,7 +34,7 @@ export const handler =
     logger.info(`Emitting message on ${SocketEventTypes.USER_ROLE.toUpperCase()}`, {
       data: 'moderator',
     });
-    socket.emit(SocketEventTypes.USER_ROLE, 'moderator');
+    socket.emit(SocketEventTypes.USER_ROLE, socket.data.client.role);
 
     logger.info(`Emitting message on ${SocketEventTypes.INITIAL.toUpperCase()}`, {
       data: { uuid: chosenSimController.uuid, roomId: chosenSimController.roomId, title: chosenSimController.title },
