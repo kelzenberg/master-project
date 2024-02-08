@@ -14,6 +14,7 @@ export class SimulationPageController {
   #plotController;
   #sliderController;
   #legendController;
+  #initialData;
   #title;
   #description;
   #isPaused = false;
@@ -28,7 +29,7 @@ export class SimulationPageController {
     this.#plotController = new PlotController();
     this.#sliderController = new SliderController();
     this.#legendController = new LegendController();
-    this.initialPageData = '';
+    this.#initialData = {};
   }
 
   /**
@@ -96,7 +97,7 @@ export class SimulationPageController {
         const { status: statusCode, ok: requestOk } = response;
 
         if (requestOk) {
-          this.renderInitialData(this.initialPageData);
+          this.renderInitialData(this.#initialData);
           confirmationOverlay.style.display = 'none';
           resetButton.disabled = false;
         } else {
@@ -160,7 +161,7 @@ export class SimulationPageController {
    * @public
    */
   renderInitialData(jsonData) {
-    this.initialPageData = jsonData;
+    this.#initialData = jsonData;
     // Setting title and description
     document.querySelector('#simulationTitle').textContent = this.#title;
     document.querySelector('#simulationDescription').textContent = this.#description;
