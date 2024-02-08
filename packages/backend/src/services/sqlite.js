@@ -13,27 +13,26 @@ const filePath = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 
 
 let dbInstance;
 
-export const initializeDatabase = () => {
+export const initializeDatabase = async () => {
   logger.info('Initializing database from file...', { data: filePath });
 
-  open({
-    filename: `${(path.dirname(url.fileURLToPath(import.meta.url)), filePath)}`,
-    driver: sqlite3.cached.Database,
-  })
-    .then(db => {
-      logger.info('Creating database tables...');
-      db.exec('CREATE TABLE IF NOT EXISTS simulation (envKeyForURL TEXT PRIMARY KEY, uuid TEXT)');
-      return db;
-    })
-    .then(db => {
-      dbInstance = db;
-      logger.info('Successfully initialized database');
-    })
-    .catch(error => {
-      const message = 'Initializing database failed';
-      logger.error(message, error);
-      throw new Error(message, error);
+  try {
+    const db = await open({
+      filename: `${(path.dirname(url.fileURLToPath(import.meta.url)), filePath)}`,
+      driver: sqlite3.cached.Database,
     });
+
+    logger.info('Creating database tables...');
+
+    db.exec('CREATE TABLE IF NOT EXISTS simulation (envKeyForURL TEXT PRIMARY KEY, uuid TEXT)');
+    dbInstance = db;
+
+    logger.info('Successfully initialized database');
+  } catch (error) {
+    const message = 'Initializing database failed';
+    logger.error(message, error);
+    throw new Error(message, error);
+  }
 };
 
 export const closeDatabase = async () => dbInstance.close();
