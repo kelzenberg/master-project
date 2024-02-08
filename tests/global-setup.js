@@ -8,9 +8,9 @@ const jestSetup = () => {
   // WORKER SETTINGS
   process.env.WORKER_ACTIVE = 1;
   process.env.WORKER_DELAY = 2000;
-  process.env.WORKER_RUN_FILE_PATH = 'src/worker/main.js';
+  process.env.WORKER_RUN_FILE_PATH = 'packages/backend/src/worker/main.js';
   // SIMULATION SETTINGS
-  process.env.CONFIG_PATH = 'src/config.json';
+  process.env.CONFIG_PATH = 'packages/backend/src/config.json';
   process.env.SIMULATION_PORT = 3001;
   // USER CREDENTIALS
   process.env.MODERATOR_USERNAME = 'Moderator';
