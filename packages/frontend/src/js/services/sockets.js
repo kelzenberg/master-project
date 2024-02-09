@@ -11,43 +11,33 @@ const socket = io({
 });
 
 socket.on(SocketEventTypes.CONNECT, async () => {
-  console.debug(`[DEBUG]: Connected to sim`, { simId });
-
   await simulationPageController.init(simId);
   simulationPageController.hideErrorOverlay();
 
-  console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SIM_ID.toUpperCase()} with simID`, { simId });
   socket.emit(SocketEventTypes.SIM_ID, { simId });
 });
 
 socket.on(SocketEventTypes.CONNECT_ERROR, error => {
-  console.debug(`[DEBUG]: Received connect error`, { error });
   simulationPageController.displayErrorOverlay(error);
 });
 
 socket.on(SocketEventTypes.DISCONNECT, message => {
-  console.debug(`[DEBUG]: Client disconnected`);
   simulationPageController.displayErrorOverlay(message);
 });
 
 socket.on(SocketEventTypes.USER_ROLE, async payload => {
-  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.USER_ROLE.toUpperCase()} arrived with payload`, payload);
-  const isModerator = payload === 'moderator';
-  simulationPageController.setIsModerator(isModerator);
+  simulationPageController.setIsModerator(payload === 'moderator');
 });
 
 socket.on(SocketEventTypes.INITIAL, async payload => {
-  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
   simulationPageController.renderInitialData(payload, true);
   simulationPageController.animate();
 });
 
 socket.on(SocketEventTypes.DYNAMIC, payload => {
-  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
   simulationPageController.renderDynamicData(payload);
 });
 
 export const sendSliderEvent = payload => {
-  console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SLIDER.toUpperCase()} with payload`, payload);
   socket.emit(SocketEventTypes.SLIDER, payload);
 };

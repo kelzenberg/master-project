@@ -105,8 +105,7 @@ export class SimulationPageController {
           const message = `Python sim ${this.simId} returned unsuccessfully (code: ${statusCode}) on RESET request`;
           throw new Error(message);
         }
-      } catch (error) {
-        console.debug(error);
+      } catch {
         confirmationOverlay.style.display = 'none';
         resetButton.disabled = false;
       }
@@ -127,7 +126,6 @@ export class SimulationPageController {
     const simId = new URLSearchParams(window.location.search).get('id');
 
     if (!simId || `${simId}`.trim() === '') {
-      console.debug(`[DEBUG]: No simId found as URL param. Redirecting...`, { simId });
       window.location.href = '/';
       return;
     }
