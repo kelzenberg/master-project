@@ -13,7 +13,7 @@ module.exports = {
     '@master-project/libs/(.*)$': '../libs/src/',
   },
   transform: {
-    '^.+\\.(m?js|ts)$': ['babel-jest', { rootMode: 'upward' }], // transpile mjs, mts, js, ts files
+    '^.+\\.(m?js|ts)$': ['babel-jest', { rootMode: 'upward', configFile: './babel.config.json' }], // transpile mjs, mts, js, ts files
   },
   transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   testEnvironment: 'jsdom',
