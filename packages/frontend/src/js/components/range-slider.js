@@ -6,7 +6,7 @@ template.innerHTML = `
           <div id="rangeSliderIcon">
             <div class="rangeSliderModal">
               <span class="modalContent" id="rangerSliderLogInfo"></span>
-              <span id="rangeSliderInfo">Controls the ambient temperature (in Fahrenheit) of the simulation.</span>
+              <span id="rangeSliderInfo"></span>
               <span class="modalContent" id="infoMin"></span>
               <span class="modalContent" id="infoMax"></span>
             </div>
@@ -27,7 +27,7 @@ class rangeSlider extends HTMLElement {
 
     // Attribute values
     this.labelText = '';
-    this.infoText = 'Controls the ambient temperature (in Fahrenheit) of the simulation.';
+    this.infoText = '';
     this.min = 0;
     this.max = 100;
     this.value = 50;
@@ -153,7 +153,7 @@ class rangeSlider extends HTMLElement {
         break;
       }
       case 'info': {
-        this.info = newValue;
+        this.infoText = newValue;
         break;
       }
       case 'islogscale': {

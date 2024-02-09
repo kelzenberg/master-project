@@ -325,11 +325,25 @@ export class SimController {
   extendInitialSimData() {
     this.#logger.info(`Extending initial data with extra infos for ${this.title} sim...`);
 
-    const initial = this.#data.initial;
     const { typeInfos, sliderInfos } = this.#data.extra;
+    const merged = { ...this.#data.initial };
 
-    // ToDo: merge initial with typeInfos & sliderInfos here
+    for (let i = 0; i < merged.slider.length; i++) {
+      const label = merged.slider[i].label;
+      let initialSlider = merged.slider.find(obj => obj.label === label);
+      let configSliderInfo = sliderInfos.find(obj => obj.label === label);
+      initialSlider.info = configSliderInfo.info;
+    }
 
+    const typeKeys = Object.keys(merged.visualization.typeDefinitions);
+    for (const key of typeKeys) {
+      if (key === 'empty') continue;
+      let initialTypeDefinition = merged.visualization.typeDefinitions[key];
+      let configTypeInfo = typeInfos.find(obj => obj.key === key);
+      initialTypeDefinition.info = configTypeInfo.info;
+    }
+
+    this.#data.merged = merged;
     this.#logger.info(`Merged initial data with extra infos for ${this.title} sim`);
   }
 
