@@ -35,7 +35,7 @@ module.exports = {
       patterns: [
         { from: '../../node_modules/plotly.js-dist-min/plotly.min.js', to: 'js/plotly.min.js' },
         {
-          from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
+          from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
           to: 'js/webcomponents-loader.js',
         },
       ],
