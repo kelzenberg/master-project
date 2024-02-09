@@ -78,9 +78,14 @@ module.exports = {
         },
       },
       {
-        test: /\.(js)$/i,
+        test: /\.m?js$/,
         exclude: [/node_modules/, /plotly/],
-        use: ['babel-loader'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
     ],
   },
