@@ -24,3 +24,9 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
   ```sh
   npm run F build
   ```
+
+## Notes
+
+The first time you open the Frontend in the browser (running the project locally or via Docker), you will be asked to authorize yourself through [Basic Auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication). **The credentials to sign in are listed in the [`.env.dist` file](https://github.com/kelzenberg/master-project/blob/main/.env.dist#L19-L22).**
+
+Based on your choice of credentials, you will be assigned the role of `Moderator` (full permissions) or `Student` (restricted permissions).
