@@ -92,6 +92,7 @@ export const createSimControllersFromConfigs = async simConfigs => {
       const simController = new SimController({ ...loadedConfig, ...matchingStoredConfig });
       await simController.waitForSimHealth();
       await simController.fetchInitialSimData();
+      simController.extendInitialSimData();
       return simController;
     })
   );

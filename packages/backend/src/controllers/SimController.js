@@ -38,7 +38,7 @@ export class SimController {
     this.#thumbnailPath = `/img/${thumbnail}`;
     this.#isHealthy = null;
     this.#connectedClients = new Map();
-    this.#data = { initial: null, extra: { typeInfos, sliderInfos } };
+    this.#data = { initial: null, extra: { typeInfos, sliderInfos }, merged: null };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
@@ -322,8 +322,27 @@ export class SimController {
     }
   }
 
+  extendInitialSimData() {
+    this.#logger.info(`Extending initial data with extra infos for ${this.title} sim...`);
+
+    const initial = this.#data.initial;
+    const { typeInfos, sliderInfos } = this.#data.extra;
+
+    // ToDo: merge initial with typeInfos & sliderInfos here
+
+    this.#logger.info(`Merged initial data with extra infos for ${this.title} sim`);
+  }
+
   getInitialSimData() {
-    return this.#data.initial;
+    const mergedData = this.#data.merged;
+
+    if (!mergedData) {
+      const message = `Merged initial data for ${this.title} is empty`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    return mergedData;
   }
 
   getThumbnailPath() {
