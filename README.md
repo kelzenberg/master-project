@@ -31,7 +31,7 @@
   # Windows
   copy .\.env.dist .\.env
   ```
-  > Descriptions of what the effects of individual environment values are can be found inside the `.env.dist` file as comments. Comes with pre-configured values already in place.
+  > Required. Descriptions of what the effects of individual environment values are can be found inside the `.env.dist` file as comments. Comes with pre-configured values already in place.
 - Compare your local NodeJS version via `node -v` with the [required version](#requirements) above.
 - Run `npm install` _once_ to install all dependencies.
 
@@ -101,6 +101,12 @@ During the `git commit` action you will see the hooks running in your console.
 - Install dependencies: `npm run install:F {NPM-package-name}`
 - Remove dependencies: `npm run remove:F {NPM-package-name}`
 - Test: `npm run test:F`
+
+##### Roles & Permissions
+
+The first time you open the Frontend in the browser (running the project locally or via Docker), you will be asked to authorize yourself through [Basic Auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication). **The credentials to sign in are listed in the [`.env.dist` file](https://github.com/kelzenberg/master-project/blob/main/.env.dist#L19-L22).**
+
+Based on your choice of credentials, you will be assigned the role of `Moderator` (full permissions) or `Student` (restricted permissions).
 
 #### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
