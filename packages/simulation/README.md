@@ -2,7 +2,8 @@
 
 ---
 
-Python simulation and HTTP server
+Python simulation wrapped in a HTTP server.  
+(This package originated from and is mainly maintained by the FHI.)
 
 ---
 
@@ -11,13 +12,6 @@ Python simulation and HTTP server
 Check the [global README](https://github.com/kelzenberg/master-project/blob/main/README.md) for requirements and usage.
 
 ## Usage
-
-<!-- - Start development-only server
-  _(on [http://localhost:3000](http://localhost:3000))_
-
-  ```sh
-  npm run S dev
-  ``` -->
 
 - Start production server locally
 
