@@ -1,7 +1,6 @@
 # Master Project
 
-<small>Software project for the academic course "Master Project WiSe23/24" at the [Berliner Hochschule für Technik](https://bht-berlin.de/en),  
-in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the [Max-Planck-Gesellschaft](https://www.mpg.de/en).</small>
+<small>Software project **"Interactive Web-Frontend for Server-based Scientific Simulations"** for the academic course "Master Project WiSe23/24" at the [Berliner Hochschule für Technik](https://bht-berlin.de/en) (BHT), in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) (FHI) of the [Max-Planck-Gesellschaft](https://www.mpg.de/en).</small>
 
 ---
 
@@ -12,6 +11,9 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 
 ### Requirements
 
+#### Software
+
+- Some form of UNIX-based shell like bash; especially on Windows, use [WSL](https://code.visualstudio.com/docs/remote/wsl)
 - [Git](https://git-scm.com/)
   - We enforce a line ending of `LF`.
     More details [here](https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/).
@@ -19,9 +21,8 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
   - Including [NPM](https://www.npmjs.com/package/npm) version `^10.2.x`
   - [Optional] [nvm](https://github.com/nvm-sh/nvm) to switch Node versions, see `.nvmrc`
 - [Docker Desktop](https://docs.docker.com/desktop/) or similar container virtualization software
-- Some form of UNIX-based shell, especially on Windows: [WSL](https://code.visualstudio.com/docs/remote/wsl)
 
-### Recommendations
+#### Actions
 
 - Create your local `.env` file copy ([info](https://nodejs.org/docs/latest-v21.x/api/cli.html#--env-fileconfig)) with
   ```sh
@@ -30,13 +31,16 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
   # Windows
   copy .\.env.dist .\.env
   ```
-- Compare your local NodeJS version via `node -v` with the [required version](#requirements).
+  > Descriptions of what the effects of individual environment values are can be found inside the `.env.dist` file as comments. Comes with pre-configured values already in place.
+- Compare your local NodeJS version via `node -v` with the [required version](#requirements) above.
 - Run `npm install` _once_ to install all dependencies.
+
+### Recommendations
 
 #### Editor: [VSCodium](https://vscodium.com/) or [VSCode](https://code.visualstudio.com/)
 
 - Plus [ESLint Extension](https://open-vsx.org/vscode/item?itemName=dbaeumer.vscode-eslint/), [Prettier Extension](https://open-vsx.org/vscode/item?itemName=esbenp.prettier-vscode), [EditorConfig Extension](https://open-vsx.org/vscode/item?itemName=EditorConfig.EditorConfig), [DotENV](https://open-vsx.org/vscode/item?itemName=mikestead.dotenv).
-- Settings that make your life easier:
+- Settings in VSC which make your dev life easier:
 
   ```jsonc
   // Add this to user settings to auto-lint on Save
@@ -54,12 +58,12 @@ in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) of the
 
 > The repository consistently holds two branches, `main` and `dev`.  
 > Other branches are focused, purpose-driven and short-lived.  
-> We do run some code via Git hooks before you can commit on any branch though.
+> We do run some code via Git hooks before you can commit on any branch to check and maintain code standards and quality.
 
 ### [`main` Branch](https://github.com/kelzenberg/master-project/tree/main)
 
 **Considered as the "release" branch**  
-From here, every commit will undergo our continuous integration steps and ultimately be continuously deployed into the FHI production system. Commits on this branch need to be approved via Pull Request by minimum one other team member and the branch keeps a linear Git history.
+From here, every commit will ultimately be deployed into the FHI production systems. Commits on this branch need to be approved via Pull Request by a minimum of one other team member. The branch requires a linear Git history.
 
 ### [`dev` Branch](https://github.com/kelzenberg/master-project/tree/dev)
 
@@ -73,10 +77,10 @@ They will be merged/rebased into `dev` and deleted when done. Ideally each addit
 
 ### Hooks
 
-This repository uses pre-commit Git hooks via [husky](https://www.npmjs.com/package/husky) and [lint-staged](https://www.npmjs.com/package/lint-staged) to check your commit for faulty code formatting and linter errors. You do not need to install anything extra (but you should, see [Recommendations](#recommendations)) to make this work.  
+This repository uses pre-commit Git hooks via [husky](https://www.npmjs.com/package/husky) and [lint-staged](https://www.npmjs.com/package/lint-staged) to check your commit for faulty code formatting and linter errors. You do not need to install anything extra (but you should see the [Recommendations](#recommendations) section) to make this work.  
 During the `git commit` action you will see the hooks running in your console.
 
-**⚠️ If the hooks fail, you should fix your changes before committing again ⚠️**
+**⚠️ If the hooks fail, you should fix your changes accordingly before committing again ⚠️**
 
 ## Monorepo & Packages
 
@@ -96,6 +100,7 @@ During the `git commit` action you will see the hooks running in your console.
 - **Usage: `npm run F [dev|build]`**
 - Install dependencies: `npm run install:F {NPM-package-name}`
 - Remove dependencies: `npm run remove:F {NPM-package-name}`
+- Test: `npm run test:F`
 
 #### [@master-project/backend](https://github.com/kelzenberg/master-project/tree/main/packages/backend)
 
@@ -103,7 +108,7 @@ During the `git commit` action you will see the hooks running in your console.
 
 - [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/backend/README.md)
 - Short: `npm run B ...`
-- **Usage: `npm run B [dev|start]`**
+- **Usage: `npm run B [dev|start|generate-cert]`**
 - Install dependencies: `npm run install:B {NPM-package-name}`
 - Remove dependencies: `npm run remove:B {NPM-package-name}`
 
@@ -113,13 +118,13 @@ During the `git commit` action you will see the hooks running in your console.
 
 - [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/libs/README.md)
 - Short: `npm run L ...`
-- **Usage: `None` (import to other packages only)**
+- **Usage: `None` (import to other modules only)**
 - Install dependencies: `npm run install:L {NPM-package-name}`
 - Remove dependencies: `npm run remove:L {NPM-package-name}`
 
 #### [@master-project/simulation](https://github.com/kelzenberg/master-project/tree/main/packages/simulation)
 
-**Python simulation and HTTP server**
+**Python simulation wrapped in a HTTP server**
 
 - [Readme](https://github.com/kelzenberg/master-project/tree/main/packages/simulation/README.md)
 - Short: `npm run S ...`
@@ -131,16 +136,20 @@ During the `git commit` action you will see the hooks running in your console.
 #### Notes on Packages
 
 - ⚠️ Package-related NPM dependencies are installed **only for the respective workspace** ⚠️  
-  _Example_ `ThreeJS` is installed only for workspace `@master-project/frontend`.
+  _Example_ `ThreeJS` is installed in the workspace `@master-project/frontend` only.
 - Generic configuration files are located on the root level of the repository  
   They are valid for all packages but can be overwritten by local configuration files.  
   _Example_ `./eslintrc.json`
-- Each package has their own local configuration files.  
+- Each package has their own local configuration files, extending or overwriting the root files.  
   _Example_ `./packages/frontend/eslintrc.json`
 
 ### Package Containerization
 
-This repository offers package containerization via [Docker](https://docs.docker.com).
+This repository offers package containerization via [Docker](https://docs.docker.com) to simplify cross-system development and previewing built artifacts in production systems.
+
+Make sure, all environment variables have values set in the `.env` file before running the commands below.
+
+> This is the easiest way to run the project quickly in its entirety.
 
 - Build and run container images locally
 
@@ -154,13 +163,19 @@ This repository offers package containerization via [Docker](https://docs.docker
   npm run down
   ```
 
-- Recreate local container images forcibly (optional)
+- Recreate local container images forcibly (optional, resetting)
 
   ```sh
   npm run docker:reset
   ```
 
-### Global Commands
+- Verbose console output of local container recreation (optional, debugging)
+
+  ```sh
+  npm run docker:verbose
+  ```
+
+### Further Global Commands
 
 These NPM commands will be executed for ALL packages.
 
@@ -170,7 +185,7 @@ These NPM commands will be executed for ALL packages.
   npm run clean
   ```
 
-- Cleanly re-install the whole project & its dependencies
+- Cleanly re-install the whole project & its dependencies locally
 
   ```sh
   npm run reset
@@ -180,25 +195,25 @@ These NPM commands will be executed for ALL packages.
 
   ```sh
   npm run lint # lint only and show errors
-  npm run lint:fix # lint and fix errors
+  npm run lint:fix # lint and fix errors automatically
   ```
 
 - Format source files (with Prettier)
   ```sh
   npm run format # run formatter but only show errors
-  npm run format:fix # format and fix errors
+  npm run format:fix # format and fix errors automatically
   ```
 
-#### Notes on Global Commands
+#### Notes on Global NPM Commands
 
 You can run any NPM command consecutively for all packages by adding a `--workspaces` to it.  
-For example, `npm run --workspaces @master-project/frontend threejs` will install `ThressJS` only for the frontend package.
+For example, `npm install --workspaces @master-project/frontend threejs` will install `ThressJS` only in the frontend package.
 
 ## Project Documentation
 
-With the exception of this README and the package's READMEs, the entire project documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
+With the exception of this README and the package's READMEs, more of the project's documentation can be found [in the wiki](https://github.com/kelzenberg/master-project/wiki).
 
-### Hint for Editors
+### Hint for Wiki Editors
 
 Clone the Wiki to edit pages locally in your editor.
 
@@ -218,8 +233,8 @@ git clone git@github.com:kelzenberg/master-project.wiki.git
   - Start the Python simulation and HTTP server package in Docker (e.g. `npm run up`, stop the `app` container but keep the `sim` container running),
   - then build the Frontend package with `npm run F build`,
   - then start the development server of the Backend package with `npm run B dev`.  
-    It will use the build files in the `dist` folder of the Frontend package.
-  - You will need to rebuild the Frontend package and restart the Backend server to see Frontend code changes.
+    It will serve the build files of the `dist` folder in the Frontend package.
+  - You will need to rebuild the Frontend package to see Frontend code changes. The Backend server will serve the edited files automatically without a restart.
 
 ### Q: How can I adjust the speed in which the Backend worker will request and distribute new Python simulation updates?
 
@@ -227,4 +242,7 @@ git clone git@github.com:kelzenberg/master-project.wiki.git
 
 ### Q: Everything is broken, what should I do now[?](https://knowyourmeme.com/memes/this-is-fine)
 
-- **A:** Run `cp ./.env.dist ./.env && npm install && npm run reset && npm run docker:reset`.
+- **A:** Read the error messages. To get back to the initially cloned state, run
+  ```
+  cp ./.env.dist ./.env && npm install && npm run reset && npm run docker:reset
+  ```
