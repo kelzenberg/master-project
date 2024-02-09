@@ -143,10 +143,6 @@ export class SimulationPageController {
     const response = await fetch(`/list?id=${simId}`, { method: 'GET' });
 
     if (response.status !== 200) {
-      console.debug(`[DEBUG]: SimId is misformatted or cannot be found. Redirecting...`, {
-        status: response.status,
-        url: response.url,
-      });
       window.location.href = '/';
       return;
     }
