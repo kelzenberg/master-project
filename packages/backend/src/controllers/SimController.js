@@ -26,7 +26,7 @@ export class SimController {
   /**
    * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
    */
-  constructor({ uuid, title, description, envKeyForURL, thumbnail }) {
+  constructor({ uuid, title, description, envKeyForURL, thumbnail, typeInfos, sliderInfos }) {
     this.uuid = uuid;
     this.title = title;
     this.description = description;
@@ -38,7 +38,7 @@ export class SimController {
     this.#thumbnailPath = `/img/${thumbnail}`;
     this.#isHealthy = null;
     this.#connectedClients = new Map();
-    this.#data = { initial: null };
+    this.#data = { initial: null, extra: { typeInfos, sliderInfos } };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
@@ -312,7 +312,7 @@ export class SimController {
 
     try {
       const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
-      this.#data = { initial: await response.json() };
+      this.#data = { ...this.#data, initial: await response.json() };
 
       this.#logger.info(`Stored initial data for ${this.title} sim`);
     } catch (error) {
