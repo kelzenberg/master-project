@@ -1,5 +1,5 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
-import { SimulationPageController } from '../controllers/SimulationPageController';
+import { SimulationPageController } from '../controllers/SimulationPageController.js';
 
 const simulationPageController = new SimulationPageController();
 const simId = simulationPageController.getSimId();

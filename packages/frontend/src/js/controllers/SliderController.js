@@ -1,4 +1,4 @@
-import { sendSliderEvent } from '../services/sockets';
+import { sendSliderEvent } from '../services/sockets.js';
 
 /**
  * Controls the initialization and updating of sliders.

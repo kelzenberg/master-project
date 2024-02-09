@@ -1,9 +1,9 @@
 import { Vector3, Group, Object3D } from 'three';
-import Molecule from '../models/Molecule';
-import { VisualizationController } from './VisualizationController';
-import { PlotController } from './PlotController';
-import { LegendController } from './LegendController';
-import { SliderController } from './SliderController';
+import Molecule from '../models/Molecule.js';
+import { VisualizationController } from './VisualizationController.js';
+import { PlotController } from './PlotController.js';
+import { LegendController } from './LegendController.js';
+import { SliderController } from './SliderController.js';
 
 /**
  * The SimulationPageController class manages the data for the simulation page, including 3D visualization, plots, sliders, and other controls.

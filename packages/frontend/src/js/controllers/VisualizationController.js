@@ -12,10 +12,10 @@ import {
   Group,
   Box3,
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
-import Molecule from '../models/Molecule';
-import Species from '../models/Species';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper.js';
+import Molecule from '../models/Molecule.js';
+import Species from '../models/Species.js';
 
 /**
  * Controls the 3D visualization of species in the three.js scene. Also enables the user to navigate in the scene.

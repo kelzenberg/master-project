@@ -1,13 +1,12 @@
-/* eslint-disable no-undef */
-/* eslint-disable unicorn/prefer-module */
-const path = require('node:path');
-const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+import path from 'node:path';
+import url from 'node:url';
+import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
-module.exports = {
+export default {
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'dist'),
     clean: true,
   },
   plugins: [
