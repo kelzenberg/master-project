@@ -25,55 +25,60 @@ export class LegendController {
     const legendTable = document.createElement('table');
     legendTable.classList.add('legendTable'); // You can add a class for styling if needed
 
+    let largestWidth = 0;
+    // The radii of the types are rather small so we multiply them with a constant
+    const widthMultiplier = 15;
+
     // Map each type definition to a table row
-    const typeRows = Object.entries(this.#typeDefinitions)
+    const typeDivs = Object.entries(this.#typeDefinitions)
       .filter(([key]) => key !== 'empty')
       .map(([key, type]) => {
-        // Create a table row for each type
-        const typeRow = document.createElement('tr');
+        if (type.radius > largestWidth) largestWidth = type.radius;
+
+        const typeContainer = document.createElement('div');
+        typeContainer.classList.add('typeContainer');
 
         // Create a table data for the circle
-        const circleCell = document.createElement('td');
         const circleDiv = document.createElement('div');
         circleDiv.classList.add('legendCircle');
         circleDiv.style.backgroundColor = `rgb(${type.color.map(val => val * 255).join(',')})`;
         circleDiv.style.border = '1px solid black';
         circleDiv.style.borderRadius = '50%';
-        circleDiv.style.width = `${type.radius * 15}px`; // Adjust the size as needed
-        circleDiv.style.height = `${type.radius * 15}px`; // Adjust the size as needed
-        circleDiv.style.margin = 'auto';
-        circleCell.append(circleDiv);
+        circleDiv.style.width = `${type.radius * widthMultiplier}px`; // Adjust the size as needed
+        circleDiv.style.height = `${type.radius * widthMultiplier}px`; // Adjust the size as needed
+        typeContainer.append(circleDiv);
 
-        // Create a table data for the name
-        const nameCell = document.createElement('td');
-        nameCell.textContent = type.name;
-        nameCell.style.paddingLeft = '0.5rem';
+        // Create a container for the name
+        const nameDiv = document.createElement('div');
+        nameDiv.textContent = type.name;
 
-        // Create a table data for the type key
-        const keyCell = document.createElement('td');
-        keyCell.textContent = `(${key})`;
+        // Create a container for the type key
+        const keyDiv = document.createElement('div');
+        keyDiv.textContent = `(${key})`;
 
-        // Create a table data for the type info
-        const infoCell = document.createElement('td');
-        const infoP = document.createElement('p');
-        infoP.textContent = type.info;
-        infoP.style.margin = '10px';
-        infoCell.append(infoP);
+        // Create a container for the type info
+        const info = document.createElement('p');
+        info.classList.add('legendInfoText');
+        info.textContent = type.info;
+        info.textContent =
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
-        // Append cells to the row
-        typeRow.append(circleCell);
-        typeRow.append(nameCell);
-        typeRow.append(keyCell);
-        typeRow.append(infoCell);
+        const labelDiv = document.createElement('div');
+        labelDiv.classList.add('labelDiv');
+        labelDiv.append(nameDiv);
+        labelDiv.append(keyDiv);
 
-        return typeRow;
+        typeContainer.append(circleDiv);
+        typeContainer.append(labelDiv);
+        typeContainer.append(info);
+
+        return typeContainer;
       });
 
-    // Append all rows to the table
-    legendTable.append(...typeRows);
-
     // Replace the content of legendContainer with the table
-    legendContainer.replaceChildren(legendTable);
+    legendContainer.append(...typeDivs);
+    for (const element of legendContainer.querySelectorAll('.typeContainer'))
+      element.style.gridTemplateColumns = `${largestWidth * widthMultiplier + 'px'} auto`;
   }
 
   /**
@@ -92,7 +97,7 @@ export class LegendController {
       toggleLegendButton.title = 'Close legend';
       legendButtonImage.style.display = 'block';
       openLegendButtonImage.style.display = 'none';
-      legend.style.display = 'block';
+      legend.style.display = 'flex';
     } else {
       openLegendButtonImage.title = 'Show legend';
       openLegendButtonImage.style.display = 'block';
