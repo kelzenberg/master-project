@@ -12,8 +12,8 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
 
 ## Usage
 
-- Start development-only server  
-  _(on [http://localhost:5173](http://localhost:5173) if not in use)_
+- Start development server in watch mode _(on [http://localhost:3080](http://localhost:3080))_  
+  <small>This only serves the HTML files but does not connect via the WebSockets to load essential simulation data.</small>
 
   ```sh
   npm run F dev
@@ -23,10 +23,4 @@ Check the [global README](https://github.com/kelzenberg/master-project/blob/main
 
   ```sh
   npm run F build
-  ```
-
-- Start production server locally
-
-  ```sh
-  npm run F start
   ```
