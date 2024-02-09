@@ -14,10 +14,10 @@
   },
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "webpack serve --config ./webpack.dev.config.js",
-    "build": "webpack --config ./webpack.config.js",
-    "test": "jest"
+    "build": "webpack --config ./webpack.config.js"
   },
   "devDependencies": {
     "@types/three": "^0.158.3",

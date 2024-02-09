@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable unicorn/prefer-module */
-const pack = require('./package');
+import pack from './package.json' with { type: 'json' };
 const esModules = ['plotly.js-dist-min', 'three'].join('|');
 
 /** @type {import('jest').Config} */
-module.exports = {
+export default {
   displayName: pack.name,
   setupFilesAfterEnv: ['./setup-jest.js'],
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],

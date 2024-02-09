@@ -32,6 +32,7 @@
     "F": "npm run --workspace @master-project/frontend",
     "install:F": "npm install --workspace @master-project/frontend",
     "remove:F": "npm remove --workspace @master-project/frontend",
+    "test:F": "jest --selectProjects @master-project/frontend",
     "B": "npm run --workspace @master-project/backend",
     "install:B": "npm install --workspace @master-project/backend",
     "remove:B": "npm remove --workspace @master-project/backend",

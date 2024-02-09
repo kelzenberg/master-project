@@ -3,5 +3,5 @@
 /** @type {import('jest').Config} */
 module.exports = {
   rootDir: './',
-  projects: ['<rootDir>/packages/backend/jest.config.js'],
+  projects: ['<rootDir>/packages/frontend/jest.config.js'],
 };
