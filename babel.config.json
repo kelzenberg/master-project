@@ -3,9 +3,10 @@
     [
       "@babel/preset-env",
       {
-        "targets": {
-          "node": "current" // compile against the current node version
-        }
+        "useBuiltIns": "usage",
+        "corejs": "3.35",
+        "configPath": "./.browserslistrc",
+        "forceAllTransforms": true
       }
     ]
   ]
