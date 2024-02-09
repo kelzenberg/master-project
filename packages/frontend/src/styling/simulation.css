@@ -377,6 +377,38 @@ input[type='radio']:checked:before {
   transition: box-shadow 0.3s ease;
 }
 
+input[type='radio']:disabled:before {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 2px;
+  left: 1px;
+  bottom: -2px;
+  position: relative;
+  background-color: rgb(230, 230, 230);
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 1px solid rgb(188, 188, 188);
+}
+
+input[type='radio']:checked:disabled:before {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 2px;
+  left: 1px;
+  bottom: -2px;
+  position: relative;
+  background-color: rgb(188, 188, 188);
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 1px solid rgb(188, 188, 188);
+  box-shadow: 0 0 5px rgb(188, 188, 188);
+  transition: box-shadow 0.3s ease;
+}
+
 #toggleTofButton {
   visibility: hidden;
 }

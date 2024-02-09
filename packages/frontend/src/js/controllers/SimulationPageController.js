@@ -311,6 +311,16 @@ export class SimulationPageController {
       pauseButtonImage.style.display = 'block';
       playButtonImage.style.display = 'none';
     }
+
+    const tofCheckBox1 = document.querySelector('#toggleTofButton1');
+    const tofCheckBox2 = document.querySelector('#toggleTofButton2');
+    const coverageCheckBox1 = document.querySelector('#toggleCoverageButton1');
+    const coverageCheckBox2 = document.querySelector('#toggleCoverageButton2');
+
+    tofCheckBox1.disabled = this.#isPaused;
+    tofCheckBox2.disabled = this.#isPaused;
+    coverageCheckBox1.disabled = this.#isPaused;
+    coverageCheckBox2.disabled = this.#isPaused;
   }
 
   /**

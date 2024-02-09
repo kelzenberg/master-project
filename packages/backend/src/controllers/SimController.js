@@ -328,19 +328,23 @@ export class SimController {
     const { typeInfos, sliderInfos } = this.#data.extra;
     const merged = { ...this.#data.initial };
 
-    for (let i = 0; i < merged.slider.length; i++) {
-      const label = merged.slider[i].label;
-      let initialSlider = merged.slider.find(obj => obj.label === label);
-      let configSliderInfo = sliderInfos.find(obj => obj.label === label);
-      initialSlider.info = configSliderInfo.info;
-    }
+    if (!(typeInfos === undefined && sliderInfos === undefined)) {
+      for (let i = 0; i < merged.slider.length; i++) {
+        const label = merged.slider[i].label;
+        let initialSlider = merged.slider.find(obj => obj.label === label);
+        let configSliderInfo = sliderInfos.find(obj => obj.label === label);
+        if (configSliderInfo === undefined) continue;
+        initialSlider.info = configSliderInfo.info;
+      }
 
-    const typeKeys = Object.keys(merged.visualization.typeDefinitions);
-    for (const key of typeKeys) {
-      if (key === 'empty') continue;
-      let initialTypeDefinition = merged.visualization.typeDefinitions[key];
-      let configTypeInfo = typeInfos.find(obj => obj.key === key);
-      initialTypeDefinition.info = configTypeInfo.info;
+      const typeKeys = Object.keys(merged.visualization.typeDefinitions);
+      for (const key of typeKeys) {
+        if (key === 'empty') continue;
+        let initialTypeDefinition = merged.visualization.typeDefinitions[key];
+        let configTypeInfo = typeInfos.find(obj => obj.key === key);
+        if (configTypeInfo === undefined) continue;
+        initialTypeDefinition.info = configTypeInfo.info;
+      }
     }
 
     this.#data.merged = merged;

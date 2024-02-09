@@ -32,9 +32,9 @@ export class SliderController {
       rangeSlider.setAttribute('max', sliderData.max);
       rangeSlider.setAttribute('value', sliderData.default);
       rangeSlider.setAttribute('label', sliderData.label);
-      console.log(sliderData.info);
-      rangeSlider.setAttribute('info', sliderData.info);
-
+      if (sliderData.info !== null) {
+        rangeSlider.setAttribute('info', sliderData.info);
+      }
       rangeSlider.setAttribute('disabled', !isModerator);
 
       rangeSlider.addEventListener('change', event => {

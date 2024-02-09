@@ -59,7 +59,7 @@ export class LegendController {
         // Create a container for the type info
         const info = document.createElement('p');
         info.classList.add('legendInfoText');
-        info.textContent = type.info;
+        info.textContent = type.info === null ? '' : type.info;
 
         const labelDiv = document.createElement('div');
         labelDiv.classList.add('labelDiv');
