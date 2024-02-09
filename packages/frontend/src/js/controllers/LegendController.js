@@ -19,6 +19,13 @@ export class LegendController {
    * @public
    */
   initializeLegend() {
+    const infoEnum = {
+      C: 'A fundamental element essential to life on Earth, carbon forms the backbone of organic molecules, ranging from simple sugars to complex proteins and DNA. It exhibits remarkable versatility, bonding with other elements to create a vast array of compounds, including diamonds and graphite.',
+      O: "Vital for respiration and combustion, oxygen is indispensable for sustaining life and various industrial processes. It is highly reactive, forming oxides with almost all other elements, and constitutes a significant portion of the Earth's atmosphere, providing the necessary oxygen for aerobic organisms to thrive.",
+      H: 'As the simplest and most abundant element in the universe, hydrogen plays a crucial role in numerous chemical reactions and is a key component of water and organic compounds. Its unique properties make it a promising candidate for clean energy applications, particularly in fuel cells.',
+      Rh: 'A rare transition metal known for its exceptional catalytic properties, rhodium is utilized in various industrial processes, including catalytic converters in automobiles to reduce harmful emissions. It is also employed in jewelry and as a catalyst in organic synthesis reactions due to its ability to facilitate complex chemical transformations.',
+    };
+
     const legendContainer = document.querySelector('#legendContainer');
 
     // Create a table element
@@ -60,8 +67,7 @@ export class LegendController {
         const info = document.createElement('p');
         info.classList.add('legendInfoText');
         info.textContent = type.info;
-        info.textContent =
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+        info.textContent = infoEnum[key];
 
         const labelDiv = document.createElement('div');
         labelDiv.classList.add('labelDiv');

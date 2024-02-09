@@ -6,9 +6,9 @@ template.innerHTML = `
           <div id="rangeSliderIcon">
             <div class="rangeSliderModal">
               <span class="modalContent" id="rangerSliderLogInfo"></span>
+              <span id="rangeSliderInfo">Controls the ambient temperature (in Fahrenheit) of the simulation.</span>
               <span class="modalContent" id="infoMin"></span>
               <span class="modalContent" id="infoMax"></span>
-              <span id="rangeSliderInfo"></span>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@ class rangeSlider extends HTMLElement {
 
     // Attribute values
     this.labelText = '';
-    this.infoText = '';
+    this.infoText = 'Controls the ambient temperature (in Fahrenheit) of the simulation.';
     this.min = 0;
     this.max = 100;
     this.value = 50;
