@@ -24,7 +24,7 @@ export class SimController {
   #logger;
 
   /**
-   * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
+   * @param {{uuid: string, title: string, description: string, envKeyForURL: string, thumbnail: string, typeInfos: object[], sliderInfos: object[]}} configObject Data retrieved from simulation configs JSON file
    */
   constructor({ uuid, title, description, envKeyForURL, thumbnail, typeInfos, sliderInfos }) {
     this.uuid = uuid;
