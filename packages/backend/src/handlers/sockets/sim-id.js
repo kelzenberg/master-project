@@ -32,7 +32,7 @@ export const handler =
     };
 
     logger.info(`Emitting message on ${SocketEventTypes.USER_ROLE.toUpperCase()}`, {
-      data: 'moderator',
+      data: socket.data.client.role,
     });
     socket.emit(SocketEventTypes.USER_ROLE, socket.data.client.role);
 
