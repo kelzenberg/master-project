@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { WorkerController } from './WorkerController.js';
 import { delayFor } from '../utils/delay.js';
 import { Logger } from '../utils/logger.js';
@@ -8,130 +7,220 @@ import { Logger } from '../utils/logger.js';
  * and manages the attached fetch workers.
  */
 export class SimController {
-  id;
+  uuid;
   title;
   description;
   roomId;
   isSimRunning;
+  isSimPaused;
   createdAt;
 
   #URL;
-  #thumbnail;
+  #thumbnailPath;
   #isHealthy;
+  #connectedClients;
   #data;
   #workerController;
   #logger;
 
   /**
-   * @param {{title: string, description: string, envKeyForURL: string}} configObject Data retrieved from simulation configs JSON file
+   * @param {{uuid: string, title: string, description: string, envKeyForURL: string, thumbnail: string, typeInfos: object[], sliderInfos: object[]}} configObject Data retrieved from simulation configs JSON file
    */
-  constructor({ title, description, envKeyForURL, thumbnail }) {
-    this.id = uuid();
+  constructor({ uuid, title, description, envKeyForURL, thumbnail, typeInfos, sliderInfos }) {
+    this.uuid = uuid;
     this.title = title;
     this.description = description;
-    this.roomId = `sim:${this.id}`;
+    this.roomId = `sim:${this.uuid}`;
     this.isSimRunning = false;
+    this.isSimPaused = false;
     this.createdAt = new Date().toISOString();
-    this.#URL = `http://${process.env[envKeyForURL + '_URL']}:${process.env.SIMULATION_PORT}`;
-    this.#thumbnail = `/images/${thumbnail}`;
+    this.#URL = `http://${process.env['URL_' + envKeyForURL]}:${process.env.SIMULATION_PORT}`;
+    this.#thumbnailPath = `/img/${thumbnail}`;
     this.#isHealthy = null;
-    this.#data = { initial: null };
+    this.#connectedClients = new Map();
+    this.#data = { initial: null, extra: { typeInfos, sliderInfos }, merged: null };
     this.#workerController = new WorkerController(`${this.title}-worker`, `${this.#URL}/dynamic`);
     this.#logger = Logger({ name: `${this.title}-simulation-controller` });
   }
 
-  getThumbnail() {
-    return this.#thumbnail;
-  }
+  async startSim() {
+    if (this.isSimRunning) {
+      this.#logger.warn(`Python sim ${this.title} is already running`);
 
-  async #getSimHealth(attempt = 1) {
-    this.#logger.info(`Checking health of ${this.title} Python sim (attempt #${attempt})...`);
+      if (!this.#workerController.isWorkerRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
+        this.#startWorker();
+      }
 
-    try {
-      const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
-      const { success: isHealthy } = await response.json();
-      this.#isHealthy = isHealthy;
-    } catch (error) {
-      this.#isHealthy = false;
-      const message = `Checking health for ${this.title} sim failed`;
-      this.#logger.error(message, error);
-      throw new Error(message, error);
+      return;
     }
 
-    this.#logger[this.#isHealthy ? 'info' : 'warn'](
-      `Python sim ${this.title} is ${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}`
-    );
-
-    return this.#isHealthy;
-  }
-
-  async waitForSimHealth() {
-    let repeatCounter = 0;
-    const checkHealthDelayed = async () => {
-      if (repeatCounter >= 5) return false;
-
-      const isHealthy = await this.#getSimHealth(repeatCounter + 1);
-      if (isHealthy) return true;
-
-      repeatCounter++;
-      await delayFor(1000, this.#logger);
-
-      return await checkHealthDelayed();
-    };
-
-    this.#logger.info(`Waiting for Python sim ${this.title} to become ready to accept connections...`);
-    const isHealthy = await checkHealthDelayed();
-
-    if (!isHealthy) {
-      const message = `Python sim ${this.title} is responding UNHEALTHY after ${repeatCounter} attempts`;
-      this.#logger.error(message);
-      throw new Error(message);
-    }
-  }
-
-  async fetchInitialSimData() {
-    this.#logger.info(`Fetching initial data for ${this.title} sim...`);
+    this.#logger.info(`Requesting to start ${this.title} Python sim...`);
 
     try {
-      const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
-      this.#data = { initial: await response.json() };
-
-      this.#logger.info(`Stored initial data for ${this.title} sim`);
-    } catch (error) {
-      const message = `Retrieving initial data for ${this.title} sim failed`;
-      this.#logger.error(message, error);
-      throw new Error(message, error);
-    }
-  }
-
-  getInitialSimData() {
-    return this.#data.initial;
-  }
-
-  async sendSimParameters({ label, value }) {
-    this.#logger.info(`Sending updated sim parameters for ${this.title} sim...`);
-
-    const payload = { label: `${label}`, value: `${value}` };
-    try {
-      const response = await fetch(`${this.#URL}/slider`, {
+      const response = await fetch(`${this.#URL}/start`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
       });
-      const { success: paramsAccepted, reason } = await response.json();
+      const { status: statusCode, ok: requestOk } = response;
 
-      if (!paramsAccepted) {
-        const message = `Python sim ${this.title} is not accepting sent parameters`;
-        this.#logger.error(message, { payload, reason });
+      if (!requestOk) {
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on START request`;
+        this.#logger.error(message);
         throw new Error(message);
       }
 
-      this.#logger.info(`Updated sim parameters for ${this.title} sim`);
+      const { success } = await response.json();
+      const wasNewStart = success && statusCode === 201;
+      const isAlreadyRunning = !success && statusCode === 200;
+      this.isSimRunning = wasNewStart || isAlreadyRunning;
+
+      if (this.isSimRunning) {
+        this.#startWorker();
+      }
+
+      this.#logger[wasNewStart ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewStart ? 'has started' : 'is already running'}`
+      );
     } catch (error) {
-      const message = `Sending updated sim parameters for ${this.title} sim failed`;
+      const message = `Starting Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+
+      this.isSimRunning = false;
+      if (this.#workerController.isWorkerRunning) {
+        await this.#stopWorker();
+      }
+
+      throw new Error(message, error);
+    }
+  }
+
+  async pauseSim() {
+    if (!this.isSimRunning) {
+      this.#logger.warn(`Python sim ${this.title} is not running`);
+
+      if (this.#workerController.isWorkerRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is still running. Stopping now...`);
+        this.#stopWorker();
+      }
+
+      return;
+    }
+
+    this.#logger.info(`Requesting to pause ${this.title} Python sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/pause`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const { status: statusCode, ok: requestOk } = response;
+
+      if (!requestOk) {
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on PAUSE request`;
+        this.#logger.error(message);
+        throw new Error(message);
+      }
+
+      const { success } = await response.json();
+      const wasNewPaused = success && statusCode === 200;
+      const isAlreadyPaused = !success && statusCode === 200;
+      this.isSimRunning = !(wasNewPaused || isAlreadyPaused);
+      this.isSimPaused = wasNewPaused || isAlreadyPaused;
+
+      if (!this.isSimRunning) {
+        this.#stopWorker();
+      }
+
+      this.#logger[wasNewPaused ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewPaused ? 'was paused' : 'is already paused'}`
+      );
+    } catch (error) {
+      const message = `Pausing Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
+  async resumeSim() {
+    if (this.isSimRunning) {
+      this.#logger.warn(`Python sim ${this.title} is already running`);
+
+      if (!this.#workerController.isWorkerRunning) {
+        this.#logger.warn(`Fetch-worker for ${this.title} sim is not running. Starting now...`);
+        this.#startWorker();
+      }
+
+      return;
+    }
+
+    this.#logger.info(`Requesting to resume ${this.title} Python sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/resume`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const { status: statusCode, ok: requestOk } = response;
+
+      if (!requestOk) {
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on RESUME request`;
+        this.#logger.error(message);
+        throw new Error(message);
+      }
+
+      const { success } = await response.json();
+      const wasNewResumed = success && statusCode === 200;
+      const isAlreadyRunning = !success && statusCode === 200;
+      this.isSimRunning = wasNewResumed || isAlreadyRunning;
+      this.isSimPaused = !(wasNewResumed || isAlreadyRunning);
+
+      if (this.isSimRunning) {
+        this.#startWorker();
+      }
+
+      this.#logger[wasNewResumed ? 'info' : 'warn'](
+        `Python sim ${this.title} ${wasNewResumed ? 'was resumed' : 'is already running'}`
+      );
+    } catch (error) {
+      const message = `Resuming Python sim ${this.title} failed`;
+      this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
+  }
+
+  async resetSim() {
+    this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/reset`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const { status: statusCode, ok: requestOk } = response;
+      const { success } = await response.json();
+
+      if (!requestOk || !success) {
+        const message = `Python sim ${this.title} returned unsuccessfully (code: ${statusCode}) on RESET request`;
+        this.#logger.error(message);
+        throw new Error(message);
+      }
+
+      this.#logger.info(`Python sim ${this.title} has reset`);
+    } catch (error) {
+      const message = `Resetting Python sim ${this.title} failed`;
       this.#logger.error(message, error);
       throw new Error(message, error);
     }
@@ -168,94 +257,178 @@ export class SimController {
     workerInstance.on('exit', exitHandler(this.roomId));
   }
 
-  async startSim() {
-    if (this.isSimRunning) {
-      this.#logger.warn(`Python sim ${this.title} is already running`);
-
-      if (!this.#workerController.isWorkerRunning) {
-        this.#logger.warn(`Fetch-worker for ${this.title} sim has not been started. Starting now...`);
-        this.#startWorker();
-      }
-
-      return;
-    }
-
-    this.#logger.info(`Requesting to start ${this.title} Python sim...`);
+  async #getSimHealth(attempt = 1) {
+    this.#logger.info(`Checking health of ${this.title} Python sim (attempt #${attempt})...`);
 
     try {
-      const response = await fetch(`${this.#URL}/start`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const { success: hasStarted } = await response.json();
-
+      const response = await fetch(`${this.#URL}/health`, { method: 'GET' });
+      const { success: isHealthy, hasStarted, isPaused } = await response.json();
+      this.#isHealthy = isHealthy;
       this.isSimRunning = hasStarted;
-
-      if (!hasStarted) {
-        const message = `Python sim ${this.title} returned unsuccessfully on START request`;
-        this.#logger.error(message);
-        throw new Error(message);
-      }
-
-      this.#startWorker();
-      const wasRunningBefore = !(response.status === 201);
-      this.#logger[wasRunningBefore ? 'warn' : 'info'](
-        `Python sim ${this.title} ${wasRunningBefore ? 'is already running' : 'has started'}`
-      );
+      this.isSimPaused = isPaused;
     } catch (error) {
-      const message = `Starting Python sim ${this.title} failed`;
+      this.#isHealthy = false;
+      const message = `Checking health for ${this.title} sim failed`;
       this.#logger.error(message, error);
+      throw new Error(message, error);
+    }
 
-      this.isSimRunning = false;
-      if (this.#workerController.isWorkerRunning) {
-        await this.#stopWorker();
-      }
+    this.#logger[this.#isHealthy ? 'info' : 'warn'](
+      `Python sim ${this.title} is ` +
+        `[${this.#isHealthy ? 'healthy' : 'UNHEALTHY'}], ` +
+        `[${this.isSimRunning ? 'running' : 'NOT running'}] ` +
+        `[${this.isSimPaused ? 'but paused' : 'and NOT paused'}].`
+    );
 
+    return this.#isHealthy;
+  }
+
+  async waitForSimHealth() {
+    let repeatCounter = 0;
+    const checkHealthDelayed = async () => {
+      if (repeatCounter >= 5) return false;
+
+      const isHealthy = await this.#getSimHealth(repeatCounter + 1);
+      if (isHealthy) return true;
+
+      repeatCounter++;
+      await delayFor(1000, this.#logger);
+
+      return await checkHealthDelayed();
+    };
+
+    this.#logger.info(`Waiting for Python sim ${this.title} to become ready to accept connections...`);
+    const isHealthy = await checkHealthDelayed();
+
+    if (!isHealthy) {
+      const message = `Python sim ${this.title} is responding UNHEALTHY after ${repeatCounter} attempts`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+  }
+
+  async fetchInitialSimData() {
+    this.#logger.info(`Fetching initial data for ${this.title} sim...`);
+
+    try {
+      const response = await fetch(`${this.#URL}/initial`, { method: 'GET' });
+      this.#data = { ...this.#data, initial: await response.json() };
+
+      this.#logger.info(`Stored initial data for ${this.title} sim`);
+    } catch (error) {
+      const message = `Retrieving initial data for ${this.title} sim failed`;
+      this.#logger.error(message, error);
       throw new Error(message, error);
     }
   }
 
-  async resetSim() {
-    this.#logger.info(`Requesting to reset ${this.title} Python sim...`);
+  extendInitialSimData() {
+    this.#logger.info(`Extending initial data with extra infos for ${this.title} sim...`);
 
+    const { typeInfos, sliderInfos } = this.#data.extra;
+    const merged = { ...this.#data.initial };
+
+    if (!(typeInfos === undefined && sliderInfos === undefined)) {
+      if (!(sliderInfos === undefined)) {
+        for (let i = 0; i < merged.slider.length; i++) {
+          const label = merged.slider[i].label;
+          let initialSlider = merged.slider.find(obj => obj.label === label);
+          let configSliderInfo = sliderInfos.find(obj => obj.label === label);
+          if (configSliderInfo === undefined) continue;
+          initialSlider.info = configSliderInfo.info;
+        }
+      }
+
+      if (!(typeInfos === undefined)) {
+        const typeKeys = Object.keys(merged.visualization.typeDefinitions);
+        for (const key of typeKeys) {
+          if (key === 'empty') continue;
+          let initialTypeDefinition = merged.visualization.typeDefinitions[key];
+          let configTypeInfo = typeInfos.find(obj => obj.key === key);
+          if (configTypeInfo === undefined) continue;
+          initialTypeDefinition.info = configTypeInfo.info;
+        }
+      }
+    }
+
+    this.#data.merged = merged;
+    this.#logger.info(`Merged initial data with extra infos for ${this.title} sim`);
+  }
+
+  getInitialSimData() {
+    const mergedData = this.#data.merged;
+
+    if (!mergedData) {
+      const message = `Merged initial data for ${this.title} is empty`;
+      this.#logger.error(message);
+      throw new Error(message);
+    }
+
+    return mergedData;
+  }
+
+  getThumbnailPath() {
+    return this.#thumbnailPath;
+  }
+
+  async sendSimParameters({ label, value }) {
+    this.#logger.info(`Sending updated sim parameters for ${this.title} sim...`);
+
+    const payload = { label: `${label}`, value: `${value}` };
     try {
-      const response = await fetch(`${this.#URL}/reset`, {
+      const response = await fetch(`${this.#URL}/slider`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(payload),
       });
-      const { success: hasReset } = await response.json();
+      const { success: paramsAccepted, reason } = await response.json();
 
-      if (!hasReset) {
-        const message = `Python sim ${this.title} returned unsuccessfully on RESET request`;
-        this.#logger.error(message);
+      if (!paramsAccepted) {
+        const message = `Python sim ${this.title} is not accepting sent parameters`;
+        this.#logger.error(message, { payload, reason });
         throw new Error(message);
       }
 
-      this.#logger.info(`Python sim ${this.title} has reset`);
+      this.#logger.info(`Updated sim parameters for ${this.title} sim`);
     } catch (error) {
-      const message = `Resetting Python sim ${this.title} failed`;
+      const message = `Sending updated sim parameters for ${this.title} sim failed`;
       this.#logger.error(message, error);
-
-      this.isSimRunning = false;
-      if (this.#workerController.isWorkerRunning) {
-        await this.#stopWorker();
-      }
-
       throw new Error(message, error);
     }
+  }
+
+  addClient(clientId) {
+    if (this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} has already been added to connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Adding client ${clientId} to connected clients`);
+    this.#connectedClients.set(clientId, clientId);
+  }
+
+  removeClient(clientId) {
+    if (!this.#connectedClients.has(clientId)) {
+      this.#logger.warn(`Client ${clientId} is not listed in connected clients`);
+      return;
+    }
+
+    this.#logger.info(`Removing client ${clientId} from connected clients`);
+    this.#connectedClients.delete(clientId, clientId);
+  }
+
+  getClients() {
+    return [...this.#connectedClients.values()];
   }
 
   toJSON() {
     return {
       ...this,
       URL: this.#URL,
-      thumbnail: this.#thumbnail,
+      thumbnailPath: this.#thumbnailPath,
       isHealthy: this.#isHealthy,
       data: this.#data,
     };

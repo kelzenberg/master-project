@@ -6,7 +6,8 @@
   "contributors": [
     "Frederik Busch <fredbusch98@users.noreply.github.com> (https://github.com/fredbusch98)",
     "Lennart Reinke <leonardin96@users.noreply.github.com> (https://github.com/leonardin96)",
-    "Marc Waclaw <schmarcopolo@users.noreply.github.com> (https://github.com/schmarcopolo)"
+    "Marc Waclaw <schmarcopolo@users.noreply.github.com> (https://github.com/schmarcopolo)",
+    "Martin Deimel <martin.deimel@tum.de> (https://github.com/m-deimel"
   ],
   "repository": {
     "type": "git",
@@ -15,7 +16,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "python3 ./src/main.py"
+    "start": "python3 ./start.py"
   },
   "devDependencies": {},
   "dependencies": {}

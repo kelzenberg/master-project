@@ -53,6 +53,22 @@
           }
         ]
       }
+    },
+    {
+      "files": ["**/*.test.*", "**/setup-jest.*"],
+      "plugins": ["jest"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:jest/recommended",
+        // always make sure the prettier/recommended rules come last in array
+        "plugin:prettier/recommended"
+      ],
+      "env": {
+        "jest/globals": true
+      },
+      "rules": {
+        "unicorn/filename-case": ["off"]
+      }
     }
   ]
 }

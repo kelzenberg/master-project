@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1-experimental
 
-FROM node:21.1.0 as build
+FROM node:21.1.0 as build-frontend
 
 WORKDIR /home/node
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
@@ -20,7 +20,7 @@ COPY packages/frontend/src ./packages/frontend/src
 COPY packages/libs/src ./packages/libs/src
 RUN npm run F build
 
-FROM node:21.1.0
+FROM node:21.1.0 as build-app
 
 WORKDIR /home/node
 
@@ -36,10 +36,13 @@ COPY packages/backend/package.json ./packages/backend/
 COPY packages/libs/package.json ./packages/libs/
 RUN npm ci --omit=dev --ignore-scripts=true && npm cache clean --force
 
+# necessary fix to recreate node-sqlite bindings
+RUN npm rebuild sqlite3
+
 COPY packages/backend/src ./packages/backend/src
 COPY packages/libs/src ./packages/libs/src
 
-COPY --from=build /home/node/app/packages/frontend/dist ./packages/backend/src/static/
+COPY --from=build-frontend /home/node/app/packages/frontend/dist ./packages/backend/src/static/
 
 RUN chown -R node:node /home/node
 WORKDIR /home/node/app/packages/backend/

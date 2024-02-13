@@ -6,13 +6,20 @@ const { workerName, URL, fetchDelay } = workerData;
 const logger = Logger({ name: workerName });
 
 const main = async () => {
-  if (!URL || `${URL}` == '') {
+  if (!URL || `${URL}` === '') {
     const message = `Target URL is missing`;
     logger.error(message);
     throw new Error(message, { url: URL });
   }
 
   logger.info(`Starting ${workerName} worker loop to fetch URL '${URL}' every ${fetchDelay} milliseconds...`);
+
+  parentPort.on('message', value => {
+    if (value === 'shutdown') {
+      logger.info(`Received shutdown message from main thread. Shutting down ${workerName} worker...`);
+      process.exit(0);
+    }
+  });
 
   // eslint-disable-next-line no-constant-condition
   while (true) {

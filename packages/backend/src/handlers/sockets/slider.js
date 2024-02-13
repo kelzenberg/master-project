@@ -8,13 +8,13 @@ export const handler = (logger, socket, simControllers) => async data => {
     return;
   }
 
-  const currentSimId = socket.data.client.currentSimId;
+  const currentSimUUID = socket.data.client.currentSimUUID;
 
-  if (!currentSimId) {
+  if (!currentSimUUID) {
     logger.error('Current sim ID could not be found', { data: socket.data.client });
     return;
   }
 
-  const chosenSimController = simControllers.find(sim => sim.id === currentSimId);
+  const chosenSimController = simControllers.find(sim => sim.uuid === currentSimUUID);
   await chosenSimController.sendSimParameters(data);
 };

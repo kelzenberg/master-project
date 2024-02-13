@@ -1,52 +1,43 @@
 import { SocketEventTypes } from '@master-project/libs/src/events';
-import { SimulationPageController } from '../controllers/SimulationPageController';
+import { SimulationPageController } from '../controllers/SimulationPageController.js';
 
-const urlParams = new URLSearchParams(window.location.search);
-const simId = urlParams.get('id');
-const { title, description } = await fetchTitleAndDescription(simId);
-const simulationPageController = new SimulationPageController(title, description);
-simulationPageController.addEventListeners();
+const simulationPageController = new SimulationPageController();
+const simId = simulationPageController.getSimId();
 
-const errorOverlay = document.querySelector('#errorOverlay');
-const errorContent = document.querySelector('#errorContent');
-
+// `io` object is being exported by '/socket.io/socket.io.js'
 // eslint-disable-next-line no-undef
-const socket = io(); // `io` object is being exported by '/socket.io/socket.io.js'
-socket.emit(SocketEventTypes.SIM_ID, { simId });
+const socket = io({
+  withCredentials: true,
+});
 
-socket.on(SocketEventTypes.INITIAL, payload => {
-  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.INITIAL.toUpperCase()} arrived with payload`, payload);
-  simulationPageController.renderInitialData(payload);
+socket.on(SocketEventTypes.CONNECT, async () => {
+  await simulationPageController.init(simId);
+  simulationPageController.hideErrorOverlay();
+
+  socket.emit(SocketEventTypes.SIM_ID, { simId });
+});
+
+socket.on(SocketEventTypes.CONNECT_ERROR, error => {
+  simulationPageController.displayErrorOverlay(error);
+});
+
+socket.on(SocketEventTypes.DISCONNECT, message => {
+  simulationPageController.displayErrorOverlay(message);
+});
+
+socket.on(SocketEventTypes.USER_ROLE, async payload => {
+  simulationPageController.setIsModerator(payload === 'moderator');
+});
+
+socket.on(SocketEventTypes.INITIAL, async payload => {
+  simulationPageController.renderInitialData(payload, true);
   simulationPageController.animate();
 });
 
 socket.on(SocketEventTypes.DYNAMIC, payload => {
-  console.debug(`[DEBUG]: Socket event on ${SocketEventTypes.DYNAMIC.toUpperCase()} arrived with payload`, payload);
   simulationPageController.renderDynamicData(payload);
 });
 
-socket.on('connect', () => {
-  errorOverlay.style.display = 'none';
-
-  errorContent.innerHTML = '';
-});
-
-socket.on('connect_error', err => {
-  errorOverlay.style.display = 'flex';
-
-  errorContent.innerHTML = `
-    <h2>Error:</h2>
-    <span>Connection lost. Wait for automatic reconnect or reload the page.</span>
-    <p>${err.message || 'Unknown error'} ${err.data || ''}</p>
-  `;
-});
-
 export const sendSliderEvent = payload => {
-  console.debug(`[DEBUG]: Send socket event on ${SocketEventTypes.SLIDER.toUpperCase()} with payload`, payload);
   socket.emit(SocketEventTypes.SLIDER, payload);
 };
-
-async function fetchTitleAndDescription(simId) {
-  const response = await fetch('/list?id=' + simId, { method: 'GET' });
-  return await response.json();
-}

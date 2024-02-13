@@ -75,7 +75,7 @@ export class WorkerController {
     }
 
     this.#logger.info(`Stopping ${this.title} worker...`);
-    await this.#worker.terminate();
+    await this.#worker.postMessage('shutdown');
     this.#worker = null;
     this.isWorkerRunning = false;
     this.#logger.info(`Successfully stopped ${this.title} worker`);

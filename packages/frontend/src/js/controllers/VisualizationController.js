@@ -12,11 +12,15 @@ import {
   Group,
   Box3,
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
-import Molecule from '../models/Molecule';
-import Species from '../models/Species';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper.js';
+import Molecule from '../models/Molecule.js';
+import Species from '../models/Species.js';
 
+/**
+ * Controls the 3D visualization of species in the three.js scene. Also enables the user to navigate in the scene.
+ * Starts the animation loop of three.js.
+ */
 export class VisualizationController {
   #fixedSpecies;
   #config;
@@ -32,6 +36,15 @@ export class VisualizationController {
   #viewHelper;
   #controls;
 
+  /**
+   * Creates a VisualizationController instance.
+   * @param {Object[]} fixedSpecies - The fixed species data.
+   * @param {Object[]} config - The configuration data.
+   * @param {Group} sitesGroup - The group of sites.
+   * @param {Object[]} speciesDictionary - The dictionary of species.
+   * @param {Object} typeDefinitions - The definitions of species types.
+   * @public
+   */
   constructor(fixedSpecies, config, sitesGroup, speciesDictionary, typeDefinitions) {
     this.#fixedSpecies = fixedSpecies;
     this.#config = config;
@@ -79,18 +92,30 @@ export class VisualizationController {
     });
   }
 
-  // Public Functions
+  /**
+   * Renders the initial data for 3D visualization.
+   * @public
+   */
   renderInitialData() {
     this.#renderFixedSpecies();
     this.#renderSpeciesFromConfig();
     this.#setViewPortAlignment();
   }
 
+  /**
+   * Renders the dynamic data for 3D visualization.
+   * @param {Object[]} config - The updated configuration data.
+   * @public
+   */
   renderDynamicData(config) {
     this.#config = config;
     this.#renderSpeciesFromConfig();
   }
 
+  /**
+   * Starts the animation loop and updates controls and the xyz-gizmo (viewHelper)
+   * @public
+   */
   animate() {
     requestAnimationFrame(() => this.animate());
     this.#controls.update();
@@ -99,7 +124,10 @@ export class VisualizationController {
     this.#viewHelper.render(this.#renderer);
   }
 
-  // Private Functions
+  /**
+   * Renders the fixed species representing the surfacein the 3D scene.
+   * @private
+   */
   #renderFixedSpecies() {
     for (const data of this.#fixedSpecies) {
       let molecule = this.#createMolecule(data);
@@ -114,6 +142,10 @@ export class VisualizationController {
     }
   }
 
+  /**
+   * Renders the species from the config send in the dynamic data.
+   * @private
+   */
   #renderSpeciesFromConfig() {
     this.#clearDynamicSpecies();
 
@@ -133,6 +165,10 @@ export class VisualizationController {
     }
   }
 
+  /**
+   * Clears the dynamic species that aren't visible anymore in the current simulation step.
+   * @private
+   */
   #clearDynamicSpecies() {
     for (let i = 0; i < this.#dynamicSpeciesGroup.children.length; i++) {
       const dynamicSpeciesMesh = this.#dynamicSpeciesGroup.children.find(child => child.userData.dynamic === true);
@@ -143,6 +179,12 @@ export class VisualizationController {
     }
   }
 
+  /**
+   * Creates a species mesh at a given site
+   * @param speciesIndex the index for the species dictionary
+   * @param siteIndex the index for the sites group
+   * @private
+   */
   #createSpeciesMeshAtSite(speciesIndex, siteIndex) {
     const site = this.#sitesGroup.children[siteIndex];
     const species = new Species(site, this.#speciesDictionary[speciesIndex]);
@@ -157,6 +199,10 @@ export class VisualizationController {
     this.#dynamicSpeciesGroup.add(speciesMesh);
   }
 
+  /**
+   * Creates a molecule.
+   * @private
+   */
   #createMolecule(data) {
     let position = new Vector3(data.x, data.y, data.z);
     let type = data.type;
@@ -165,6 +211,12 @@ export class VisualizationController {
     return new Molecule(position, radius, color);
   }
 
+  /**
+   * Sets the camera viewport to contain the whole 3D geometries and also aligns it to fit the coordinate system of three.js.
+   * kmcos coordinate system sees z pointing upwards, while thress.js sees y pointing upwards
+   * The following functions are helper functions for this feature
+   * @private
+   */
   #setViewPortAlignment() {
     const rotationAngleX = -Math.PI / 2; // -90 degrees in radians
     this.#allGeometriesGroup.rotation.set(rotationAngleX, 0, 0);

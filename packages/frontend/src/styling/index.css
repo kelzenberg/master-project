@@ -14,9 +14,15 @@ html {
   background-color: var(--background-color);
 }
 
+html,
+body {
+  height: 100%;
+}
+
 .pageContent {
   max-width: 90vw;
   margin: auto;
+  padding-bottom: 1rem;
 }
 
 .titleBar, .titleContainer {
@@ -24,7 +30,7 @@ html {
 }
 
 .titleBar {
-  height: 8rem;
+  height: auto;
   border-bottom: 0.1rem solid var(--highlight-color);
   display: flex;
   align-items: center;
@@ -43,6 +49,7 @@ html {
   background-position: center;
   flex-grow: 1;
   flex-shrink: 0;
+  margin: 10px;
 }
 
 .titleContainer {
@@ -57,8 +64,7 @@ html {
 }
 
 .previewContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,   minmax(27.5rem, 1fr));
   gap: 1.5rem;
 }

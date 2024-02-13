@@ -1,12 +1,26 @@
-import { sendSliderEvent } from '../services/sockets';
+import { sendSliderEvent } from '../services/sockets.js';
+
+/**
+ * Controls the initialization and updating of sliders.
+ */
 export class SliderController {
   #slider;
 
+  /**
+   * Creates a SliderController instance.
+   * @param {Object[]} slider - The slider data.
+   * @public
+   */
   constructor(slider) {
     this.#slider = slider;
   }
 
-  initializeSlider(isSuperUser) {
+  /**
+   * Initializes the sliders.
+   * @param {boolean} isModerator - Indicates whether the user is a moderator user and should be able to interact with the sliders or not.
+   * @public
+   */
+  initializeSlider(isModerator) {
     const sliderContainer = document.querySelector('#sliderContainer');
     const slider = this.#slider.map(sliderData => {
       const rangeSlider = document.createElement('range-slider');
@@ -18,13 +32,13 @@ export class SliderController {
       rangeSlider.setAttribute('max', sliderData.max);
       rangeSlider.setAttribute('value', sliderData.default);
       rangeSlider.setAttribute('label', sliderData.label);
-      rangeSlider.setAttribute('info', sliderData.info);
-
-      rangeSlider.setAttribute('disabled', !isSuperUser);
+      if (sliderData.info !== null) {
+        rangeSlider.setAttribute('info', sliderData.info);
+      }
+      rangeSlider.setAttribute('disabled', !isModerator);
 
       rangeSlider.addEventListener('change', event => {
         this.#sendChangeEvent(event.currentTarget.getAttribute('label'), event.currentTarget.value);
-        console.log(event.currentTarget.value);
       });
 
       return rangeSlider;
@@ -33,10 +47,11 @@ export class SliderController {
     sliderContainer.replaceChildren(...slider);
   }
 
-  // Funktioniert nicht!
-  // reproduce: in SimulationPageController die if Bedingugn vorm Aufurf von updateSliderValues rausnehmen
-  // dann anwendung starten
-  // slider verschieben -> eigentlich sollte bei nächster dynamic data dann der slider value wieder geupdated werden, passiert aber nicht!
+  /**
+   * Updates the values of sliders.
+   * @param {Object[]} sliderData - The updated slider data.
+   * @public
+   */
   updateSliderValues(sliderData) {
     sliderData.map(sliderData => {
       let rangeSlider = this.#findSliderByLabel(sliderData.label);
@@ -44,12 +59,22 @@ export class SliderController {
     });
   }
 
+  /**
+   * Finds the HTML object range slider with the specified label.
+   * @param label - The label of the slider
+   * @public
+   */
   #findSliderByLabel(label) {
     return document.querySelector(`range-slider[label="${label}"]`);
   }
 
+  /**
+   * Triggers a socket slider change event.
+   * @param label the label of the slider that triggered the change event
+   * @param value the value of the slider change event
+   * @public
+   */
   #sendChangeEvent(label, value) {
-    console.log(label + ' ' + value);
     sendSliderEvent({
       label,
       value,

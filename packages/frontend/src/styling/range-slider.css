@@ -23,6 +23,10 @@ rage-slider span {
   font-weight: 500;
 }
 
+#rangeSliderInfo {
+  padding-bottom: 0.5rem;
+}
+
 #rangeSliderIcon {
   width: 1rem;
   height: 1rem;
@@ -115,18 +119,23 @@ input[type='range']::-moz-range-thumb {
 
 input[type='range']:disabled::-webkit-slider-runnable-track {
   background: rgb(188, 188, 188);
+  cursor: default !important;
 }
 
 input[type='range']:disabled::-webkit-slider-thumb {
   border-color: rgb(188, 188, 188);
   background: rgb(188, 188, 188);
+  cursor: default !important;
 }
 
 input[type='range']:disabled::-moz-range-track {
   background: rgb(188, 188, 188);
+  cursor: default !important;
 }
 
 input[type='range']:disabled::-moz-range-thumb {
   border-color: rgb(188, 188, 188);
   background: rgb(188, 188, 188);
+  cursor: default !important;
 }
+

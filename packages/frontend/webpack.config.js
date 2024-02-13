@@ -1,13 +1,12 @@
-/* eslint-disable no-undef */
-/* eslint-disable unicorn/prefer-module */
-const path = require('node:path');
-const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+import path from 'node:path';
+import url from 'node:url';
+import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
-module.exports = {
+export default {
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), 'dist'),
     clean: true,
   },
   plugins: [
@@ -35,7 +34,7 @@ module.exports = {
       patterns: [
         { from: '../../node_modules/plotly.js-dist-min/plotly.min.js', to: 'js/plotly.min.js' },
         {
-          from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
+          from: '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
           to: 'js/webcomponents-loader.js',
         },
       ],
@@ -63,9 +62,14 @@ module.exports = {
         },
       },
       {
-        test: /\.(js)$/i,
+        test: /\.m?js$/,
         exclude: [/node_modules/, /plotly/],
-        use: ['babel-loader'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
     ],
   },

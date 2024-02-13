@@ -10,6 +10,7 @@ import logging
 import os
 import time
 import sys
+import copy
 from datetime import datetime, timedelta
 import numpy as np
 import ase
@@ -64,6 +65,14 @@ class WebGLInterface(KMC_Model):
         self._history = []
         self.dynamic_data = image_queue
         self.initial_data = self._get_initial_data()
+        self.default_params = copy.deepcopy(settings.parameters)
+
+    def reset_simulation(self):
+        while not self.parameter_queue.empty():
+            self.parameter_queue.get()
+        for param in self.default_params.keys():
+            settings.parameters[param]['value'] = self.default_params[param]['value']
+        set_rate_constants(settings.parameters, False, self.can_accelerate)
 
     def run(self):
         """Runs the model indefinitely. To control the
@@ -254,8 +263,14 @@ class WebGLInterface(KMC_Model):
                             self.lattice.get_species(
                                 [x_coord, y_coord, z_coord, sites_per_unit_cell]))
         for tof in zip(self.tof_data.tolist(), self.tof_integ.tolist()):
+            _tof = []
+            for t in tof:
+                if np.isnan(t):
+                    _tof.append(0.0)
+                else:
+                    _tof.append(float(t))
             tofs.append(
-                {"values": list(tof)}
+                {"values": _tof}
             )
         for occ in state.occupation.tolist():
             occs.append(
@@ -325,15 +340,69 @@ if __name__ == "__main__":
                        signal_queue=sq,
                        steps_per_frame=spf)
 
+    @app.route('/health', methods=['GET'])
+    def get_server_health():
+        return (
+            jsonify(
+                success=True,
+                hasStarted=app.kmc_model.pid and app.simulation_running,
+                isPaused=app.kmc_model.pid and not app.simulation_running,
+            ),
+            200,
+        )
+
+    @app.route('/start', methods=['POST'])
+    def start_simulation():
+        if not app.simulation_running and not app.kmc_model.pid:
+            app.start_simulation()
+            app._simulation_running = True
+            return jsonify(success=True), 201
+        if app.simulation_running:
+            return jsonify(success=False), 200
+        return jsonify(success=False), 400
+
+    @app.route('/pause', methods=['PUT'])
+    def pause_simulation():
+        if app.simulation_running:
+            os.kill(app.kmc_model.pid, 19)
+            app._simulation_running = False
+            return jsonify(success=True), 200
+        if not app.simulation_running:
+            return jsonify(success=False), 200
+        return jsonify(success=False), 400
+
+    @app.route('/resume', methods=['PUT'])
+    def resume_simulation():
+        if not app.simulation_running:
+            os.kill(app.kmc_model.pid, 18)
+            app._simulation_running = True
+            return jsonify(success=True), 200
+        if app.simulation_running:
+            return jsonify(success=False), 200
+        return jsonify(success=False), 400
+
+    @app.route('/reset', methods=['POST'])
+    def reset_simulation():
+        try:
+            app.kmc_model._history = []
+            while not app.kmc_model.dynamic_data.empty():
+                app.kmc_model.dynamic_data.get()
+            app.kmc_model.reset_simulation()
+            app.kmc_model.deallocate()
+            app.kmc_model.reset()
+            return jsonify(success=True), 201
+        except:
+            return jsonify(success=False), 400
+
+    @app.route('/initial', methods=['GET'])
+    def get_initial_data():
+        return json.dumps(app.kmc_model.initial_data)
+
     @app.route('/dynamic', methods=['GET'])
     def get_dynamic_data():
         if app.simulation_running:
             return json.dumps(app.kmc_model.dynamic_data.get())
         return jsonify(success=False), 400
-
-    @app.route('/initial', methods=['GET'])
-    def get_initial_data():
-        return json.dumps(app.kmc_model.initial_data)
 
     @app.route('/slider', methods=['POST'])
     def update_parameter():
@@ -365,45 +434,6 @@ if __name__ == "__main__":
         settings.parameters[label]['value'] = str(value)
         app.kmc_model.parameter_queue.put(settings.parameters)
         return jsonify(success=True), 201
-
-    @app.route('/start', methods=['POST'])
-    def start_simulation():
-        if not app.simulation_running and not app.kmc_model.pid:
-            app.start_simulation()
-            app._simulation_running = True
-            return jsonify(success=True), 201
-        if app.simulation_running:
-            return jsonify(success=True), 200
-        return jsonify(success=False), 400
-
-    @app.route('/reset', methods=['POST'])
-    def reset_simulation():
-        try:
-            app.kmc_model.deallocate()
-            app.kmc_model.reset()
-            return jsonify(success=True), 201
-        except:
-            return jsonify(success=False), 400
-
-    @app.route('/pause', methods=['PUT'])
-    def pause_simulation():
-        if app.simulation_running:
-            os.kill(app.kmc_model.pid, 19)
-            app._simulation_running = False
-            return jsonify(success=True), 200
-        return jsonify(success=False), 400
-
-    @app.route('/resume', methods=['PUT'])
-    def resume_simulation():
-        if not app.simulation_running:
-            os.kill(app.kmc_model.pid, 18)
-            app._simulation_running = True
-            return jsonify(success=True), 200
-        return jsonify(success=False), 400
-
-    @app.route('/health', methods=['GET'])
-    def get_server_health():
-        return jsonify(success=True), 200
 
     try:
         port = int(os.environ.get('SIMULATION_PORT', 3001))
