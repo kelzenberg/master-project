@@ -1,6 +1,10 @@
-# Master Project
+# Interactive Web-Frontend for Server-based Scientific Simulations
 
-<small>Software project **"Interactive Web-Frontend for Server-based Scientific Simulations"** for the academic course "Master Project WiSe23/24" at the [Berliner Hochschule für Technik](https://bht-berlin.de/en) (BHT), in cooperation with the [Fritz-Haber-Institut](https://www.fhi.mpg.de/en) (FHI) of the [Max-Planck-Gesellschaft](https://www.mpg.de/en).</small>
+<small>Software project for the academic course "Master Project WiSe23/24" at the [Berliner Hochschule für Technik](https://bht-berlin.de/en) (BHT), in cooperation with the [Fritz-Haber-Institute](https://www.fhi.mpg.de/en) (FHI) of the [Max-Planck-Gesellschaft](https://www.mpg.de/en).</small>
+
+## <small>Project Outline</small>
+
+> <small>The Theory Department of the Fritz-Haber-Institute has developed several interactive simulation models for use in teaching and outreach acitivities (e.g. Girl's Day, Long Night of the Sciences) in the past. The legacy GUIs of the simulation apps were programmed using traditional GUI toolkits and OpenGL canvases, that require a high amount of regular maintenance. Additionally, the software requirements (libraries, toolkits, OS, ...) on the computers used for outreach activities are complex, limiting these to pre-configured hardware that needs to be available for every event. This, in turn, renders online or hybrid courses with remote participants on their own devices almost impossible. <br>The goal of the proposed project is to modernize the UI component making use of a browser based client-server architecture. The open-source server components are being developed at the FHI in python/C++ and can be adapted to suit the new UI model. The envisioned UI component should be a simple to maintain modular framework consisting of a WebGL canvas for a model view along with multiple control widgets and state-of-the-art JavaScript/SVG (e.g. D3.js, Chart.js, or similar) based dynamically updated display elements for scientific observables, e.g. temperatures or pressures, as they occur in the server-side simulations.</small>
 
 ---
 

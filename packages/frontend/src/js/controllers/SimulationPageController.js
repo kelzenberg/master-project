@@ -334,14 +334,22 @@ export class SimulationPageController {
     document.querySelector('#plotTOF').style.visibility = 'visible';
     document.querySelector('#plotCoverage').style.visibility = 'visible';
     document.querySelector('#sliderContainer').style.visibility = 'visible';
+    document.querySelector('#cancelButton').style.display = 'block';
+    document.querySelector('#confirmationButton').style.display = 'block';
+    document.querySelector('#toggleLegendButton').style.display = 'block';
 
     if (this.#isPaused) {
       document.querySelector('#playButtonImage').style.display = 'block';
+      document.querySelector('#pauseButton').style.display = 'block';
     } else {
       document.querySelector('#pauseButtonImage').style.display = 'block';
+      document.querySelector('#pauseButton').style.display = 'block';
     }
 
-    if (this.#isModerator) document.querySelector('#resetButtonImage').style.display = 'block';
+    if (this.#isModerator) {
+      document.querySelector('#resetButtonImage').style.display = 'block';
+      document.querySelector('#resetButton').style.display = 'block';
+    }
 
     document.querySelector('#coverageCheckboxContainer').style.display = 'block';
     document.querySelector('#tofCheckboxContainer').style.display = 'block';
