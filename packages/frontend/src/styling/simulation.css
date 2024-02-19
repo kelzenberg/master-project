@@ -30,6 +30,7 @@ body {
 }
 
 button {
+  display: none;
   background-color: unset;
   transition: 0.25s;
 
